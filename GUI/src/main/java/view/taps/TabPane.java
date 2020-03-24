@@ -1,6 +1,7 @@
-package view;
+package view.taps;
 
 import javafx.scene.control.Tab;
+import view.taps.CameraSourceTab;
 
 import java.util.ArrayList;
 import java.util.List;

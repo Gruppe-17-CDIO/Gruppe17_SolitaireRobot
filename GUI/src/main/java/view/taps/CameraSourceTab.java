@@ -1,4 +1,4 @@
-package view;
+package view.taps;
 
 import com.github.sarxos.webcam.Webcam;
 import javafx.application.Platform;
@@ -20,6 +20,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import view.MainGUI;
+import view.components.TabStd;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,9 +39,10 @@ public class CameraSourceTab extends TabStd {
     private ImageView imgWebCamCapturedImage;
     private Webcam webcam = null;
     private boolean isCameraRunning = true;
+    private boolean isWebCamSelected = false;
     ObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
 
-    private ComboBox<Webcam> webcamOptions;
+    private ComboBox<Webcam> webCamOptions;
     private FlowPane bottomCameraControlPane;
     private Button btnCameraStop;
     private Button btnCameraStart;
@@ -53,6 +56,7 @@ public class CameraSourceTab extends TabStd {
         addDropdown();
         addVideoFrame();
         addBottomControlPane();
+        testMode(MainGUI.isTesting);
     }
 
     //------------------------ Properties -------------------------
@@ -68,20 +72,23 @@ public class CameraSourceTab extends TabStd {
     //---------------------- Support Methods ----------------------    
 
     private void addDropdown() {
-        webcamOptions = new ComboBox<>(FXCollections.observableList(Webcam.getWebcams()));
-        webcamOptions.setPromptText(comboBoxPromptText);
-        webcamOptions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Webcam>() {
+        webCamOptions = new ComboBox<>(FXCollections.observableList(Webcam.getWebcams()));
+        webCamOptions.setPromptText(comboBoxPromptText);
+        webCamOptions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Webcam>() {
             @Override
             public void changed(ObservableValue<? extends Webcam> observable, Webcam oldValue, Webcam newValue) {
                 if (newValue != null) {
                     if (MainGUI.isTesting){
                         MainGUI.printToOutputAreaNewline("Selected webcam: " + newValue.getName());
                     }
+                    isWebCamSelected = true;
                     initializeWebCam(newValue);
+                } else {
+                    isWebCamSelected = false;
                 }
             }
         });
-        addToContent(webcamOptions);
+        addToContent(webCamOptions);
     }
 
     private void addVideoFrame() {
@@ -190,7 +197,8 @@ public class CameraSourceTab extends TabStd {
         th.setDaemon(true);
         th.start();
         imgWebCamCapturedImage.imageProperty().bind(imageProperty);
-
+        // Flips the image so it works as a mirror
+        imgWebCamCapturedImage.setScaleX(-1);
     }
 
     private void createCameraControls() {
@@ -199,7 +207,6 @@ public class CameraSourceTab extends TabStd {
         btnCameraStop.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-
                 stopWebCamCamera();
             }
         });
@@ -216,6 +223,7 @@ public class CameraSourceTab extends TabStd {
         btnCameraDispose.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
+                isWebCamSelected = false;
                 disposeWebCamCamera();
             }
         });
@@ -229,15 +237,19 @@ public class CameraSourceTab extends TabStd {
         webcam.close();
         btnCameraStart.setDisable(true);
         btnCameraStop.setDisable(true);
-        Platform.runLater(new Runnable() {
-                              @Override
-                              public void run() {
-                                  webcamOptions.getSelectionModel().select(null);
-                                  webcamOptions.setPromptText("Select a webcam as input");
-                                  webcamOptions.setDisable(false);
-                              }
-                          });
-
+        if (!isWebCamSelected) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    webCamOptions.getSelectionModel().clearSelection();
+                    webCamOptions.setPromptText("Select a webcam as input");
+                    webCamOptions.setDisable(false);
+                    // removes the last captured image.
+                    imgWebCamCapturedImage.imageProperty().unbind();
+                    imgWebCamCapturedImage.setImage(null);
+                }
+            });
+        }
     }
 
     protected void startWebCamCamera() {
@@ -245,59 +257,28 @@ public class CameraSourceTab extends TabStd {
         startWebCamStream();
         btnCameraStop.setDisable(false);
         btnCameraStart.setDisable(true);
-        webcamOptions.setDisable(true);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                webcamOptions.getSelectionModel().select(webcam);
-                webcamOptions.setDisable(true);
-            }
-        });
+        if (isWebCamSelected) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    webCamOptions.getSelectionModel().select(webcam);
+                    webCamOptions.setDisable(true);
+                }
+            });
+        }
     }
 
     protected void stopWebCamCamera() {
         isCameraRunning = false;
         btnCameraStart.setDisable(false);
         btnCameraStop.setDisable(true);
-        webcamOptions.setDisable(false);
+        webCamOptions.setDisable(false);
     }
 
-
-        @Override
+    @Override
     protected void testMode(boolean isTesting) {
-
-    }
-
-    // region Helping Class // Inner Class
-    private class WebCamInfo {
-        private String webCamName;
-        private int webCamIndex;
-
-        // region Getters and Setters
-
-        public String getWebCamName() {
-            return webCamName;
-        }
-
-        public void setWebCamName(String webCamName) {
-            this.webCamName = webCamName;
-        }
-
-        public int getWebCamIndex() {
-            return webCamIndex;
-        }
-
-        public void setWebCamIndex(int webCamIndex) {
-            this.webCamIndex = webCamIndex;
-        }
-        // endregion
-
-        @Override
-        public String toString() {
-            return webCamName;
+        if (webCamOptions.getItems().size() != 0) {
+            webCamOptions.getSelectionModel().select(0);
         }
     }
-
-    // endregion
-
 }

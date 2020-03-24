@@ -1,4 +1,4 @@
-package view;
+package view.components;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,6 +8,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import view.MainGUI;
+import view.components.FxUtil;
 
 import java.io.File;
 
@@ -29,7 +31,6 @@ public abstract class TabStd extends Tab {
         setText(title);
         setHeaderAndDesc();
         applySettings();
-        testMode(MainGUI.isTesting);
     }
 
 

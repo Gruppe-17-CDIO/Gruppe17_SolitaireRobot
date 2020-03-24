@@ -1,4 +1,4 @@
-package view;
+package view.components;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;

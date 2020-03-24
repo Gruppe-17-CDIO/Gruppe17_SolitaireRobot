@@ -4,28 +4,41 @@ import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import view.components.OutputTextArea;
+import view.taps.TabPane;
 
 /**
  * @author Rasmus Sander Larsen
  */
 public class MainGUI extends Application {
 
-    private static OutputTextArea outputTextArea = new OutputTextArea();
-    private TabPane tabPane = new TabPane();
+    // -------------------------- Fields --------------------------
+
+    private final String WINDOW_TITLE = "7 Solitaire";
+    private final String WINDOW_ICON_PATH = "/game_icon.png";
+
+    private static OutputTextArea outputTextArea;
 
     public static boolean isTesting = true;
+
+    // ----------------------- Constructor -------------------------
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        primaryStage.setTitle("Galgeleg - Ultimate");
+        primaryStage.setTitle(WINDOW_TITLE);
         primaryStage.centerOnScreen();
 
         // Sets Window icon.
-       // primaryStage.getIcons().add(
-       //         new Image(getClass().getResourceAsStream("/forkert6.png")));
+        primaryStage.getIcons().add(
+               new Image(getClass().getResourceAsStream(WINDOW_ICON_PATH)));
         primaryStage.show();
+
+        outputTextArea = new OutputTextArea();
+        printTestStatus();
+        TabPane tabPane = new TabPane();
 
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
@@ -47,28 +60,15 @@ public class MainGUI extends Application {
         primaryStage.setScene(new Scene(splitPane,1000,600));
     }
 
+    //------------------------ Properties -------------------------
+
+    // region Properties
 
 
-    /*
-    -------------------------- Fields --------------------------
-     */
+    // endregion
 
 
-
-    /*
-    ----------------------- Constructor -------------------------
-     */
-
-
-
-    /*
-    ------------------------ Properties -------------------------
-     */
-
-
-    /*
-    ---------------------- Public Methods -----------------------
-     */
+    //---------------------- Public Methods -----------------------
 
     public static void printToOutputAreaNewline (String text) {
         outputTextArea.appendTextNewline(text);
@@ -83,23 +83,11 @@ public class MainGUI extends Application {
         outputTextArea.printDivider();
     }
 
-    //-------------------------- Fields --------------------------
+    //---------------------- Support Methods ----------------------
 
-
-    //----------------------- Constructor -------------------------
-
-
-    //------------------------ Properties -------------------------
-
-    // region Properties
-
-
-    // endregion
-
-    //---------------------- Public Methods -----------------------
-
-
-    //---------------------- Support Methods ----------------------    
-
-
+    private void printTestStatus () {
+        if (isTesting) {
+            printToOutputAreaNewline("**** Testing Mode: ACTIVE ****");
+        }
+    }
 }
