@@ -1,0 +1,2 @@
+I_Controller controller = new Controller;
+controller.getNextMove()
