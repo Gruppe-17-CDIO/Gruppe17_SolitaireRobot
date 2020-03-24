@@ -3,12 +3,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-// ******************************************************
-// IMPORTANT: These tests delete all data in today's log!
-// ******************************************************
+// **********************************
+// IMPORTANT: These tests delete all
+// data in current session's log!
+// **********************************
 
 class CardLoggerTest {
-    int iterations = 1000;
+    int iterations = 100;
 
     @Test
     void logCards() {
