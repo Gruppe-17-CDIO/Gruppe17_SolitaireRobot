@@ -11,8 +11,8 @@ import java.io.File;
 
 public interface I_Controller {
 
-    // 1. Polls Computer vision for a new SolitaireCards
-    // 2. Polls Logic for a new Move
+    // 1. Gets SolitaireCards from ComputerVision
+    // 2. Gets move from logic
     // 3. Returns the recommended Move to GUI.
     Move getNextMove();
 

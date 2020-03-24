@@ -17,7 +17,11 @@ import java.util.List;
  */
 
 public class CardLogger implements I_CardLogger {
-    static final String FILE_PATH = "src/main/resources/SolitaireData_" + new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) + ".json";
+
+    // Filepath for current session with timestamp
+    static final String FILE_PATH = "src/main/resources/SolitaireData_" +
+            new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) +
+            ".json";
 
     @Override
     public synchronized void logCards(SolitaireCards currentGameCards) {
