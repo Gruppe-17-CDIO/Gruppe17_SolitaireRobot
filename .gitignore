@@ -1,2 +1,14 @@
 # Default ignored files
 /.idea/workspace.xml
+
+# Purge the .iml
+*.iml
+
+# All compiled files
+*.class
+
+# All artifacts
+*.jar
+
+# All Personal IDE environment shiet
+/.idea/*
