@@ -5,6 +5,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import view.components.OutputTextArea;
 import view.taps.TabPane;
@@ -21,7 +22,7 @@ public class MainGUI extends Application {
 
     private static OutputTextArea outputTextArea;
 
-    public static boolean isTesting = true;
+    public static boolean isTesting = false;
 
     // ----------------------- Constructor -------------------------
 
@@ -57,7 +58,10 @@ public class MainGUI extends Application {
             }
         });
 
-        primaryStage.setScene(new Scene(splitPane,1000,600));
+        BorderPane mainPane = new BorderPane();
+        mainPane.setCenter(splitPane);
+
+        primaryStage.setScene(new Scene(mainPane,1000,600));
     }
 
     //------------------------ Properties -------------------------

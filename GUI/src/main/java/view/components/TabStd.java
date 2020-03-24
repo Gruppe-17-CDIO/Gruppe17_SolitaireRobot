@@ -90,5 +90,5 @@ public abstract class TabStd extends Tab {
         return new File(folder);
     }
 
-    protected abstract void testMode(boolean isTesting);
+    protected abstract void testMode();
 }

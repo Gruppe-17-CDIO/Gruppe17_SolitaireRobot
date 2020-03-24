@@ -20,11 +20,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import view.MainGUI;
+import view.components.FxUtil;
 import view.components.TabStd;
+import view.components.WebCamManiButton;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -40,10 +47,13 @@ public class CameraSourceTab extends TabStd {
     private Webcam webcam = null;
     private boolean isCameraRunning = true;
     private boolean isWebCamSelected = false;
+    private boolean isWebCamManipulated = false;
     ObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
 
     private ComboBox<Webcam> webCamOptions;
+    protected File selectedDirectory;
     private FlowPane bottomCameraControlPane;
+    private WebCamManiButton webCamManiBtn;
     private Button btnCameraStop;
     private Button btnCameraStart;
     private Button btnCameraDispose;
@@ -56,7 +66,7 @@ public class CameraSourceTab extends TabStd {
         addDropdown();
         addVideoFrame();
         addBottomControlPane();
-        testMode(MainGUI.isTesting);
+        testMode();
     }
 
     //------------------------ Properties -------------------------
@@ -72,6 +82,10 @@ public class CameraSourceTab extends TabStd {
     //---------------------- Support Methods ----------------------    
 
     private void addDropdown() {
+        FlowPane topPane = new FlowPane();
+        topPane.setAlignment(Pos.CENTER);
+        topPane.setHgap(FxUtil.getSpacing());
+
         webCamOptions = new ComboBox<>(FXCollections.observableList(Webcam.getWebcams()));
         webCamOptions.setPromptText(comboBoxPromptText);
         webCamOptions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Webcam>() {
@@ -88,19 +102,25 @@ public class CameraSourceTab extends TabStd {
                 }
             }
         });
-        addToContent(webCamOptions);
+
+        topPane.getChildren().add(webCamOptions);
+        webCamManiBtn = new WebCamManiButton();
+        if (MainGUI.isTesting) {
+            topPane.getChildren().add(webCamManiBtn);
+        }
+        addToContent(topPane);
     }
 
     private void addVideoFrame() {
         BorderPane webCamPane = new BorderPane();
         imgWebCamCapturedImage = new ImageView();
         webCamPane.setCenter(imgWebCamCapturedImage);
-        webCamPane.maxHeight(300);
-        webCamPane.maxWidth(300);
+        webCamPane.maxHeight(400);
+        webCamPane.maxWidth(400);
         webCamPane.setStyle("-fx-background-color: grey;");
 
-        double height = 300;
-        double width = 300;
+        double height = 400;
+        double width = 400;
 
         imgWebCamCapturedImage.setFitHeight(height);
         imgWebCamCapturedImage.setFitWidth(width);
@@ -150,11 +170,6 @@ public class CameraSourceTab extends TabStd {
         Thread webCamThread = new Thread(webCamTask);
         webCamThread.setDaemon(true);
         webCamThread.start();
-
-        bottomCameraControlPane.setDisable(false);
-        btnCameraStart.setDisable(true);
-        btnCameraStart.setDisable(false);
-
     }
 
     protected void startWebCamStream() {
@@ -166,23 +181,27 @@ public class CameraSourceTab extends TabStd {
             @Override
             protected Void call() throws Exception {
 
-                final AtomicReference<WritableImage> ref = new AtomicReference<>();
-                BufferedImage img = null;
-
                 while (isCameraRunning) {
                     try {
-                        if ((img = webcam.getImage()) != null) {
+                        if (webCamManiBtn.isWebCamManipulated()) {
+                            imageProperty.set(webCamManiBtn.imageOfFile());
+                        } else {
+                            final AtomicReference<WritableImage> ref = new AtomicReference<>();
+                            BufferedImage img = null;
 
-                            ref.set(SwingFXUtils.toFXImage(img, ref.get()));
-                            img.flush();
+                            if ((img = webcam.getImage()) != null) {
 
-                            Platform.runLater(new Runnable() {
+                                ref.set(SwingFXUtils.toFXImage(img, ref.get()));
+                                img.flush();
 
-                                @Override
-                                public void run() {
-                                    imageProperty.set(ref.get());
-                                }
-                            });
+                                Platform.runLater(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        imageProperty.set(ref.get());
+                                    }
+                                });
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -255,6 +274,7 @@ public class CameraSourceTab extends TabStd {
     protected void startWebCamCamera() {
         isCameraRunning = true;
         startWebCamStream();
+        bottomCameraControlPane.setDisable(false);
         btnCameraStop.setDisable(false);
         btnCameraStart.setDisable(true);
         if (isWebCamSelected) {
@@ -276,9 +296,12 @@ public class CameraSourceTab extends TabStd {
     }
 
     @Override
-    protected void testMode(boolean isTesting) {
-        if (webCamOptions.getItems().size() != 0) {
-            webCamOptions.getSelectionModel().select(0);
+    protected void testMode() {
+        if (MainGUI.isTesting) {
+            if (webCamOptions.getItems().size() != 0) {
+                webCamOptions.getSelectionModel().select(0);
+            }
         }
     }
+
 }
