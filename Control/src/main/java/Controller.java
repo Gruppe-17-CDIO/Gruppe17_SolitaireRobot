@@ -1,12 +1,3 @@
-package control;
-
-import computerVision.I_ComputerVisionController;
-import logic.I_Logic;
-import repositories.CardLogger;
-import repositories.I_CardLogger;
-import repositories.Move;
-import repositories.SolitaireCards;
-
 import java.io.File;
 
 /**

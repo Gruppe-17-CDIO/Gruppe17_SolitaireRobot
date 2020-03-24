@@ -1,8 +1,3 @@
-package control;
-
-import repositories.Move;
-import repositories.SolitaireCards;
-
 import java.io.File;
 
 /**

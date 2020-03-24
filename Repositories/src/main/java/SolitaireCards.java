@@ -1,5 +1,3 @@
-package repositories;
-
 import java.sql.Timestamp;
 
 // State
