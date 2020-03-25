@@ -13,7 +13,7 @@
         <module>ComputerVision</module>
         <module>Control</module>
         <module>Logic</module>
-        <module>Repositories</module>
+        <module>Data</module>
     </modules>
 
     <properties>
