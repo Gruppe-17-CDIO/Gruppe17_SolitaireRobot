@@ -7,11 +7,11 @@ import java.util.List;
 public interface I_CardLogger {
 
     // Log the current state of the game board 'SolitaireCards'
-    void logCards(SolitaireCards currentGameCards);
+    void logCards(SolitaireState currentGameCards);
 
     // Returns states from this session and previous.
-    List<SolitaireCards> getHistory();
+    List<SolitaireState> getHistory();
 
     // Deletes ALL data on file.
-    void deleteAllData();
+    void deleteCurrentSessionData();
 }

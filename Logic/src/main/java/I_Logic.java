@@ -1,4 +1,4 @@
 public interface I_Logic {
 
-    Move getMove(SolitaireCards cards);
+    Move getMove(SolitaireState cards);
 }

@@ -15,10 +15,10 @@ class CardLoggerTest {
     void logCards() {
         System.out.println("logCards: Writing to file, then reading...");
         CardLogger logger = new CardLogger();
-        logger.deleteAllData();
-        List<SolitaireCards> cardList = new ArrayList<>();
+        logger.deleteCurrentSessionData();
+        List<SolitaireState> cardList = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
-            SolitaireCards cards = new SolitaireCards();
+            SolitaireState cards = new SolitaireState();
             cardList.add(cards);
             //System.out.println("Logging " + (i + 1));
             logger.logCards(cards);
@@ -32,16 +32,16 @@ class CardLoggerTest {
     void getHistory() {
         System.out.println("getHistory: Writing to file, then reading...");
         CardLogger logger = new CardLogger();
-        logger.deleteAllData();
+        logger.deleteCurrentSessionData();
         assert (logger.getHistory().isEmpty());
-        List<SolitaireCards> cardList = new ArrayList<>();
+        List<SolitaireState> cardList = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
-            SolitaireCards cards = new SolitaireCards();
+            SolitaireState cards = new SolitaireState();
             cardList.add(cards);
             logger.logCards(cards);
         }
 
-        List<SolitaireCards> reply = logger.getHistory();
+        List<SolitaireState> reply = logger.getHistory();
 
         for (int i = 0; i < iterations; i++) {
             String t1 = reply.get(i).time;
@@ -54,7 +54,7 @@ class CardLoggerTest {
     @Test
     void deleteData() {
         CardLogger logger = new CardLogger();
-        logger.deleteAllData();
+        logger.deleteCurrentSessionData();
         assert (logger.getHistory().isEmpty());
     }
 }
