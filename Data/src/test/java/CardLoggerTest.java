@@ -1,3 +1,5 @@
+import dataObjects.SolitaireState;
+import logger.CardLogger;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
