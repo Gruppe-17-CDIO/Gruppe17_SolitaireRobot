@@ -2,10 +2,15 @@ package view;
 
 import javafx.application.Application;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import view.components.OutputTextArea;
 import view.taps.TabPane;
@@ -22,7 +27,7 @@ public class MainGUI extends Application {
 
     private static OutputTextArea outputTextArea;
 
-    public static boolean isTesting = false;
+    public static boolean isTesting = true;
 
     // ----------------------- Constructor -------------------------
 

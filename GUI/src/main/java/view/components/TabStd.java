@@ -8,8 +8,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import view.MainGUI;
-import view.components.FxUtil;
 
 import java.io.File;
 

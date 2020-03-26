@@ -117,7 +117,7 @@ public class CameraSourceTab extends TabStd {
         webCamPane.setCenter(imgWebCamCapturedImage);
         webCamPane.maxHeight(400);
         webCamPane.maxWidth(400);
-        webCamPane.setStyle("-fx-background-color: grey;");
+        //webCamPane.setStyle("-fx-background-color: black;-fx-border-color: grey ; -fx-border-width: 5");
 
         double height = 400;
         double width = 400;
@@ -184,7 +184,8 @@ public class CameraSourceTab extends TabStd {
                 while (isCameraRunning) {
                     try {
                         if (webCamManiBtn.isWebCamManipulated()) {
-                            imageProperty.set(webCamManiBtn.imageOfFile());
+                            imageProperty.set(webCamManiBtn.imageOfFile());// Flips the image so it works as a mirror
+                            imgWebCamCapturedImage.setScaleX(1);
                         } else {
                             final AtomicReference<WritableImage> ref = new AtomicReference<>();
                             BufferedImage img = null;
@@ -202,6 +203,8 @@ public class CameraSourceTab extends TabStd {
                                     }
                                 });
                             }
+                            // Flips the image so it works as a mirror
+                            imgWebCamCapturedImage.setScaleX(-1);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -216,8 +219,7 @@ public class CameraSourceTab extends TabStd {
         th.setDaemon(true);
         th.start();
         imgWebCamCapturedImage.imageProperty().bind(imageProperty);
-        // Flips the image so it works as a mirror
-        imgWebCamCapturedImage.setScaleX(-1);
+
     }
 
     private void createCameraControls() {
