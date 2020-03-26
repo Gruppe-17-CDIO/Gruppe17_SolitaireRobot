@@ -1,3 +1,4 @@
+import CV_simulation.TestStateGenerator;
 import dataObjects.SolitaireState;
 import logger.CardLogger;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,18 @@ class CardLoggerTest {
 
     @Test
     void logCards() {
+        TestStateGenerator generator = new TestStateGenerator();
         System.out.println("logCards: Writing to file, then reading...");
         CardLogger logger = new CardLogger();
         logger.deleteCurrentSessionData();
         List<SolitaireState> cardList = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
-            SolitaireState cards = new SolitaireState();
+            SolitaireState cards = null;
+            try {
+                cards = generator.getTestState(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             cardList.add(cards);
             //System.out.println("Logging " + (i + 1));
             logger.logCards(cards);
