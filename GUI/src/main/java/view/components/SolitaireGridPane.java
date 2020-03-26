@@ -1,13 +1,12 @@
 package view.components;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import view.MainGUI;
 import view.components.card.CardUI;
+import view.components.card.SuitEnum;
 
 /**
  * @author Rasmus Sander Larsen
@@ -16,13 +15,18 @@ public class SolitaireGridPane extends GridPane {
 
     //-------------------------- Fields --------------------------
 
+    private final String CARD_OUTLINE = ";-fx-border-color: grey; -fx-border-width: 1; -fx-border-radius: 5";
+
     private final int MAX_WIDTH = 400;
     private final int MAX_HEIGHT = 400;
     private final int HGAP = 3;
     private final int VGAP = 10;
 
     private CardUI deckCardUI;
-
+    private StackPane heartCollection_SP;
+    private StackPane diamondCollection_SP;
+    private StackPane clubCollection_SP;
+    private StackPane spadeCollection_SP;
 
     //----------------------- Constructor -------------------------
 
@@ -48,7 +52,7 @@ public class SolitaireGridPane extends GridPane {
     public void insertCardInCollectionDeck (CardUI cardUI) {
         switch (cardUI.getSuit()) {
             case Heart:
-                add(cardUI,3,0);
+                heartCollection_SP.getChildren().add(cardUI);
                 break;
             case Diamond:
                 add(cardUI,4,0);
@@ -58,6 +62,29 @@ public class SolitaireGridPane extends GridPane {
                 break;
             case Spade:
                 add(cardUI,6,0);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void insertCardInCollectionDeckWithRemove (CardUI cardUI) {
+        switch (cardUI.getSuit()) {
+            case Heart:
+                heartCollection_SP.getChildren().removeAll(heartCollection_SP.getChildren());
+                heartCollection_SP.getChildren().add(cardUI);
+                break;
+            case Diamond:
+                diamondCollection_SP.getChildren().removeAll(diamondCollection_SP.getChildren());
+                diamondCollection_SP.getChildren().add(cardUI);
+                break;
+            case Club:
+                clubCollection_SP.getChildren().removeAll(clubCollection_SP.getChildren());
+                clubCollection_SP.getChildren().add(cardUI);
+                break;
+            case Spade:
+                spadeCollection_SP.getChildren().removeAll(spadeCollection_SP.getChildren());
+                spadeCollection_SP.getChildren().add(cardUI);
                 break;
             default:
                 break;
@@ -88,12 +115,30 @@ public class SolitaireGridPane extends GridPane {
         deckCardUI.showBackside();
         add(deckCardUI,0,0);
 
-        deckCardUI.pressedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        heartCollection_SP = defaultCollectionStackPane();
+        diamondCollection_SP = defaultCollectionStackPane();
+        clubCollection_SP = defaultCollectionStackPane();
+        spadeCollection_SP = defaultCollectionStackPane();
 
-            }
+        add(heartCollection_SP,3,0);
+        add(diamondCollection_SP,4,0);
+        add(clubCollection_SP,5,0);
+        add(spadeCollection_SP,6,0);
+
+        setOnMouseClicked(event -> {
+            MainGUI.printToOutputAreaNewline("HeartCollection Size Before: " + heartCollection_SP.getChildren().size());
+            insertCardInCollectionDeckWithRemove(new CardUI(""+(heartCollection_SP.getChildren().size()+1), SuitEnum.Heart));
+            MainGUI.printToOutputAreaNewline("HeartCollection Size Before: " + heartCollection_SP.getChildren().size());
+            MainGUI.printDivider();
         });
+    }
+
+    private StackPane defaultCollectionStackPane() {
+        StackPane collectionStackPane = new StackPane();
+        collectionStackPane.setStyle(CARD_OUTLINE);
+        collectionStackPane.setMinSize(60,75);
+        collectionStackPane.setMaxSize(60,75);
+        return collectionStackPane;
     }
 
 }

@@ -30,7 +30,7 @@ public class GameTab extends TabStd {
         solitaireGridPane.insetCardInColumn(new CardUI("D", SuitEnum.Club),5);
         solitaireGridPane.insetCardInColumn(new CardUI("8", SuitEnum.Spade),6);
 
-        solitaireGridPane.insertCardInCollectionDeck(new CardUI("A", SuitEnum.Heart));
+        //solitaireGridPane.insertCardInCollectionDeck(new CardUI("A", SuitEnum.Heart));
         solitaireGridPane.insertCardInCollectionDeck(new CardUI("2", SuitEnum.Diamond));
         solitaireGridPane.insertCardInCollectionDeck(new CardUI("A", SuitEnum.Club));
         solitaireGridPane.insertCardInCollectionDeck(new CardUI("3", SuitEnum.Spade));
