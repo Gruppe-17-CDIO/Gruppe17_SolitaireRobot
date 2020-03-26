@@ -1,3 +1,5 @@
+import dataObjects.SolitaireState;
+
 /**
  * @author Erlend
  */

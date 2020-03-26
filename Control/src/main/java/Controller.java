@@ -1,3 +1,8 @@
+import dataObjects.Move;
+import dataObjects.SolitaireState;
+import logger.CardLogger;
+import logger.I_CardLogger;
+
 import java.io.File;
 
 /**

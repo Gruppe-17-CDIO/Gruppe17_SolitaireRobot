@@ -1,5 +1,8 @@
+package logger;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import dataObjects.SolitaireState;
 
 import java.io.FileReader;
 import java.io.FileWriter;

@@ -1,3 +1,7 @@
+package logger;
+
+import dataObjects.SolitaireState;
+
 import java.util.List;
 
 /**
