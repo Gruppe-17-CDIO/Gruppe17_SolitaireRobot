@@ -7,26 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestStateGenerator {
-    SolitaireState state = new SolitaireState();
-    private boolean stockEmpty = true; // Cards to draw, face not visible
-    private List<Card> drawnCards; // Drawn cards, 0 to 3
-    private Card[] foundations = new Card[4]; // Four piles, goal, only top card visible
-    private List<List<Card>> piles; // The seven rows
+    static SolitaireState state = new SolitaireState();
+    static private boolean stockEmpty = true; // Cards to draw, face not visible
+    static private List<Card> drawnCards; // Drawn cards, 0 to 3
+    static private Card[] foundations = new Card[4]; // Four piles, goal, only top card visible
+    static private List<List<Card>> piles; // The seven rows
 
-    public static void main(String[] args) {
-        TestStateGenerator sim = new TestStateGenerator();
-        try {
-
-            SolitaireState privateState = sim.getTestState(1);
-            privateState.printState();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public SolitaireState getTestState(int id) throws Exception {
-        if (id == 1) {
+    public static SolitaireState getTestState(int id) throws Exception {
+        if (id == 0) {
             stockEmpty = false;
             state.setStockEmpty(stockEmpty);
             // Drawn cards
