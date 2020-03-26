@@ -7,9 +7,9 @@ package dataObjects;
  */
 
 public class Card {
-
     private int rank;
     private Suit suit;
+    private Status status;
 
     /*
     Constructor for testing
@@ -20,19 +20,31 @@ public class Card {
         }
         this.suit = suit;
         this.rank = rank;
+        this.status = Status.FACEUP;
+    }
+
+    public Card(Status status) {
+        this.status = status;
     }
 
     // RED OR BLACK!
     public CardColor getColor() {
-        return suit == Suit.SPADES || suit == Suit.CLUBS ? CardColor.BLACK : CardColor.RED;
+        return suit == Suit.SPADE || suit == Suit.CLUB ? CardColor.BLACK : CardColor.RED;
     }
 
     public Suit getSuit() {
         return suit;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public String toString() {
-        return suit.toString().substring(0, 4) + " " + rank;
+        if (this.status == Status.FACEDOWN) {
+            return status + "";
+        }
+        return suit + " " + rank;
     }
 
     /*
@@ -58,15 +70,20 @@ public class Card {
     }
 
     public enum Suit {
-        SPADES,
-        HEARTS,
-        DIAMONDS,
-        CLUBS,
+        SPADE,
+        HEART,
+        DIAMOND,
+        CLUB,
+    }
+
+    public enum Status {
+        FACEDOWN,
+        FACEUP
     }
 
     public enum CardColor {
         RED,
-        BLACK
+        BLACK,
     }
 
 }

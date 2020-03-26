@@ -1,5 +1,7 @@
 package dataObjects;
 
+import utilities.StatePrinterUtility;
+
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -63,5 +65,10 @@ public class SolitaireState {
     public void addRowToPile(List<Card> row) {
         piles.add(row);
     }
+
+    public void printState() {
+        StatePrinterUtility.printState(this);
+    }
+
 }
 

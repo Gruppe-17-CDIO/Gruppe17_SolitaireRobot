@@ -1,18 +1,13 @@
-package CV_simulation;
+package utilities;
 
 import dataObjects.Card;
 import dataObjects.SolitaireState;
 
 import java.util.List;
 
-public class StatePrinter {
+public class StatePrinterUtility {
     static final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
     static final String empty = "            ";
-
-    public static void main(String[] args) {
-        SolitaireState state = new SolitaireState();
-        printState(state);
-    }
 
     /**
      * Method to print state to terminal (readable)
@@ -85,10 +80,10 @@ public class StatePrinter {
                     line[j] = empty;
                 } else if (piles.get(j).size() < i + 1) {
                     line[j] = empty;
+                } else if (piles.get(j).get(i).getStatus() == Card.Status.FACEDOWN) {
+                    line[j] = faceDown;
                 } else if (piles.get(j).get(i) != null) {
                     line[j] = piles.get(j).get(i).toString();
-                } else {
-                    line[j] = faceDown;
                 }
             }
             printRow(line);
