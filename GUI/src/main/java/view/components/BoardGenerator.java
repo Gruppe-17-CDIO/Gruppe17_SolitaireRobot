@@ -11,13 +11,22 @@ import view.MainGUI;
 
 public class BoardGenerator {
     private final int DEFAULT_SPACING = 5;
+    private final String STD_DECK_STYLE = "-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5; " +
+            "-fx-background-color: darkblue; -fx-background-insets: 3; -fx-background-radius: 5;";
+    private final String STD_TURNED_CARD_STYLE = "-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5; " +
+            "-fx-background-color: white; -fx-background-insets: 1; -fx-background-radius: 5";
+    private final String STD_MISSING_CARD_STYLE = "-fx-border-color: lightgrey; -fx-border-width: 1; -fx-border-radius: 5;";
+
     private VBox board;
     private HBox top, topLeft, topRight, bottom;
 
     // card 0-1 is deck and turned deck cards, 2-5 is the top right ace cards and 5-12 is the bottom cards
     private VBox[] cardBox;
     private Text[] cardValue;
-    private ImageView[] cardSuit;
+    private String[] suitString = {"","","","","","","","","","","","",""};
+    private ImageView[] cardSuitImg;
+    private VBox[] highlightedCardBox = new VBox[2];
+    private String[] highlightedCardStyle = new String[2];
 
     public BoardGenerator() {
         board = new VBox();
@@ -28,7 +37,7 @@ public class BoardGenerator {
 
         cardBox = new VBox[13];
         cardValue = new Text[13];
-        cardSuit = new ImageView[13];
+        cardSuitImg = new ImageView[13];
 
         board.setSpacing(20);
         top.setSpacing(DEFAULT_SPACING);
@@ -44,12 +53,11 @@ public class BoardGenerator {
             cardBox[i] = new VBox();
             cardBox[i].setMinSize(75, 100);
             cardBox[i].setPadding(new Insets(5, 5, 5, 5));
-            cardBox[i].setStyle("-fx-border-color: lightgrey; -fx-border-width: 1; -fx-border-radius: 5;");
+            cardBox[i].setStyle(STD_MISSING_CARD_STYLE);
 
             if (i == 0) {
                 // The deck (card backside style is set here)
-                cardBox[i].setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5;" +
-                        "-fx-background-color: darkred; -fx-background-insets: 3; -fx-background-radius: 5;");
+                cardBox[i].setStyle(STD_DECK_STYLE);
                 topLeft.getChildren().addAll(cardBox[i]);
             } else if (i == 1) {
                 // The turned deck card
@@ -75,13 +83,13 @@ public class BoardGenerator {
             cardValue[i] = new Text();
             textAlignment.setCenter(cardValue[i]);
 
-            cardSuit[i] = new ImageView();
-            cardSuit[i].setPreserveRatio(true);
-            cardSuit[i].setFitHeight(15);
-            cardSuit[i].setFitWidth(15);
+            cardSuitImg[i] = new ImageView();
+            cardSuitImg[i].setPreserveRatio(true);
+            cardSuitImg[i].setFitHeight(15);
+            cardSuitImg[i].setFitWidth(15);
 
             // Adding the value text and suit image to the card's box
-            cardContentAlignment.getChildren().addAll(textAlignment, cardSuit[i]);
+            cardContentAlignment.getChildren().addAll(textAlignment, cardSuitImg[i]);
             cardBox[i].getChildren().addAll(cardContentAlignment);
 
         } /* VBox card setup end */
@@ -98,25 +106,86 @@ public class BoardGenerator {
     public VBox addCard(int cardPlacement, String value, String suit) {
         // Input handling
         if (cardPlacement < 1 || cardPlacement > 12) {
-            MainGUI.printToOutputAreaNewline("Incorrect index: " + cardPlacement + ", try again");
+            System.out.println("[ERROR] Incorrect index: " + cardPlacement + ", try again");
             return board;
         }
         if (!(suit.equals("club") || suit.equals("diamond") || suit.equals("heart") || suit.equals("spade"))) {
-            MainGUI.printToOutputAreaNewline("Unknown suit type: " + suit + ", try again");
+            System.out.println("[ERROR] Unknown suit type: " + suit + ", try again");
             return board;
         }
 
         // Styling of the card
-        cardBox[cardPlacement].setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5;" +
-                "-fx-background-color: white; -fx-background-insets: 1; -fx-background-radius: 5;");
+        cardBox[cardPlacement].setStyle(STD_TURNED_CARD_STYLE);
 
         // The text showing the card's value
         cardValue[cardPlacement].setText(value);
 
         // The image showing the card's suit
-        cardSuit[cardPlacement].setImage(new Image(getClass().getResourceAsStream("/" + suit + "24.png")));
+        suitString[cardPlacement] = suit;
+        cardSuitImg[cardPlacement].setImage(new Image(getClass().getResourceAsStream("/" + suit + "24.png")));
 
         return board;
+    }
+
+    public void highlightMove(int moveFromPlacement, int moveToPlacement) {
+        if (moveFromPlacement < 0 || moveFromPlacement > 12 || moveToPlacement < 1 || moveToPlacement > 12) {
+            System.out.println("[ERROR] Incorrect move attempt. Tried moving: " +
+                    moveFromPlacement + " to " + moveToPlacement);
+
+            clearHighligt();
+            return;
+        }
+
+        // Return the previously hightlighted cards to their original look
+        clearHighligt();
+
+        // Save their styles so they can be returned to their original looks
+        highlightedCardBox[0] = cardBox[moveFromPlacement];
+        highlightedCardStyle[0] = cardBox[moveFromPlacement].getStyle();
+        highlightedCardBox[1] = cardBox[moveToPlacement];
+        highlightedCardStyle[1] = cardBox[moveToPlacement].getStyle();
+
+        // Change the style of the cards to highlight
+        if (cardBox[moveFromPlacement].getStyle().equals(STD_DECK_STYLE)) {
+            cardBox[moveFromPlacement].setStyle("-fx-border-color: green; -fx-border-width: 2; -fx-border-radius: 5;" +
+                    "-fx-background-color: darkblue; -fx-background-insets: 3; -fx-background-radius: 5;");
+        } else if (cardBox[moveFromPlacement].getStyle().equals(STD_TURNED_CARD_STYLE)) {
+            cardBox[moveFromPlacement].setStyle("-fx-border-color: green; -fx-border-width: 2; -fx-border-radius: 5;" +
+                    "-fx-background-color: white; -fx-background-insets: 1; -fx-background-radius: 5");
+        } else {
+            // For STD_MISSING_CARD_STYLE
+            cardBox[moveFromPlacement].setStyle("-fx-border-color: green; -fx-border-width: 2; -fx-border-radius: 5;");
+        }
+
+        if (cardBox[moveToPlacement].getStyle().equals(STD_DECK_STYLE)) {
+            cardBox[moveToPlacement].setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-radius: 5;" +
+                    "-fx-background-color: darkblue; -fx-background-insets: 3; -fx-background-radius: 5;");
+        } else if (cardBox[moveToPlacement].getStyle().equals(STD_TURNED_CARD_STYLE)) {
+            cardBox[moveToPlacement].setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-radius: 5;" +
+                    "-fx-background-color: white; -fx-background-insets: 1; -fx-background-radius: 5");
+        } else {
+            // For STD_MISSING_CARD_STYLE
+            cardBox[moveToPlacement].setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-radius: 5;");
+        }
+
+        if (!(cardValue[moveFromPlacement].getText().equals("") || cardValue[moveFromPlacement].getText().equals(""))) {
+            MainGUI.printToOutputAreaNewline("Move " + cardValue[moveFromPlacement].getText() + " of " +
+                    suitString[moveFromPlacement] + "s (GREEN)" + " to " + cardValue[moveToPlacement].getText() + " of " +
+                    suitString[moveToPlacement] + "s (RED)");
+        } else {
+            MainGUI.printToOutputAreaNewline("Move green to red");
+        }
+    }
+
+    // Return the previously hightlighted cards to their original look
+    public void clearHighligt() {
+        for (int i = 0; i < highlightedCardBox.length; i++) {
+            if (highlightedCardBox[i] != null) {
+                highlightedCardBox[i].setStyle(highlightedCardStyle[i]);
+                highlightedCardBox[i] = null;
+                highlightedCardStyle[i] = null;
+            }
+        }
     }
 
 }

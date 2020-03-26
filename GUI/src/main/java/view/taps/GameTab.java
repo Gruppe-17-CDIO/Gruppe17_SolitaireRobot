@@ -43,15 +43,24 @@ public class GameTab extends TabStd {
                     testTimer.schedule(new TimerTask() {
                         @Override
                         public void run() {
+                            cg.clearHighligt();
+
                             int randomPlacement = (int)(Math.random() * 16 - 2); // Tests range -1 to 13
                             int randomCardValue = (int)(Math.random() * 14); // Tests range 0 to 13
                             int randomCardSuit = (int)(Math.random() * 5); // Tests range 0 to 4
 
-                            MainGUI.printToOutputAreaNewline("Automatically adding random card: "
-                                    + testValues[randomCardValue] + " of " + testSuits[randomCardSuit]
-                                    + " at placement: " + randomPlacement);
+                            System.out.println("[INFO] Automatically adding random card: " +
+                                    testValues[randomCardValue] + " of " + testSuits[randomCardSuit] +
+                                    " at placement: " + randomPlacement);
 
                             cg.addCard(randomPlacement, testValues[randomCardValue], testSuits[randomCardSuit]);
+
+                            // Random movement highligt
+                            int randomPlacement2 = (int)(Math.random() * 16 - 2);
+                            int randomPlacement3 = (int)(Math.random() * 16 - 2);
+                            System.out.println("[INFO] Highlighting placements: " +
+                                    randomPlacement2 + " to " + randomPlacement3);
+                            cg.highlightMove(randomPlacement2, randomPlacement3);
                         }
                     }, 0, 250);
 
