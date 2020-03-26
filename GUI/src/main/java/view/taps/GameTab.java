@@ -14,23 +14,8 @@ public class GameTab extends TabStd {
                 "",
                 "");
 
-        /*
-        HBox outer = new HBox();
-        outer.setSpacing(10);
-
-        String[] testValues = {"5", "K", "A", "9", "2", "J", "10"};
-        String[] testSuit = {"spade", "diamond", "diamond", "spade", "club", "heart", "diamond"};
-
         CardGenerator cg = new CardGenerator();
-        ArrayList<VBox> cards = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            cards.add(cg.makeCard(testValues[i],testSuit[i]));
-        }
-
-        outer.getChildren().addAll(cards);
-        */
-
-        CardGenerator cg = new CardGenerator();
+        cg.addCard(6, "J", "heart");
         addAllToContent(cg.getBoard());
     }
 

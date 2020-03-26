@@ -67,7 +67,39 @@ public class CardGenerator {
         return board;
     }
 
+    // TODO: This method is not completely finished yet
+    public VBox addCard(int cardPlacement, String value, String suit) {
+        // Input handling
+        if (cardPlacement < 0 || cardPlacement > 12) {
+            System.out.println("Incorrect index, try again");
+            return board;
+        }
+        if (!(suit.equals("club") || suit.equals("diamond") || suit.equals("heart") || suit.equals("spade"))) {
+            System.out.println("Unknown suit type, try again");
+            return board;
+        }
 
+        cards[cardPlacement].setStyle("-fx-background-color: white;-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5");
+
+        // The card's value in text packed in a vbox
+        Text textValue = new Text(value);
+        textValue.setFont(FxUtil.fontDefault(13));
+
+        // The card's suit
+        ImageView imgSuit = new ImageView();
+        imgSuit.setImage(new Image(getClass().getResourceAsStream("/" + suit + "24.png")));
+        imgSuit.setPreserveRatio(true);
+        imgSuit.setFitHeight(15);
+        imgSuit.setFitWidth(15);
+
+        VBox textBox = new VBox();
+        textBox.getChildren().addAll(textValue, imgSuit);
+
+        // Adding value and suit to the card's box
+        cards[cardPlacement].getChildren().addAll(textBox);
+
+        return board;
+    }
 
 
 
