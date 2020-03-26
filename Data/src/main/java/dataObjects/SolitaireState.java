@@ -1,7 +1,6 @@
 package dataObjects;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /* State
@@ -14,9 +13,9 @@ public class SolitaireState {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private boolean stockEmpty = true; // Cards to draw, face not visible
-    private List<SolitaireCard> drawnCards; // Drawn cards, 0 to 3
-    private SolitaireCard[] foundations = new SolitaireCard[4]; // Four piles, goal, only top card visible
-    private List<List<SolitaireCard>> piles; // The seven rows
+    private List<Card> drawnCards; // Drawn cards, 0 to 3
+    private Card[] foundations = new Card[4]; // Four piles, goal, only top card visible
+    private List<List<Card>> piles; // The seven rows
 
     public boolean isStockEmpty() {
         return stockEmpty;
@@ -27,33 +26,33 @@ public class SolitaireState {
         this.stockEmpty = stockEmpty;
     }
 
-    public List<SolitaireCard> getDrawnCards() {
+    public List<Card> getDrawnCards() {
         return drawnCards;
     }
 
-    public void setDrawnCards(ArrayList<SolitaireCard> drawnCards) throws Exception {
+    public void setDrawnCards(List<Card> drawnCards) throws Exception {
         if (drawnCards.size() > 3) {
             throw new Exception("Too many (visible) cards drawn: " + drawnCards.size() + ".");
         }
         this.drawnCards = drawnCards;
     }
 
-    public SolitaireCard[] getFoundations() {
+    public Card[] getFoundations() {
         return foundations;
     }
 
-    public void setFoundations(SolitaireCard[] foundations) throws Exception {
+    public void setFoundations(Card[] foundations) throws Exception {
         if (foundations.length != 4) {
             throw new Exception("Should always be four foundations (including empty piles), was " + foundations.length + ".");
         }
         this.foundations = foundations;
     }
 
-    public List<List<SolitaireCard>> getPiles() {
+    public List<List<Card>> getPiles() {
         return piles;
     }
 
-    public void setPiles(List<List<SolitaireCard>> piles) throws Exception {
+    public void setPiles(List<List<Card>> piles) throws Exception {
         if (piles.size() != 7) {
             throw new Exception("Should always be seven piles (including empty piles), was " + piles.size() + ".");
         }
@@ -61,7 +60,7 @@ public class SolitaireState {
     }
 
     // Add one row to pile at a time.
-    public void addRowToPile(List<SolitaireCard> row) {
+    public void addRowToPile(List<Card> row) {
         piles.add(row);
     }
 }

@@ -6,7 +6,7 @@ package dataObjects;
  * @author Andreas
  */
 
-public class SolitaireCard {
+public class Card {
 
     private int rank;
     private Suit suit;
@@ -14,7 +14,7 @@ public class SolitaireCard {
     /*
     Constructor for testing
     */
-    public SolitaireCard(Suit suit, int rank) throws Exception {
+    public Card(Suit suit, int rank) throws Exception {
         if (rank < 0 || rank > 13) {
             throw new Exception("Invalid card: " + rank + " " + suit + ". Use 1 to 13.");
         }
@@ -32,7 +32,7 @@ public class SolitaireCard {
     }
 
     public String toString() {
-        return suit + " " + rank;
+        return suit.toString().substring(0, 4) + " " + rank;
     }
 
     /*
