@@ -1,0 +1,38 @@
+|‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
+|  Build-a-state  |
+|_________________|
+
+A Hashtag tells the compiler that the next line should be read and parsed.
+Cards are comma separated, and the exact spelling is important for parsing.
+Note that an empty pile (the 7 columns) is annotated as a blank line.
+
+# Stock (draw pile) is empty (true / false)
+false
+
+# Cards drawn
+HEART 1, CLUB 8, SPADE 7
+
+# Cards in foundation
+SPADE 1
+
+# Pile 1 (from left)
+HEART 13
+
+# Pile 2
+FACEDOWN, CLUB 6
+
+# Pile 3
+FACEDOWN, FACEDOWN, DIAMOND 5
+
+# Pile 4
+FACEDOWN, FACEDOWN, FACEDOWN, SPADE 12, DIAMOND 11, CLUB 10, HEART 9
+
+# Pile 5
+FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, CLUB 5, HEART 4
+
+# Pile 6
+FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, CLUB 2
+
+# Pile 7
+FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, HEART 3,
+
