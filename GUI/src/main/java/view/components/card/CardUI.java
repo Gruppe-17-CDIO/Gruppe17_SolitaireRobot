@@ -56,6 +56,10 @@ public class CardUI extends VBox {
         return suit;
     }
 
+    public String getValue() {
+        return value;
+    }
+
     public boolean isFrontShowing() {
         return isFrontShowing;
     }

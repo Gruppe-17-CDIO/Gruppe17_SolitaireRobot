@@ -125,9 +125,16 @@ public class SolitaireGridPane extends GridPane {
         add(clubCollection_SP,5,0);
         add(spadeCollection_SP,6,0);
 
+        //TODO Method just created to check insertCardInCollectionWithRemove()
         setOnMouseClicked(event -> {
-            MainGUI.printToOutputAreaNewline("HeartCollection Size Before: " + heartCollection_SP.getChildren().size());
-            insertCardInCollectionDeckWithRemove(new CardUI(""+(heartCollection_SP.getChildren().size()+1), SuitEnum.Heart));
+            int heartCollectionSizeBefore = heartCollection_SP.getChildren().size();
+            MainGUI.printToOutputAreaNewline("HeartCollection Size Before: " + heartCollectionSizeBefore);
+            if (heartCollectionSizeBefore == 0) {
+                insertCardInCollectionDeckWithRemove(new CardUI("1", SuitEnum.Heart));
+            } else {
+                int topCardUIValue = Integer.parseInt(((CardUI) heartCollection_SP.getChildren().get(0)).getValue());
+                insertCardInCollectionDeckWithRemove(new CardUI(String.valueOf(++topCardUIValue),SuitEnum.Heart));
+            }
             MainGUI.printToOutputAreaNewline("HeartCollection Size Before: " + heartCollection_SP.getChildren().size());
             MainGUI.printDivider();
         });
