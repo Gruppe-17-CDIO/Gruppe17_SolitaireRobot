@@ -22,7 +22,7 @@ public class MainGUI extends Application {
 
     private static OutputTextArea outputTextArea;
 
-    public static boolean isTesting = false;
+    public static boolean isTesting = true;
 
     // ----------------------- Constructor -------------------------
 
@@ -43,12 +43,12 @@ public class MainGUI extends Application {
 
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
-        splitPane.setDividerPositions(500);
+        splitPane.setDividerPositions(600);
         splitPane.getItems().addAll(tabPane, outputTextArea);
 
-        outputTextArea.setMinWidth(500);
+        outputTextArea.setMinWidth(400);
         outputTextArea.setEditable(false);
-        tabPane.setMinWidth(500);
+        tabPane.setMinWidth(600);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 Runnable updater = (Runnable) newValue.getUserData();
