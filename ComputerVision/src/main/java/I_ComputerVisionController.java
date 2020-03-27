@@ -1,5 +1,7 @@
 import dataObjects.SolitaireState;
 
+import java.io.File;
+
 /**
  * @author Erlend
  */
@@ -7,5 +9,6 @@ import dataObjects.SolitaireState;
 public interface I_ComputerVisionController {
 
     // Return the whole table of cards as a SolitaireCards object to the controller.
-    SolitaireState getSolitaireCards();
+    // (Image format is not decided, file is just an example.)
+    SolitaireState getSolitaireCards(File img);
 }

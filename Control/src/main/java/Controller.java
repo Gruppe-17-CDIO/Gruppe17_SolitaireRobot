@@ -1,3 +1,4 @@
+import CV_simulation.StateGenerator;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import logger.CardLogger;
@@ -14,8 +15,9 @@ public class Controller implements I_Controller {
     private I_ComputerVisionController CV_Controller; // Instantiate
     private SolitaireState cards;
 
-    public Move getNextMove(File img) {
-        cards = CV_Controller.getSolitaireCards();
+    public Move getNextMove(File img) throws Exception {
+        //cards = CV_Controller.getSolitaireCards(img);
+        cards = StateGenerator.getState(0);
         logger.logCards(cards);
         return logic.getMove(cards);
     }

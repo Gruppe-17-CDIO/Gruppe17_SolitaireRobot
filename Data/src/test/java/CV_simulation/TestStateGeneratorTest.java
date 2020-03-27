@@ -7,12 +7,12 @@ class TestStateGeneratorTest {
 
     @Test
     void getTestState() {
-        int iterations = 1;
+        int iterations = 2;
         for (int i = 0; i < iterations; i++) {
             SolitaireState state = null;
             try {
-                state = TestStateGenerator.getTestState(0);
-                state.printState();
+                state = StateGenerator.getState(i);
+                System.out.println(state.getPrintFormat());
             } catch (Exception e) {
                 e.printStackTrace();
             }

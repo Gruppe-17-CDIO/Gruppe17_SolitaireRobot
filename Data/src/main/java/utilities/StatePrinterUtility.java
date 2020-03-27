@@ -6,18 +6,21 @@ import dataObjects.SolitaireState;
 import java.util.List;
 
 public class StatePrinterUtility {
-    static final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
-    static final String empty = "            ";
+    final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
+    final String empty = "            ";
+    private StringBuilder result = new StringBuilder();
 
     /**
      * Method to print state to terminal (readable)
      *
-     * @param state
+     * @param state the state to print.
      */
-    public static void printState(SolitaireState state) {
+    public String getPrintFormat(SolitaireState state) throws Exception {
         String[] line = new String[7]; // Table is 7 lines wide.
-        String item = "";
 
+        String item;
+
+        System.out.println("SolitaireState ID:" + state.time);
 
         // Decoration
         for (int i = 0; i < 7; i++) {
@@ -52,7 +55,9 @@ public class StatePrinterUtility {
         // Drawn cards
         List<Card> drawn = state.getDrawnCards();
         for (int i = 0; i < 3; i++) {
-            if (drawn.get(i) == null) {
+            if (drawn.isEmpty()) {
+                line[i] = empty;
+            } else if (drawn.get(i) == null) {
                 line[i] = empty;
             } else {
                 line[i] = drawn.get(i).toString();
@@ -60,12 +65,12 @@ public class StatePrinterUtility {
         }
 
         // Foundations
-        Card[] foundations = state.getFoundations();
-        for (int i = 0; i < 4; i++) {
-            if (foundations[i] == null) {
+        List<Card> foundations = state.getFoundations();
+        for (int i = 0; i < foundations.size(); i++) {
+            if (foundations.get(i) == null) {
                 line[i + 3] = empty;
             } else {
-                line[i + 3] = foundations[i].toString();
+                line[i + 3] = foundations.get(i).toString();
             }
         }
         printRow(line);
@@ -78,15 +83,27 @@ public class StatePrinterUtility {
             for (int j = 0; j < 7; j++) { // Loop reverted, outer loop is rows
                 if (piles.get(j) == null) {
                     line[j] = empty;
-                } else if (piles.get(j).size() < i + 1) {
+                } else if (piles.get(j).size() - 1 < i || piles.get(j).get(i) == null) {
                     line[j] = empty;
                 } else if (piles.get(j).get(i).getStatus() == Card.Status.FACEDOWN) {
                     line[j] = faceDown;
                 } else if (piles.get(j).get(i) != null) {
                     line[j] = piles.get(j).get(i).toString();
+                } else {
+                    throw new Exception("Bad input: " + piles.get(j).get(i).toString() + ".");
                 }
             }
-            printRow(line);
+            // Ignore empty lines
+            boolean print = false;
+            for (String s : line) {
+                if (!s.equals(empty)) {
+                    print = true;
+                    break;
+                }
+            }
+            if (print) {
+                printRow(line);
+            }
         }
 
         printEmptyRow();
@@ -96,22 +113,19 @@ public class StatePrinterUtility {
         }
         printRow(line);
 
+        return result.toString();
     }
 
-    private static void printRow(String[] s) {
+    private void printRow(String[] s) {
         String line = "";
         for (int i = 0; i < 7; i++) {
             line += String.format("%-" + 16 + "s", s[i]);
         }
-        System.out.println(line);
+        result.append(line + "\n");
     }
 
-    private static void printEmptyRow() {
-        String[] line = new String[7];
-        for (int i = 0; i < 7; i++) {
-            line[i] = empty;
-        }
-        printRow(line);
+    private void printEmptyRow() {
+        result.append("\n");
     }
 }
 

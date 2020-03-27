@@ -1,9 +1,21 @@
 package dataObjects;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This class represent a single card-object.
+ * <p>
+ * There are two constructors:
+ * 1. Constructor for a card with face up, which takes suit and rank as arguments.
+ * 2. Constructor for a card that lies facedown on the table. This takes the argument 'Card.Status.FACEDOWN'.
+ * <p>
+ * A card should always be tested for status (myCard.getStatus() == Card.Status.FACEUP) before asking suit
+ * and rank, or you could get a nullpointer exception.
+ * <p>
+ * There are return methods for 'suit', 'rank', and 'color'. Remember that color is not rank, color is red
+ * or black.
  *
- * @author Andreas
+ * @author Andreas & Erlend
  */
 
 public class Card {
@@ -14,8 +26,8 @@ public class Card {
     /*
     Constructor for testing
     */
-    public Card(Suit suit, int rank) throws Exception {
-        if (rank < 0 || rank > 13) {
+    public Card(@NotNull Suit suit, int rank) throws Exception {
+        if (rank < 1 || rank > 13) {
             throw new Exception("Invalid card: " + rank + " " + suit + ". Use 1 to 13.");
         }
         this.suit = suit;
@@ -23,7 +35,7 @@ public class Card {
         this.status = Status.FACEUP;
     }
 
-    public Card(Status status) {
+    public Card(@NotNull Status status) {
         this.status = status;
     }
 
@@ -53,7 +65,7 @@ public class Card {
    */
     public int GetNextRank() throws Exception {
         if (rank >= 13) {
-            throw new Exception("Asked card for a card rank that doesn't exist " + rank + ".");
+            throw new Exception("Asked card for a rank that doesn't exist " + rank + ".");
         }
         return rank + 1;
     }
@@ -64,7 +76,7 @@ public class Card {
      */
     public int GetPreviousRank() throws Exception {
         if (rank <= 1) {
-            throw new Exception("Asked card for a card rank that doesn't exist " + rank + ".");
+            throw new Exception("Asked card for a crank that doesn't exist " + rank + ".");
         }
         return rank - 1;
     }
