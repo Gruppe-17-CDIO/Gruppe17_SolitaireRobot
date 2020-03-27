@@ -12,7 +12,7 @@ import java.util.List;
 // **********************************
 
 class CardLoggerTest {
-    int iterations = 100;
+    int iterations = 1000;
 
     @Test
     void logCards() {

@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class StateGenerator {
     static final String PATH = "src/main/resources/builderFiles/build-a-state_";
@@ -99,7 +100,7 @@ public class StateGenerator {
      * @param id id of the file to read
      * @return list of token lists
      */
-    static String[][] readBuilderFile(int id) {
+    static String[][] readBuilderFile(int id) throws Exception {
         SolitaireState state = new SolitaireState();
         String[][] data = new String[12][];
         int i = 0;
@@ -111,8 +112,16 @@ public class StateGenerator {
             while (line != null) {
                 //System.out.println(line);
                 if (line.length() != 0 && line.substring(0, 1).equals("#")) {
+                    // If line starts with #, parse next line
                     line = reader.readLine();
                     String[] lines = line.split(",");
+                    // Simple regex match for valid cards.
+                    String regex = "((HEART|SPADE|CLUB|DIAMOND)) \\d+|FACEDOWN|true|false|";
+                    for (String s : lines) {
+                        if (!Pattern.matches(regex, s.trim())) {
+                            throw new Exception("Bad formatting: '" + s.trim() + "'.");
+                        }
+                    }
                     data[i++] = lines; // Beware, these are not trimmed!
                 }
                 // read next line
