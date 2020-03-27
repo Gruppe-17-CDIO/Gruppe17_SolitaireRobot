@@ -6,18 +6,21 @@ import dataObjects.SolitaireState;
 import java.util.List;
 
 public class StatePrinterUtility {
-    static final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
-    static final String empty = "            ";
+    final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
+    final String empty = "            ";
+    private StringBuilder result = new StringBuilder();
 
     /**
      * Method to print state to terminal (readable)
      *
      * @param state the state to print.
      */
-    public static void printState(SolitaireState state) throws Exception {
+    public String getPrintFormat(SolitaireState state) throws Exception {
         String[] line = new String[7]; // Table is 7 lines wide.
+
         String item;
 
+        System.out.println("SolitaireState ID:" + state.time);
 
         // Decoration
         for (int i = 0; i < 7; i++) {
@@ -110,22 +113,19 @@ public class StatePrinterUtility {
         }
         printRow(line);
 
+        return result.toString();
     }
 
-    private static void printRow(String[] s) {
+    private void printRow(String[] s) {
         String line = "";
         for (int i = 0; i < 7; i++) {
             line += String.format("%-" + 16 + "s", s[i]);
         }
-        System.out.println(line);
+        result.append(line + "\n");
     }
 
-    private static void printEmptyRow() {
-        String[] line = new String[7];
-        for (int i = 0; i < 7; i++) {
-            line[i] = empty;
-        }
-        printRow(line);
+    private void printEmptyRow() {
+        result.append("\n");
     }
 }
 

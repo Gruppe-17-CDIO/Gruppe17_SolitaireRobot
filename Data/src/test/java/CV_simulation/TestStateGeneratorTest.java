@@ -12,7 +12,7 @@ class TestStateGeneratorTest {
             SolitaireState state = null;
             try {
                 state = StateGenerator.getState(i);
-                state.printState();
+                System.out.println(state.getPrintFormat());
             } catch (Exception e) {
                 e.printStackTrace();
             }

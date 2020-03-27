@@ -81,14 +81,15 @@ public class SolitaireState {
         this.piles = piles;
     }
 
+
     // Add one row to pile at a time.
     public void addRowToPile(@NotNull List<Card> row) {
         piles.add(row);
     }
 
-    public void printState() throws Exception {
-        // Prints a human readable version of this class.
-        StatePrinterUtility.printState(this);
+    public String getPrintFormat() throws Exception {
+        // Returns human readable version of this class.
+        return new StatePrinterUtility().getPrintFormat(this);
     }
 
 }
