@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class Card {
-    private int rank;
-    private Suit suit;
     private Status status;
+    private Suit suit;
+    private int rank;
 
     /*
     Constructor for testing
@@ -39,18 +39,23 @@ public class Card {
         this.status = status;
     }
 
-    // RED OR BLACK!
-    public CardColor getColor() {
-        return suit == Suit.SPADE || suit == Suit.CLUB ? CardColor.BLACK : CardColor.RED;
+    public Status getStatus() {
+        return status;
     }
 
     public Suit getSuit() {
         return suit;
     }
 
-    public Status getStatus() {
-        return status;
+    public int getRank() {
+        return rank;
     }
+
+    // RED OR BLACK!
+    public CardColor getColor() {
+        return suit == Suit.SPADE || suit == Suit.CLUB ? CardColor.BLACK : CardColor.RED;
+    }
+
 
     public String toString() {
         if (this.status == Status.FACEDOWN) {

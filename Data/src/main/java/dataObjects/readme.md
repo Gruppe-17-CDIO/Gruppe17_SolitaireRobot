@@ -1,5 +1,7 @@
 # Data Objects
 
+![](../../resources/class-solitaire-card.png)
+
 ## SolitaireState
 This object is used to store the whole deck of cards as displayed on the table. All the following fields must be set:
 

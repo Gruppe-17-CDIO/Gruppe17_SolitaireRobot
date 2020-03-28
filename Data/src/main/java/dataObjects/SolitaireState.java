@@ -87,6 +87,10 @@ public class SolitaireState {
         piles.add(row);
     }
 
+    public String toString() {
+        return time;
+    }
+
     public String getPrintFormat() throws Exception {
         // Returns human readable version of this class.
         return new StatePrinterUtility().getPrintFormat(this);
