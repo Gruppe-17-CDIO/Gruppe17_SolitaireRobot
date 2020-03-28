@@ -1,22 +1,12 @@
 # Data Objects
 
-![](../../resources/class-solitaire-card.png)
-
-## SolitaireState
-This object is used to store the whole deck of cards as displayed on the table. All the following fields must be set:
-
-| Field | Type | Use |
-|---|---|---|
-| stockEmpty | boolean | To check if there are cards left to draw.
-| drawnCards | List of Cards. Max size: 3. | The 0-3 cards currently drawn. |
-| foundations | List of Cards. Max size: 3.| Goal for the sorted cards. Values can be null|
-| piles | List of Lists of Cards. Size: 7. | The 7 columns. Values can be empty lists.|
-
-There are getters and setters for all fields. Some basic tests for validity are built-in. Some null values will raise exceptions, and the size ranges are enforced.
-
-The `toString()` method returns the ID of the SolitaireState. 
-
-To get a printable State in readable format, call `getPrintFormat()`.
+## Summary
+Cards are created like this ```new Card(Card.Suit.SPADE, 12)``` or like this: ```new Card(Card.Status.FACEDOWN)```.
+SolitaireState has four fields with setters and getters. 
+1. ```boolean stockEmpty```
+2. ```List<Card> drawnCards```
+3. ```List<Card> foundations```
+4. ```List<List<Card>> piles```
 
 ## Card
 This object represents a card in the game. 
@@ -52,6 +42,28 @@ if (someCard.getStatus() == Card.Status.FACEUP{
 ```
 #### Suit vs. Color
 Cards have suits. Suits come in two colors, red and black. To get the color of a card, call ```getColor()```.
+
+
+## SolitaireState
+
+### Class diagram
+![](../../resources/class-solitaire-card.png)
+
+This object is used to store the whole deck of cards as displayed on the table. All the following fields must be set:
+
+| Field | Type | Use |
+|---|---|---|
+| stockEmpty | boolean | To check if there are cards left to draw.
+| drawnCards | List of Cards. Max size: 3. | The 0-3 cards currently drawn. |
+| foundations | List of Cards. Max size: 3.| Goal for the sorted cards. Values can be null|
+| piles | List of Lists of Cards. Size: 7. | The 7 columns. Values can be empty lists.|
+
+There are getters and setters for all fields. Some basic tests for validity are built-in. Some null values will raise exceptions, and the size ranges are enforced. (There is an extra setter for individual 'rows' in the pile, in case that is more practical)
+
+The `toString()` method returns the ID of the SolitaireState. 
+
+To get a printable String showing the State, call `getPrintFormat()`.
+
 
 ## Move
 Do it!
