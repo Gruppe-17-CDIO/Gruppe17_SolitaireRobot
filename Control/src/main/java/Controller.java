@@ -19,7 +19,7 @@ public class Controller implements I_Controller {
         //cards = CV_Controller.getSolitaireCards(img);
         cards = StateGenerator.getState(0);
         logger.logCards(cards);
-        return logic.getMove(cards);
+        return logic.getMoves(cards).get(0);
     }
 
     public File getImage() {
