@@ -20,6 +20,7 @@ public class TabPane extends javafx.scene.control.TabPane {
 
     private List<Tab> tabList = new ArrayList<>();
     private CameraSourceTab cameraSourceTab = new CameraSourceTab();
+    private CameraSourceTabNew cameraSourceTabNew = new CameraSourceTabNew();
     private GameTab gameTab = new GameTab();
     /*
     ----------------------- Constructor -------------------------
@@ -48,7 +49,8 @@ public class TabPane extends javafx.scene.control.TabPane {
      */
 
     private void loadDefaultTabs () {
-        tabList.add(cameraSourceTab);
+        //tabList.add(cameraSourceTab);
+        tabList.add(cameraSourceTabNew);
         tabList.add(gameTab);
 
         getTabs().addAll(tabList);

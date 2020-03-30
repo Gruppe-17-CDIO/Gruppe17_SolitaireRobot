@@ -2,70 +2,60 @@ package view.taps;
 
 import com.github.sarxos.webcam.Webcam;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import view.MainGUI;
 import view.components.FxUtil;
 import view.components.TabStd;
+import view.components.WebCamImageView;
 import view.components.WebCamManiButton;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.concurrent.atomic.AtomicReference;
+import java.io.IOException;
 
 /**
  * @author Rasmus Sander Larsen
  */
-public class CameraSourceTab extends TabStd {
+public class CameraSourceTabNew extends TabStd {
 
     //-------------------------- Fields --------------------------
 
     private final String comboBoxPromptText = "Select webcam to use as source";
 
-    private ImageView imgWebCamCapturedImage;
-    private Webcam webcam = null;
-    private boolean isCameraRunning = true;
+    private WebCamImageView imgWebCamCapturedImage;
     private boolean isWebCamSelected = false;
-    private boolean isWebCamManipulated = false;
-    ObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
 
     private ComboBox<Webcam> webCamOptions;
-    protected File selectedDirectory;
     private FlowPane bottomCameraControlPane;
     private WebCamManiButton webCamManiBtn;
+    private CheckBox cbWebCamMirroring;
     private Button btnCameraStop;
     private Button btnCameraStart;
     private Button btnCameraDispose;
 
     //----------------------- Constructor -------------------------
-    public CameraSourceTab (){
+    public CameraSourceTabNew(){
         super("Source",
                 "Select camera input source",
                 "Selected the preferred camera source to record the game your are playing");
         addDropdown();
+        addMirroringCheckBox();
         addVideoFrame();
         addBottomControlPane();
+        addGetImageButton();
         testMode();
     }
 
@@ -96,7 +86,13 @@ public class CameraSourceTab extends TabStd {
                         MainGUI.printToOutputAreaNewline("Selected webcam: " + newValue.getName());
                     }
                     isWebCamSelected = true;
-                    initializeWebCam(newValue);
+
+                    //newValue.setCustomViewSizes(new Dimension[]{new Dimension(1024, 768)});
+                    //newValue.setViewSize(new Dimension(1024, 768));
+
+                    imgWebCamCapturedImage.mirrorWebCamImage(true);
+                    imgWebCamCapturedImage.setWebCam(newValue);
+
                 } else {
                     isWebCamSelected = false;
                 }
@@ -107,12 +103,12 @@ public class CameraSourceTab extends TabStd {
         webCamManiBtn = new WebCamManiButton(new WebCamManiButton.ManipulationStateCallback() {
             @Override
             public void doManipulateAction() {
-
+                imgWebCamCapturedImage.startManipulationOfWebCam(webCamManiBtn.imageOfFile());
             }
 
             @Override
             public void dontManipulateAction() {
-
+                imgWebCamCapturedImage.stopManipulationOfWebCam();
             }
         });
         if (MainGUI.isTesting) {
@@ -121,13 +117,42 @@ public class CameraSourceTab extends TabStd {
         addToContent(topPane);
     }
 
+    private void addMirroringCheckBox () {
+        cbWebCamMirroring = new CheckBox("Mirror webcam image");
+        cbWebCamMirroring.setAllowIndeterminate(false);
+        cbWebCamMirroring.setSelected(true);
+        cbWebCamMirroring.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                imgWebCamCapturedImage.mirrorWebCamImage(newValue);
+            }
+        });
+        addToContent(cbWebCamMirroring);
+    }
+
     private void addVideoFrame() {
         BorderPane webCamPane = new BorderPane();
-        imgWebCamCapturedImage = new ImageView();
+        imgWebCamCapturedImage = new WebCamImageView();
+        imgWebCamCapturedImage.setStateCallback(new WebCamImageView.WebCamStateCallback() {
+           @Override
+            public void onStart() {
+                startWebCamCamera();
+            }
+
+            @Override
+            public void onStop() {
+                stopWebCamCamera();
+            }
+
+            @Override
+            public void onDispose() {
+                disposeWebCamCamera();
+            }
+        });
         webCamPane.setCenter(imgWebCamCapturedImage);
         webCamPane.maxHeight(400);
         webCamPane.maxWidth(400);
-        //webCamPane.setStyle("-fx-background-color: black;-fx-border-color: grey ; -fx-border-width: 5");
+        webCamPane.setStyle("-fx-background-color: black;-fx-border-color: grey ; -fx-border-width: 5");
 
         double height = 400;
         double width = 400;
@@ -154,82 +179,18 @@ public class CameraSourceTab extends TabStd {
         addToContent(bottomCameraControlPane);
     }
 
-    protected void initializeWebCam(Webcam selectedWebCam) {
-
-        Task<Void> webCamTask = new Task<Void>() {
-
-            @Override
-            protected Void call() throws Exception {
-                if (webcam != null) {
-                    disposeWebCamCamera();
-                }
-
-                webcam = selectedWebCam;
-
-                webcam.setCustomViewSizes(new Dimension[]{new Dimension(1024, 768)});
-                webcam.setViewSize(new Dimension(1024, 768));
-
-                webcam.open();
-
-                startWebCamCamera();
-
-                return null;
+    // TODO Det her skal ændres så det er en del af webcamImageView og passet til controlInterface
+    private void addGetImageButton () {
+        Button button = new Button("Get image");
+        button.setOnAction(event -> {
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imgWebCamCapturedImage.getImage(), null);
+            try {
+                ImageIO.write(bufferedImage,"PNG", new File("export.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        };
-
-        Thread webCamThread = new Thread(webCamTask);
-        webCamThread.setDaemon(true);
-        webCamThread.start();
-    }
-
-    protected void startWebCamStream() {
-
-        isCameraRunning = true;
-
-        Task<Void> task = new Task<Void>() {
-
-            @Override
-            protected Void call() throws Exception {
-
-                while (isCameraRunning) {
-                    try {
-                        if (webCamManiBtn.isWebCamManipulated()) {
-                            imageProperty.set(webCamManiBtn.imageOfFile());// Flips the image so it works as a mirror
-                            imgWebCamCapturedImage.setScaleX(1);
-                        } else {
-                            final AtomicReference<WritableImage> ref = new AtomicReference<>();
-                            BufferedImage img = null;
-
-                            if ((img = webcam.getImage()) != null) {
-
-                                ref.set(SwingFXUtils.toFXImage(img, ref.get()));
-                                img.flush();
-
-                                Platform.runLater(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        imageProperty.set(ref.get());
-                                    }
-                                });
-                            }
-                            // Flips the image so it works as a mirror
-                            imgWebCamCapturedImage.setScaleX(-1);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                return null;
-            }
-        };
-
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
-        imgWebCamCapturedImage.imageProperty().bind(imageProperty);
-
+        });
+        addToContent(button);
     }
 
     private void createCameraControls() {
@@ -238,7 +199,7 @@ public class CameraSourceTab extends TabStd {
         btnCameraStop.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                stopWebCamCamera();
+                imgWebCamCapturedImage.stopWebCamCamera();
             }
         });
 
@@ -246,7 +207,7 @@ public class CameraSourceTab extends TabStd {
         btnCameraStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                startWebCamCamera();
+                imgWebCamCapturedImage.startWebCamCamera();
             }
         });
 
@@ -254,8 +215,7 @@ public class CameraSourceTab extends TabStd {
         btnCameraDispose.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                isWebCamSelected = false;
-                disposeWebCamCamera();
+                imgWebCamCapturedImage.disposeWebCamCamera();
             }
         });
         bottomCameraControlPane.getChildren().add(btnCameraStart);
@@ -264,10 +224,9 @@ public class CameraSourceTab extends TabStd {
     }
 
     protected void disposeWebCamCamera() {
-        isCameraRunning = false;
-        webcam.close();
         btnCameraStart.setDisable(true);
         btnCameraStop.setDisable(true);
+        webCamManiBtn.setManipulationState(false);
         if (!isWebCamSelected) {
             Platform.runLater(new Runnable() {
                 @Override
@@ -275,17 +234,12 @@ public class CameraSourceTab extends TabStd {
                     webCamOptions.getSelectionModel().clearSelection();
                     webCamOptions.setPromptText("Select a webcam as input");
                     webCamOptions.setDisable(false);
-                    // removes the last captured image.
-                    imgWebCamCapturedImage.imageProperty().unbind();
-                    imgWebCamCapturedImage.setImage(null);
                 }
             });
         }
     }
 
     protected void startWebCamCamera() {
-        isCameraRunning = true;
-        startWebCamStream();
         bottomCameraControlPane.setDisable(false);
         btnCameraStop.setDisable(false);
         btnCameraStart.setDisable(true);
@@ -293,7 +247,7 @@ public class CameraSourceTab extends TabStd {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    webCamOptions.getSelectionModel().select(webcam);
+                    webCamOptions.getSelectionModel().select(imgWebCamCapturedImage.getWebcam());
                     webCamOptions.setDisable(true);
                 }
             });
@@ -301,7 +255,6 @@ public class CameraSourceTab extends TabStd {
     }
 
     protected void stopWebCamCamera() {
-        isCameraRunning = false;
         btnCameraStart.setDisable(false);
         btnCameraStop.setDisable(true);
         webCamOptions.setDisable(false);

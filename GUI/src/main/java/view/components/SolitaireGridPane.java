@@ -1,9 +1,11 @@
 package view.components;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import view.MainGUI;
 import view.components.card.CardUI;
 import view.components.card.SuitEnum;
@@ -115,10 +117,10 @@ public class SolitaireGridPane extends GridPane {
         deckCardUI.showBackside();
         add(deckCardUI,0,0);
 
-        heartCollection_SP = defaultCollectionStackPane();
-        diamondCollection_SP = defaultCollectionStackPane();
-        clubCollection_SP = defaultCollectionStackPane();
-        spadeCollection_SP = defaultCollectionStackPane();
+        heartCollection_SP = defaultCollectionStackPane(SuitEnum.Heart);
+        diamondCollection_SP = defaultCollectionStackPane(SuitEnum.Diamond);
+        clubCollection_SP = defaultCollectionStackPane(SuitEnum.Club);
+        spadeCollection_SP = defaultCollectionStackPane(SuitEnum.Spade);
 
         add(heartCollection_SP,3,0);
         add(diamondCollection_SP,4,0);
@@ -140,11 +142,12 @@ public class SolitaireGridPane extends GridPane {
         });
     }
 
-    private StackPane defaultCollectionStackPane() {
+    private StackPane defaultCollectionStackPane(SuitEnum suitEnum) {
         StackPane collectionStackPane = new StackPane();
         collectionStackPane.setStyle(CARD_OUTLINE);
         collectionStackPane.setMinSize(60,75);
         collectionStackPane.setMaxSize(60,75);
+        collectionStackPane.setAlignment(Pos.CENTER);
         return collectionStackPane;
     }
 
