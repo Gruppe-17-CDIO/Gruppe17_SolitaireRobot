@@ -83,8 +83,8 @@ public class SolitaireState {
 
 
     // Add one row to pile at a time.
-    public void addRowToPile(@NotNull List<Card> row) {
-        piles.add(row);
+    public void addColumnToPile(@NotNull List<Card> col) {
+        piles.add(col);
     }
 
     public String toString() {
