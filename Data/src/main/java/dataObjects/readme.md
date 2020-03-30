@@ -66,6 +66,14 @@ To get a printable String showing the State, call `getPrintFormat()`.
 
 
 ## Move
-Do it!
+
+The I_Logic interface returns a Move object that represents valid moves for a SolitaireState object.
+
+|Field|Type|Use|
+|---|---|---|
+|availableType|enum Type|Type to move from: DRAW, STOCK, PILE, FOUNDATION|
+|position|int[i][j]|The position of availableType: E.g. Type is PILE then position[1][0] corresponds to pile row 2, card in front. 
+|destinationType|enum Type|Type to move to.|
+|destPosition|int[i]|Moving position. E.g. Type is FOUNDATION, then destPosition[0] corresponds to the first foundation-pile.|
 
 >Author:  Erlend
