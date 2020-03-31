@@ -21,7 +21,8 @@ public class Move {
 
     public enum DestinationType {
         PILE,
-        FOUNDATION
+        FOUNDATION,
+        SELF
     }
 
     public MoveType getMoveType() {
