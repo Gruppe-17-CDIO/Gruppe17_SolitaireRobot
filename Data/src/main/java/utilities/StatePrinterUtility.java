@@ -8,7 +8,7 @@ import java.util.List;
 public class StatePrinterUtility {
     final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
     final String empty = "            ";
-    private StringBuilder result = new StringBuilder();
+    private final StringBuilder result = new StringBuilder();
 
     /**
      * Method to print state to terminal (readable)
@@ -53,16 +53,17 @@ public class StatePrinterUtility {
         printRow(line);
 
         // Drawn cards
-        List<Card> drawn = state.getDrawnCards();
+        Card drawn = state.getDrawnCard();
         for (int i = 0; i < 3; i++) {
-            if (drawn.isEmpty()) {
-                line[i] = empty;
-            } else if (drawn.get(i) == null) {
+            if (drawn == null) {
                 line[i] = empty;
             } else {
-                line[i] = drawn.get(i).toString();
+                line[i] = drawn.toString();
             }
         }
+        // Spaces next to drawn card:
+        line[1] = empty;
+        line[2] = empty;
 
         // Foundations
         List<Card> foundations = state.getFoundations();

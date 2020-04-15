@@ -38,7 +38,7 @@ Note that an empty pile is notated with a blank line.
 true
 
 # Cards drawn
-SPADE 1, CLUB 13, DIAMOND 7
+DIAMOND 7
 
 # Cards in foundation
 HEART 1, DIAMOND 2

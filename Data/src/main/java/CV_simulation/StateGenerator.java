@@ -22,22 +22,15 @@ public class StateGenerator {
         SolitaireState state = new SolitaireState();
 
         // Set stock present
-        if (data[0][0].equals("true")) {
-            state.setStockEmpty(true);
-        } else {
-            state.setStockEmpty(false);
-        }
+        state.setStockEmpty(data[0][0].equals("true"));
 
         // Set drawn cards
-        List<Card> drawn = new ArrayList<>();
+        Card drawn = null;
         if (data[1].length > 0) {
-            for (String s : data[1]) {
-                if (s.length() > 0) {
-                    drawn.add(buildCard(s));
-                }
-            }
+            drawn = buildCard(data[1][0]);
         }
-        state.setDrawnCards(drawn);
+
+        state.setDrawnCard(drawn);
 
         // Set foundations
         ArrayList<Card> foundations = new ArrayList<>();
@@ -111,7 +104,7 @@ public class StateGenerator {
             String line = reader.readLine();
             while (line != null) {
                 //System.out.println(line);
-                if (line.length() != 0 && line.substring(0, 1).equals("#")) {
+                if (line.length() != 0 && line.startsWith("#")) {
                     // If line starts with #, parse next line
                     line = reader.readLine();
                     String[] lines = line.split(",");

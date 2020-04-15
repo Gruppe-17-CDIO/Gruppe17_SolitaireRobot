@@ -24,7 +24,7 @@ public class SolitaireState {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private boolean stockEmpty = true; // Cards to draw, face not visible
-    private List<Card> drawnCards = new ArrayList<>(); // Drawn cards, 0 to 3
+    private Card drawnCard = null; // Drawn card, just one
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
 
@@ -37,18 +37,12 @@ public class SolitaireState {
         this.stockEmpty = stockEmpty;
     }
 
-    public List<Card> getDrawnCards() {
-        return drawnCards;
+    public Card getDrawnCard() {
+        return drawnCard;
     }
 
-    public void setDrawnCards(@NotNull List<Card> drawnCards) throws Exception {
-        if (drawnCards == null) {
-            throw new Exception("The list 'drawnCards' must not be null.");
-        }
-        if (drawnCards.size() > 3) {
-            throw new Exception("Too many (visible) cards drawn: " + drawnCards.size() + ".");
-        }
-        this.drawnCards = drawnCards;
+    public void setDrawnCard(Card drawnCard) {
+        this.drawnCard = drawnCard;
     }
 
     public List<Card> getFoundations() {
