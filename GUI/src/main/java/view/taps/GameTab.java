@@ -1,10 +1,14 @@
 package view.taps;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import model.WebCamSettings;
 import view.MainGUI;
+import view.components.FxUtil;
 import view.components.SolitaireGridPane;
 import view.components.TabStd;
 import view.components.card.CardUI;
@@ -27,6 +31,10 @@ public class GameTab extends TabStd {
 
     private WebCamManiButton webCamManiBtn;
     private WebCamImageView webCamImageView ;
+
+    HBox bottomButtonBox;
+    private Button btnNextMove;
+    private Button btnMoveDone;
 
 
     //----------------------- Constructor -------------------------
@@ -90,7 +98,38 @@ public class GameTab extends TabStd {
         solitaireGridPane.insertCardInCollectionDeck(new CardUI("A", SuitEnum.Club));
         solitaireGridPane.insertCardInCollectionDeck(new CardUI("3", SuitEnum.Spade));
 
-        addToContent(solitaireGridPane);
+        //addToContent(solitaireGridPane);
+
+        btnNextMove = new Button("Get Next Move");
+        btnNextMove.setDisable(false);
+        btnNextMove.setPrefWidth(150);
+        btnNextMove.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO: Her skal vores Controller interface indsættes.
+                MainGUI.printToOutputAreaNewline("Controller Interface .getNextMove()");
+                btnNextMove.setDisable(true);
+                btnMoveDone.setDisable(false);
+            }
+        });
+
+        btnMoveDone = new Button("Move is completed");
+        btnMoveDone.setDisable(true);
+        btnMoveDone.setPrefWidth(150);
+        btnMoveDone.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO: Her skal vores Controller interface indsættes.
+                MainGUI.printToOutputAreaNewline("Controller Interface \".etEllerAndet()\"");
+                btnMoveDone.setDisable(true);
+                btnNextMove.setDisable(false);
+            }
+        });
+
+        bottomButtonBox = FxUtil.hBox(true);
+        bottomButtonBox.getChildren().addAll(btnNextMove,btnMoveDone);
+
+        addAllToContent(bottomButtonBox);
 
         setUserData();
     }
@@ -115,12 +154,14 @@ public class GameTab extends TabStd {
                     public void run() {
                         if (WebCamSettings.getInstance().setWebCamImageViewWithSetting(TAG,webCamImageView)){
                             webCamImageView.startRunning();
+                            bottomButtonBox.setDisable(false);
                         } else {
                             if (webCamManiBtn.isWebCamManipulated()) {
                                 webCamImageView.startAndSetManipulationImage(webCamManiBtn.imageOfFile());
                             } else {
                                 webCamManiBtn.setManipulationState(false);
                             }
+                            bottomButtonBox.setDisable(true);
                         }
                     }
                 })

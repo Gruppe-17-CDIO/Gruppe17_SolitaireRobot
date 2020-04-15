@@ -57,7 +57,6 @@ public class CameraSourceTabNew extends TabStd {
     private ComboBox<ResolutionCbHolder> resolutionComboBox;
 
     private FlowPane bottomCameraControlPane;
-    private WebCamManiButton webCamManiBtn;
     private CheckBox cbWebCamMirroring;
     private Button btnGetImage;
     private Button btnCameraStop;
@@ -130,23 +129,6 @@ public class CameraSourceTabNew extends TabStd {
         });
 
         webCamSelectorBox.getChildren().add(webCamComboBox);
-
-        // If Testing is active adds the options to manipulate the view and find the image to insert.
-        webCamManiBtn = new WebCamManiButton(new ManipulationStateCallback() {
-            @Override
-            public void startManipulateAction() {
-                imgWebCamCapturedImage.startAndSetManipulationImage(webCamManiBtn.imageOfFile());
-            }
-
-            @Override
-            public void stopManipulateAction() {
-                imgWebCamCapturedImage.stopManipulationOfWebCam();
-            }
-        });
-
-        if (MainGUI.isTesting) {
-            webCamSelectorBox.getChildren().add(webCamManiBtn);
-        }
 
         addToContent(webCamSelectorBox);
     }
@@ -294,7 +276,6 @@ public class CameraSourceTabNew extends TabStd {
     }
 
     protected void disposeWebCamCamera() {
-        webCamManiBtn.setManipulationState(false);
         // Runs UI updates on the JavaFX Thread
         Platform.runLater(new Runnable() {
             @Override
@@ -311,7 +292,6 @@ public class CameraSourceTabNew extends TabStd {
                 webCamComboBox.getSelectionModel().clearSelection();
                 resolutionComboBox.getSelectionModel().clearSelection();
                 WebCamSettings.getInstance().reset();
-
             }
         });
     }
