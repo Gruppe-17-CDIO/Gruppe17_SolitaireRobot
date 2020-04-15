@@ -419,14 +419,17 @@ public class WebCamImageView extends ImageView {
             @Override
             protected Void call() throws Exception {
                 long threadNo =Thread.currentThread().getId();
-                String threadName = Thread.currentThread().getName();
-                MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" just started by: " + method);
-                if (webcam != null) {
-                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// WebCam name: " +webcam.getName());
+                String threadName =Thread.currentThread().getName();;
+                // TODO: Det her skal nok vaek!
+                if (MainGUI.isTesting){
+                    MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" just started by: " + method);
+                    if (webcam != null) {
+                        MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// WebCam name: " +webcam.getName());
+                    }
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isRunnning: " +isRunning);
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isBindingNeeded: " +isBindingNeeded.get());
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 }
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isRunnning: " +isRunning);
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isBindingNeeded: " +isBindingNeeded.get());
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 while (isBindingNeeded.get() && isRunning.get()) {
                     System.out.println("ThreadID: " + Thread.currentThread().getId());
                     try {
@@ -450,13 +453,16 @@ public class WebCamImageView extends ImageView {
                         e.printStackTrace();
                     }
                 }
-                MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" just stopped");
-                if (webcam != null) {
-                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// WebCam name: " +webcam.getName());
+                if (MainGUI.isTesting){
+                    MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" just stopped");
+                    if (webcam != null) {
+                        MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// WebCam name: " +webcam.getName());
+                    }
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isRunnning: " +isRunning);
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName  + "// isBindingNeeded: " +isBindingNeeded.get());
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 }
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isRunnning: " +isRunning);
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName  + "// isBindingNeeded: " +isBindingNeeded.get());
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
+
                 return null;
             }
         };
@@ -472,15 +478,18 @@ public class WebCamImageView extends ImageView {
 
             @Override
             protected Void call() throws Exception {
-                long threadNo =Thread.currentThread().getId();
-                String threadName = Thread.currentThread().getName();
-                MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" do ONE binding: " + method);
-                if (webcam != null) {
-                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// WebCam name: " +webcam.getName());
+                if (MainGUI.isTesting){
+                    long threadNo =Thread.currentThread().getId();
+                    String threadName = Thread.currentThread().getName();
+                    MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" do ONE binding: " + method);
+                    if (webcam != null) {
+                        MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// WebCam name: " +webcam.getName());
+                    }
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isRunnning: " +isRunning);
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isBindingNeeded: " +isBindingNeeded.get());
+                    MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 }
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isRunnning: " +isRunning);
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isBindingNeeded: " +isBindingNeeded.get());
-                MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
+
                 try {
                     if (isWebCamManipulated.get()) {
                         useManipulationFeed();
