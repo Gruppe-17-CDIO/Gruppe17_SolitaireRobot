@@ -1,7 +1,5 @@
-import dataObjects.Move;
 import dataObjects.SolitaireState;
-
-import java.io.File;
+import javafx.scene.image.Image;
 
 /**
  * @author Erlend
@@ -12,12 +10,14 @@ public interface I_Controller {
     // 1. Gets SolitaireCards from ComputerVision
     // 2. Gets move from logic
     // 3. Returns the recommended Objects.Move to GUI.
-    Move getNextMove(File img) throws Exception;
+    void getNextMove(Image img, NextMoveCallback callback) throws Exception;
 
     // Returns image to GUI if needed
-    File getImage();
+    Image getImage();
 
     // Returns 'cards'-object to gui if needed
     SolitaireState getCards();
 
 }
+
+

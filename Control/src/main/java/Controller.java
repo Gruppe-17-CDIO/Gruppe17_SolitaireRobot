@@ -1,32 +1,50 @@
 import CV_simulation.StateGenerator;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
+import javafx.scene.image.Image;
 import logger.CardLogger;
 import logger.I_CardLogger;
-
-import java.io.File;
 
 /**
  * @author Erlend
  */
 public class Controller implements I_Controller {
     private I_Logic logic; // Instantiate
-    private I_CardLogger logger = new CardLogger();
+    private final I_CardLogger logger = new CardLogger();
     private I_ComputerVisionController CV_Controller; // Instantiate
     private SolitaireState cards;
+    private Move lastMove;
 
-    public Move getNextMove(File img) throws Exception {
-        //cards = CV_Controller.getSolitaireCards(img);
-        cards = StateGenerator.getState(0);
-        logger.logCards(cards);
-        return logic.getMoves(cards).get(0);
+    public void getNextMove(Image img, NextMoveCallback callback) {
+        try {
+            //cards = CV_Controller.getSolitaireCards(img);
+            cards = StateGenerator.getState(0);
+
+            // Check if cards are as expected after previous move
+            boolean correct = true;
+
+            if (correct) {
+                lastMove = logic.getMoves(cards).get(0);
+                callback.OnSuccess(lastMove);
+                logger.logCards(cards);
+            } else {
+                callback.OnFailure("Failed", lastMove, cards);
+            }
+        } catch (Exception e) {
+            callback.OnError(e);
+        }
     }
 
-    public File getImage() {
-        return null;
+    public Image getImage() {
+        return new Image((java.io.InputStream) null);
     }
 
     public SolitaireState getCards() {
         return cards;
     }
+
+    //TODO: Update state
+
+    // TODO: CAllback listener
+
 }
