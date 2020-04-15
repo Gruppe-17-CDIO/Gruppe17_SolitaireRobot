@@ -12,6 +12,7 @@ import view.MainGUI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,14 +36,13 @@ public class WebCamImageView extends ImageView {
     private AtomicBoolean isWebCamManipulated = new AtomicBoolean(false);
     private Image manipulatedImage;
     private int mirrorScaling;
-    private boolean isMirrored = true;
+    //private boolean isMirrored = true;
 
     //----------------------- Constructor -------------------------
 
     public WebCamImageView () {
         super();
         applyDefaultSettings();
-        mirrorWebCamImage(isMirrored);
     }
 
     //------------------------ Properties -------------------------
@@ -117,15 +117,6 @@ public class WebCamImageView extends ImageView {
         this.mirrorScaling = mirrorScaling;
     }
 
-    public boolean isMirrored() {
-        return isMirrored;
-    }
-
-    public void setMirrored(boolean mirrored) {
-        isMirrored = mirrored;
-    }
-
-
     // endregion
 
     //---------------------- Public Methods -----------------------
@@ -152,7 +143,9 @@ public class WebCamImageView extends ImageView {
         }
 
         // Sets the webcams resolution.
-        setWebCamResolution(WebCamSettings.getInstance().getSelectedResolution());
+        if (WebCamSettings.getInstance().getSelectedResolution() != null) {
+            setWebCamResolution(WebCamSettings.getInstance().getSelectedResolution());
+        }
 
         if (preIsRunning) {
             startRunning();
@@ -160,46 +153,6 @@ public class WebCamImageView extends ImageView {
     }
 
     public void setWebCamResolution(Dimension resolutionDimension) {
-        /*
-        try {
-            if (webcam.isOpen()){
-                webcam.close();
-                System.out.println(webcam.isOpen());
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        if (imageLoadingThread != null) {
-            imageLoadingThread.interrupt();
-        }
-
-        if (webcam.isOpen()){
-            webcam.setCustomViewSizes(new Dimension[]{WebcamResolution.HD.getSize()});
-            webcam.setViewSize(WebcamResolution.HD.getSize());
-            webcam.open();
-        }
-        webcam.setViewSize(WebcamResolution.HD.getSize());
-
-         */
-        //stopImageBinding();
-
-        /* DET HER VIRKER!
-
-        killThreadWithIsBindingNeeded();
-        try {
-            if (webcam.isOpen()){
-                webcam.close();
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        webcam.setViewSize(resolutionDimension);
-
-        startImageBinding(TAG + ".setWebCamResolution");
-   */
-
         boolean preIsRunning = isRunning.get();
         killImageBindingThread();
 
@@ -213,9 +166,14 @@ public class WebCamImageView extends ImageView {
         }
         // Adds the resolutionDimension to the list af customViewSizes if it's not there already.
         if (!Arrays.asList(webcam.getCustomViewSizes()).contains(resolutionDimension)) {
-            List<Dimension> customViewSizes = Arrays.asList(webcam.getCustomViewSizes());
-            customViewSizes.add(resolutionDimension);
-            webcam.setCustomViewSizes(((Dimension[]) customViewSizes.toArray()));
+            List<Dimension> customViewSizesList = new ArrayList<>(Arrays.asList(webcam.getCustomViewSizes()));
+            customViewSizesList.add(resolutionDimension);
+            // Converts List to Array
+            Dimension[] customViewSizeArray = new Dimension[customViewSizesList.size()];
+            for (int i = 0 ; i < customViewSizeArray.length ; i++ ) {
+                customViewSizeArray[i] = customViewSizesList.get(i);
+            }
+            webcam.setCustomViewSizes(customViewSizeArray);
         }
         // Set the ViewSize
         webcam.setViewSize(resolutionDimension);
@@ -226,8 +184,6 @@ public class WebCamImageView extends ImageView {
     }
 
     public void mirrorWebCamImage(boolean isMirrored) {
-        this.isMirrored = isMirrored;
-
         if (isMirrored) {
             mirrorScaling = -1;
         } else {

@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import view.components.OutputTextArea;
+import view.components.TopMenuBar;
 import view.taps.TabPane;
 
 import java.util.Collection;
@@ -27,7 +28,7 @@ public class MainGUI extends Application {
 
     private static OutputTextArea outputTextArea;
 
-    public static boolean isTesting = false;
+    public static boolean isTesting = true;
 
     // ----------------------- Constructor -------------------------
 
@@ -59,6 +60,9 @@ public class MainGUI extends Application {
 
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(splitPane);
+        if (isTesting){
+            mainPane.setTop(new TopMenuBar());
+        }
 
         primaryStage.setScene(new Scene(mainPane,1000,600));
     }
@@ -140,8 +144,7 @@ public class MainGUI extends Application {
     //---------------------- Support Methods ----------------------
 
     private void printTestStatus () {
-        if (isTesting) {
-            printToOutputAreaNewline("**** Testing Mode: ACTIVE ****");
-        }
+        if (isTesting)
+        printToOutputAreaNewline("**** Testing Mode: ACTIVE ****");
     }
 }

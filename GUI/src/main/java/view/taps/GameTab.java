@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.layout.HBox;
 import model.WebCamSettings;
+import view.MainGUI;
 import view.components.SolitaireGridPane;
 import view.components.TabStd;
 import view.components.card.CardUI;
@@ -11,6 +12,8 @@ import view.components.card.CardUIGridPane;
 import view.components.card.SuitEnum;
 import view.components.webCamImageView.WebCamImageView;
 import view.components.webCamImageView.WebCamStateCallback;
+import view.components.webCamManipulationButton.ManipulationStateCallback;
+import view.components.webCamManipulationButton.WebCamManiButton;
 
 
 /**
@@ -22,7 +25,9 @@ public class GameTab extends TabStd {
 
     private final String TAG = getClass().getSimpleName();
 
+    private WebCamManiButton webCamManiBtn;
     private WebCamImageView webCamImageView ;
+
 
     //----------------------- Constructor -------------------------
 
@@ -30,21 +35,32 @@ public class GameTab extends TabStd {
         super("Game", "Title", "Desc");
 
         webCamImageView = new WebCamImageView();
+        // If Testing is active adds the options to manipulate the view and find the image to insert.
+        webCamManiBtn = new WebCamManiButton(new ManipulationStateCallback() {
+            @Override
+            public void startManipulateAction() {
+                webCamImageView.startAndSetManipulationImage(webCamManiBtn.imageOfFile());
+            }
+
+            @Override
+            public void stopManipulateAction() {
+                webCamImageView.stopManipulationOfWebCam();
+            }
+        });
+
+        if (MainGUI.isTesting) {
+            addToContent(webCamManiBtn);
+        }
+
         webCamImageView.setStateCallback(new WebCamStateCallback() {
             @Override
-            public void onStarted() {
-
-            }
+            public void onStarted() { }
 
             @Override
-            public void onStopped() {
-
-            }
+            public void onStopped() { }
 
             @Override
-            public void onDisposed() {
-
-            }
+            public void onDisposed() { }
         });
         webCamImageView.setFitWidth(450);
         webCamImageView.setFitHeight(450d/16*9);
@@ -97,20 +113,23 @@ public class GameTab extends TabStd {
                 .openRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println(TAG + " // Use Settings and StartImageBinding");
-                        if (WebCamSettings.getInstance().isSettingsSet()) {
-                            WebCamSettings.getInstance().setWebCamImageViewWithSetting(webCamImageView);
+                        if (WebCamSettings.getInstance().setWebCamImageViewWithSetting(TAG,webCamImageView)){
                             webCamImageView.startRunning();
+                        } else {
+                            if (webCamManiBtn.isWebCamManipulated()) {
+                                webCamImageView.startAndSetManipulationImage(webCamManiBtn.imageOfFile());
+                            } else {
+                                webCamManiBtn.setManipulationState(false);
+                            }
                         }
                     }
                 })
-              .closeRunnable(new Runnable() {
+                .closeRunnable(new Runnable() {
                   @Override
                   public void run() {
-                      System.out.println(TAG + " // StopWebCamera");
                       webCamImageView.stopRunning();
                   }
-              })
+                })
                 .build();
 
         setUserData(tabUserData);

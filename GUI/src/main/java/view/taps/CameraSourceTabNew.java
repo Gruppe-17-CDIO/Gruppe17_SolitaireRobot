@@ -63,7 +63,6 @@ public class CameraSourceTabNew extends TabStd {
     private Button btnCameraStop;
     private Button btnCameraStart;
     private Button btnCameraDispose;
-    private Button btnSaveSettings;
 
     //----------------------- Constructor -------------------------
     public CameraSourceTabNew(){
@@ -78,7 +77,6 @@ public class CameraSourceTabNew extends TabStd {
         addMirroringCheckBox();
         addBottomControlPane();
         addGetImageButton();
-        addSaveSettingsButton();
         addTabUserData();
         testMode();
         setDefaultLayout();
@@ -116,8 +114,13 @@ public class CameraSourceTabNew extends TabStd {
 
                     imgWebCamCapturedImage.setWebCam(newValue.getWebcam());
                     imgWebCamCapturedImage.startRunning();
+                    // Saves the selected webcam to WebCamSettings
+                    WebCamSettings.getInstance().setWebcam(newValue.getWebcam());
 
-                    resolutionComboBox.getSelectionModel().select(0);
+                    resolutionComboBox.getSelectionModel().selectFirst();
+
+                    cbWebCamMirroring.setSelected(WebCamSettings.getInstance().isMirrored());
+                    imgWebCamCapturedImage.mirrorWebCamImage(WebCamSettings.getInstance().isMirrored());
 
                     bottomCameraControlPane.setDisable(false);
                     resolutionComboBox.setDisable(false);
@@ -164,6 +167,7 @@ public class CameraSourceTabNew extends TabStd {
                 if (newValue != null) {
                     MainGUI.printToOutputAreaNewline("Selected webcam resolution: " + newValue.resolutionText);
                     imgWebCamCapturedImage.setWebCamResolution(newValue.dimension);
+                    WebCamSettings.getInstance().setSelectedResolution(newValue.dimension);
                 }
             }
         });
@@ -179,11 +183,12 @@ public class CameraSourceTabNew extends TabStd {
         Text mirroringLabel = FxUtil.textDefault(MIRRORING_LABEL_TEXT);
 
         cbWebCamMirroring = new CheckBox();
-        cbWebCamMirroring.setSelected(imgWebCamCapturedImage.isMirrored());
+        //cbWebCamMirroring.setSelected(WebCamSettings.getInstance().isMirrored());
         cbWebCamMirroring.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 imgWebCamCapturedImage.mirrorWebCamImage(newValue);
+                WebCamSettings.getInstance().setMirrored(newValue);
             }
         });
 
@@ -258,25 +263,6 @@ public class CameraSourceTabNew extends TabStd {
         addToContent(btnGetImage);
     }
 
-    private void addSaveSettingsButton () {
-        btnSaveSettings = new Button("Save Setting");
-        btnSaveSettings.setOnAction(event -> {
-            WebCamSettings.getInstance().setVariablesOfWebCamImageView(imgWebCamCapturedImage);
-            if (WebCamSettings.getInstance().isSettingsSet()) {
-                MainGUI.printToOutputAreaNewline("Saving Settings: SUCCESS");
-            } else {
-                MainGUI.printToOutputAreaNewline("Saving Settings: FAILED");
-            }
-            //TODO: Used for debugging.
-            MainGUI.printDivider();
-            for (Thread thread :  Thread.getAllStackTraces().keySet()){
-                MainGUI.printToOutputAreaNewline(thread.getId() +"@" +thread.getName() +" is alive");
-            }
-            MainGUI.printDivider();
-        });
-        addToContent(btnSaveSettings);
-    }
-
     private void createCameraControls() {
 
         btnCameraStop = new Button("Stop Camera");
@@ -319,12 +305,12 @@ public class CameraSourceTabNew extends TabStd {
                 resolutionComboBox.setDisable(true);
                 cbWebCamMirroring.setDisable(true);
                 bottomCameraControlPane.setDisable(true);
-                btnSaveSettings.setDisable(true);
                 btnGetImage.setDisable(true);
 
                 // Clears ComboBox's
                 webCamComboBox.getSelectionModel().clearSelection();
                 resolutionComboBox.getSelectionModel().clearSelection();
+                WebCamSettings.getInstance().reset();
 
             }
         });
@@ -339,8 +325,9 @@ public class CameraSourceTabNew extends TabStd {
                 bottomCameraControlPane.setDisable(false);
                 btnCameraStop.setDisable(false);
                 btnCameraDispose.setDisable(false);
-                btnSaveSettings.setDisable(false);
                 btnGetImage.setDisable(false);
+                cbWebCamMirroring.setDisable(false);
+                resolutionComboBox.setDisable(false);
                 // Disable
                 webCamComboBox.setDisable(true);
                 btnCameraStart.setDisable(true);
@@ -367,11 +354,9 @@ public class CameraSourceTabNew extends TabStd {
         resolutionComboBox.setDisable(true);
         cbWebCamMirroring.setDisable(true);
         btnGetImage.setDisable(true);
-        btnSaveSettings.setDisable(true);
         btnCameraStop.setDisable(true);
         btnCameraDispose.setDisable(true);
         btnCameraStart.setDisable(true);
-
     }
 
     @Override

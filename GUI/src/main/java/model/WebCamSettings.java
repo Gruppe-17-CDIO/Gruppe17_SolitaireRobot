@@ -25,24 +25,13 @@ public class WebCamSettings {
             new Dimension(1920,1080)
     };
 
-    private boolean isSettingsSet;
-
     private Webcam webcam;
-    private boolean isMirrored;
-    private Dimension selectedResolution = resolutionOptions[0];
+    private boolean isMirrored = true;
+    private Dimension selectedResolution;// = resolutionOptions[5];
 
     //----------------------- Constructor -------------------------
 
-    private WebCamSettings(){
-        isSettingsSet = false;
-    }
-
-    public WebCamSettings(Webcam webcam, boolean isMirrored, Dimension selectedResolution) {
-        this.webcam = Webcam.getWebcams().get(Webcam.getWebcams().indexOf(webcam));
-        this.isMirrored = isMirrored;
-        this.selectedResolution = selectedResolution;
-        isSettingsSet = true;
-    }
+    private WebCamSettings(){ }
 
     //------------------------ Properties -------------------------
 
@@ -52,16 +41,34 @@ public class WebCamSettings {
         return resolutionOptions;
     }
 
-    public Dimension getSelectedResolution() {
-        return selectedResolution;
+    public Webcam getWebcam() {
+        return webcam;
+    }
+
+    public void setWebcam(Webcam webcam) {
+
+        this.webcam = webcam;
+        MainGUI.printToOutputAreaNewline("Print from setWebcam().\n" +toString());
     }
 
     public boolean isMirrored() {
         return isMirrored;
+
     }
 
-    public boolean isSettingsSet() {
-        return isSettingsSet;
+    public void setMirrored(boolean mirrored) {
+        isMirrored = mirrored;
+        MainGUI.printToOutputAreaNewline("Print from setMirrored().\n" +toString());
+    }
+
+    public Dimension getSelectedResolution() {
+        return selectedResolution;
+    }
+
+    public void setSelectedResolution(Dimension selectedResolution) {
+
+        this.selectedResolution = selectedResolution;
+        MainGUI.printToOutputAreaNewline("Print from setSelectedResolution().\n" + toString());
     }
 
     // endregion
@@ -75,29 +82,27 @@ public class WebCamSettings {
         return instance;
     }
 
-    public void setVariablesOfWebCamImageView (WebCamImageView webCamImageView) {
-        try {
-            instance = new WebCamSettings(
-                    webCamImageView.getWebcam(),
-                    webCamImageView.getMirrorScaling() == -1,
-                    webCamImageView.getWebcam().getViewSize());
-            isSettingsSet = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            isSettingsSet = false;
+    public boolean isSettingsValid () {
+        if (webcam == null) {
+            return false;
+        } else if (selectedResolution == null) {
+            return false;
+        } else {
+            return true;
         }
-
-        MainGUI.printToOutputAreaNewline("Saved Settings");
     }
 
-    public void setWebCamImageViewWithSetting (WebCamImageView webCamImageView) {
-        if (isSettingsSet) {
+    public boolean setWebCamImageViewWithSetting (String TAG, WebCamImageView webCamImageView) {
+        if (isSettingsValid()) {
             webCamImageView.setWebCam(webcam);
             webCamImageView.mirrorWebCamImage(isMirrored);
             webCamImageView.setWebCamResolution(selectedResolution);
-            MainGUI.printToOutputAreaNewline("Settings Applied to WebCamImageView");
+            MainGUI.printToOutputAreaNewline("Settings Applied to WebCamImageView in " + TAG);
+            return true;
         } else {
-            MainGUI.printToOutputAreaNewline("Setting NOT applied to WebCamImageView as no settings is set");
+            webCamImageView.resetVariables();
+            MainGUI.printToOutputAreaNewline("Setting NOT applied to WebCamImageView in " + TAG +" as no settings is set");
+            return false;
         }
     }
 
@@ -105,17 +110,25 @@ public class WebCamSettings {
         return isMirrored ? -1 : 1;
     }
 
+    public void reset(){
+        instance = new WebCamSettings();
+    }
+
     public String toString () {
         StringBuilder toStringBuilder = new StringBuilder();
         toStringBuilder.append("~~~~~~~~~~~~~~~ Webcam Settings ~~~~~~~~~~~~~~~\n");
 
-        toStringBuilder.append("isSettingsSet: " + isSettingsSet + "\n");
-        if (isSettingsSet) {
-            toStringBuilder.append("isMirrored: " + isMirrored + "\n");
-            if (webcam != null) {
-                toStringBuilder.append("Webcam Name: " + webcam.getName() + "\n");
-                toStringBuilder.append("Webcam resolution: " +webcam.getViewSize().width+"x"+webcam.getViewSize().height + "\n");
-            }
+        toStringBuilder.append("Is Setting Valid: " + isSettingsValid() + "\n");
+        toStringBuilder.append("Is Webcam input Mirrored: " + isMirrored + "\n");
+        if (webcam != null) {
+            toStringBuilder.append("Webcam Name: " + webcam.getName() + "\n");
+        } else {
+            toStringBuilder.append("Webcam Name: Nothing selected\n");
+        }
+        if (selectedResolution != null) {
+            toStringBuilder.append("Webcam resolution: " +selectedResolution.width+"x"+selectedResolution.height + "\n");
+        } else {
+            toStringBuilder.append("Webcam resolution: Nothing selected\n");
         }
         toStringBuilder.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
