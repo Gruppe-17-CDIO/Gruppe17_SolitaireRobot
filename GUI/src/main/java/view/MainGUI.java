@@ -1,19 +1,19 @@
 package view;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import view.components.OutputTextArea;
 import view.taps.TabPane;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * @author Rasmus Sander Larsen
@@ -27,7 +27,7 @@ public class MainGUI extends Application {
 
     private static OutputTextArea outputTextArea;
 
-    public static boolean isTesting = true;
+    public static boolean isTesting = false;
 
     // ----------------------- Constructor -------------------------
 
@@ -45,6 +45,8 @@ public class MainGUI extends Application {
         outputTextArea = new OutputTextArea();
         printTestStatus();
         TabPane tabPane = new TabPane();
+        //tabPane.getSelectionModel().selectLast();
+        //tabPane.getSelectionModel().clearAndSelect(0);
 
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
@@ -54,19 +56,23 @@ public class MainGUI extends Application {
         outputTextArea.setMinWidth(500);
         outputTextArea.setEditable(false);
         tabPane.setMinWidth(500);
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                Runnable updater = (Runnable) newValue.getUserData();
-                if (updater != null) {
-                    updater.run();
-                }
-            }
-        });
 
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(splitPane);
 
         primaryStage.setScene(new Scene(mainPane,1000,600));
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        for (Thread thread :  Thread.getAllStackTraces().keySet()){
+            if (thread.getName().equals("ImageBindingThread")) {
+                thread.interrupt();
+            }
+            MainGUI.printToOutputAreaNewline(thread.getId() +"@" +thread.getName() +" is alive");
+        }
+        //TODO: Handle shutdown
     }
 
     //------------------------ Properties -------------------------
@@ -80,16 +86,55 @@ public class MainGUI extends Application {
     //---------------------- Public Methods -----------------------
 
     public static void printToOutputAreaNewline (String text) {
-        outputTextArea.appendTextNewline(text);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                outputTextArea.appendTextNewline(text);
+            }
+        });
+
     }
-    public static void printSuccessToOutputArea (String text) {outputTextArea.appendTextNewline("Success:\n" +text);}
-    public static void printFailureToOutputArea (String text) {outputTextArea.appendTextNewline("Failure:\n" +text);}
-    public static void printErrorToOutputArea (String text) {outputTextArea.appendTextNewline("Error:\n" +text);}
+    public static void printSuccessToOutputArea (String text) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                outputTextArea.appendTextNewline("Success:\n" + text);
+            }
+        });
+    }
+    public static void printFailureToOutputArea (String text) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                outputTextArea.appendTextNewline("Failure:\n" +text);
+            }
+        });
+    }
+    public static void printErrorToOutputArea (String text) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                outputTextArea.appendTextNewline("Error:\n" +text);
+            }
+        });
+    }
+
     public static void printToOutputArea (String text) {
-        outputTextArea.appendText(text);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                outputTextArea.appendText(text);
+            }
+        });
     }
     public static void printDivider() {
-        outputTextArea.printDivider();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                outputTextArea.printDivider();
+            }
+        });
+
     }
 
     //---------------------- Support Methods ----------------------

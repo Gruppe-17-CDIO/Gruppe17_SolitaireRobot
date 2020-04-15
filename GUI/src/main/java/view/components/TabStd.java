@@ -18,6 +18,8 @@ public abstract class TabStd extends Tab {
 
     //-------------------------- Fields --------------------------
 
+    protected final String TAG = getClass().getSimpleName();
+
     protected String header, desc;
     protected VBox content = FxUtil.vBox(true);
 

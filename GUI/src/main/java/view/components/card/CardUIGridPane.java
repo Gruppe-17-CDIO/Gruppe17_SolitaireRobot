@@ -2,15 +2,9 @@ package view.components.card;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
+import javafx.geometry.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import view.components.FxUtil;
@@ -18,7 +12,7 @@ import view.components.FxUtil;
 /**
  * @author Rasmus Sander Larsen
  */
-public class CardUI extends VBox {
+public class CardUIGridPane extends VBox {
 
     //-------------------------- Fields --------------------------
 
@@ -36,19 +30,20 @@ public class CardUI extends VBox {
     public int pressCounterBoolean = 0;
     private boolean isFrontShowing = true;
 
-    private GridPane cornerPane;
+    private FlowPane emptyTopSpace;
+    private GridPane cardGrid;
     private Text valueText;
     private ImageView suitImageV;
     private ImageView suitImageH;
 
     //----------------------- Constructor -------------------------
 
-    public  CardUI () {
+    public CardUIGridPane() {
         applySettings();
         applyOnPressFlipsCard();
     }
 
-    public CardUI (String value, SuitEnum suit) {
+    public CardUIGridPane(String value, SuitEnum suit) {
         this.value  = value;
         this.suit   = suit;
 
@@ -74,6 +69,10 @@ public class CardUI extends VBox {
 
     public void setFrontShowing(boolean frontShowing) {
         isFrontShowing = frontShowing;
+    }
+
+    public void setEmptyTopSpace(FlowPane emptyTopSpace) {
+        this.emptyTopSpace = emptyTopSpace;
     }
 
     // endregion
@@ -114,43 +113,35 @@ public class CardUI extends VBox {
         return pressCounterBoolean = ++pressCounterBoolean %2;
     }
 
+    public void setEmptySpaceHeight (int height) {
+        emptyTopSpace = FxUtil.emptySpace(Orientation.VERTICAL,height);
+    }
 
     //---------------------- Support Methods ----------------------    
 
     private void applySettings () {
         setMinSize(CARD_WIDTH,CARD_HEIGHT);
         setMaxSize(CARD_WIDTH,CARD_HEIGHT);
-        setStyle(FRONT_STYLE);
-        setPadding(new Insets(SPACING));
-        setSpacing(SPACING);
-    }
+        setAlignment(Pos.TOP_CENTER);
 
-    private void fillCardWithValues () {
-        /*
-        valueText = new Text(value);
-        valueText.setFont(FxUtil.fontDefault(12));
-        valueText.setTextAlignment(TextAlignment.CENTER);
-        valueText.setWrappingWidth(CORNER_WIDTH);
+        emptyTopSpace = FxUtil.emptySpace(Orientation.VERTICAL,0);
 
-        suitImage = new ImageView();
-        suitImage.setImage(suit.getImage(DEFAULT_SUIT_IMAGE_SIZE));
-        suitImage.setPreserveRatio(true);
-        suitImage.setFitWidth(CORNER_WIDTH);
+        cardGrid = new GridPane();
+        cardGrid.setMinSize(CARD_WIDTH,CARD_HEIGHT);
+        cardGrid.setMaxSize(CARD_WIDTH,CARD_HEIGHT);
+        cardGrid.setStyle(FRONT_STYLE);
 
-        getChildren().addAll(valueText,suitImage);
-
-         */
-        cornerPane = new GridPane();
-        cornerPane.setAlignment(Pos.TOP_LEFT);
-        cornerPane.setVgap(SPACING);
-        cornerPane.setHgap(SPACING);
+        cardGrid.setAlignment(Pos.TOP_LEFT);
+        cardGrid.setVgap(SPACING);
+        cardGrid.setHgap(SPACING);
+        cardGrid.setPadding(new Insets(SPACING));
 
         for (int i = 0; i < 2; i++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
             columnConstraints.setMinWidth(CORNER_WIDTH);
             columnConstraints.setMaxWidth(CORNER_WIDTH);
             columnConstraints.setHalignment(HPos.CENTER);
-            cornerPane.getColumnConstraints().add(columnConstraints);
+            cardGrid.getColumnConstraints().add(columnConstraints);
         }
 
         for (int i = 0; i < 2; i++) {
@@ -158,28 +149,32 @@ public class CardUI extends VBox {
             rowConstraints.setMinHeight(CORNER_WIDTH);
             rowConstraints.setMaxHeight(CORNER_WIDTH);
             rowConstraints.setValignment(VPos.CENTER);
-            cornerPane.getRowConstraints().add(rowConstraints);
+            cardGrid.getRowConstraints().add(rowConstraints);
         }
 
+
+
+        getChildren().addAll(emptyTopSpace,cardGrid);
+    }
+
+    private void fillCardWithValues () {
         valueText = new Text(value);
         valueText.setFont(FxUtil.fontDefault(12));
         valueText.setTextAlignment(TextAlignment.CENTER);
         valueText.setWrappingWidth(CORNER_WIDTH);
-        cornerPane.add(valueText,0,0);
+        cardGrid.add(valueText,0,0);
 
         suitImageV = new ImageView();
         suitImageV.setImage(suit.getImage(DEFAULT_SUIT_IMAGE_SIZE));
         suitImageV.setPreserveRatio(true);
         suitImageV.setFitWidth(CORNER_WIDTH);
-        cornerPane.add(suitImageV,0,1);
+        cardGrid.add(suitImageV,0,1);
 
         suitImageH = new ImageView();
         suitImageH.setImage(suit.getImage(DEFAULT_SUIT_IMAGE_SIZE));
         suitImageH.setPreserveRatio(true);
         suitImageH.setFitWidth(CORNER_WIDTH);
-        cornerPane.add(suitImageH,1,0);
-
-        getChildren().addAll(cornerPane);
+        cardGrid.add(suitImageH,1,0);
     }
 
     private void applyOnPressFlipsCard () {

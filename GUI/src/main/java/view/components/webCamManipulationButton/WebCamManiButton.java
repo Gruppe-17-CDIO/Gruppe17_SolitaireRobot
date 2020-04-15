@@ -1,4 +1,4 @@
-package view.components;
+package view.components.webCamManipulationButton;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -71,7 +71,7 @@ public class WebCamManiButton extends Button {
         setOnAction(event -> {
             if (isWebCamManipulated) {
                 setManipulationState(false);
-                callback.dontManipulateAction();
+                callback.stopManipulateAction();
             } else {
                 browseForImageFile();
             }
@@ -94,14 +94,14 @@ public class WebCamManiButton extends Button {
 
             setText(REMOVE_BUTTON_TEXT);
             // Runs the manipulation method
-            callback.doManipulateAction();
+            callback.startManipulateAction();
         } else {
             MainGUI.printToOutputAreaNewline(DEFAULT_SELECTED_TEXT + "\nNothing");
             isWebCamManipulated = false;
 
             setText(DEFAULT_BUTTON_TEXT);
             // Runs the no manipulation method
-            callback.dontManipulateAction();
+            callback.stopManipulateAction();
         }
     }
 
@@ -112,8 +112,4 @@ public class WebCamManiButton extends Button {
         return new File(folder);
     }
 
-    public interface ManipulationStateCallback {
-        void doManipulateAction();
-        void dontManipulateAction();
-    }
 }
