@@ -89,7 +89,7 @@ public class GameTab extends TabStd {
     //---------------------- Public Methods -----------------------
 
 
-    //---------------------- Support Methods ----------------------    
+    //---------------------- Support Methods ----------------------
 
     private void setUserData () {
         TabUserData tabUserData = new TabUserData.Builder()

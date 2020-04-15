@@ -1,5 +1,8 @@
+package logger;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import dataObjects.SolitaireState;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -22,8 +25,8 @@ public class CardLogger implements I_CardLogger {
             ".json";
 
     @Override
-    public synchronized void logCards(SolitaireCards currentGameCards) {
-        List<SolitaireCards> historyCards = getHistory();
+    public synchronized void logCards(SolitaireState currentGameCards) {
+        List<SolitaireState> historyCards = getHistory();
         historyCards.add(currentGameCards);
         try {
             Writer writer = new FileWriter(FILE_PATH);
@@ -37,11 +40,11 @@ public class CardLogger implements I_CardLogger {
 
     // Returns states from this session and previous.
     @Override
-    public List<SolitaireCards> getHistory() {
-        List<SolitaireCards> history = null;
+    public List<SolitaireState> getHistory() {
+        List<SolitaireState> history = null;
         try {
             FileReader reader = new FileReader(FILE_PATH);
-            Type type = new TypeToken<List<SolitaireCards>>() {
+            Type type = new TypeToken<List<SolitaireState>>() {
             }.getType();
             history = new Gson().fromJson(reader, type);
         } catch (IOException i) {
@@ -55,7 +58,7 @@ public class CardLogger implements I_CardLogger {
     }
 
     @Override
-    public void deleteAllData() {
+    public void deleteCurrentSessionData() {
         Writer writer;
         try {
             writer = new FileWriter(FILE_PATH);

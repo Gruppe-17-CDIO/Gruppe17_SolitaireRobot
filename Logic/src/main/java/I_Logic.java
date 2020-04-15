@@ -1,4 +1,7 @@
+import dataObjects.Move;
+import dataObjects.SolitaireState;
+
 public interface I_Logic {
 
-    Move getMove(SolitaireCards cards);
+    Move getMove(SolitaireState cards);
 }
