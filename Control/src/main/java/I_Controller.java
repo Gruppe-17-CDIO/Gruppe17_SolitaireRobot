@@ -16,7 +16,7 @@ public interface I_Controller {
     Image getImage();
 
     // Returns 'cards'-object to gui if needed
-    SolitaireState getCards();
+    SolitaireState getCards() throws Exception;
 
 }
 

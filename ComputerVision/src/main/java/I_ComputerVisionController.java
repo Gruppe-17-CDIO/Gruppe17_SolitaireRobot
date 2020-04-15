@@ -1,14 +1,15 @@
-import dataObjects.SolitaireState;
+import dataObjects.Card;
+import javafx.scene.image.Image;
 
-import java.io.File;
+import java.util.List;
 
 /**
  * @author Erlend
  */
 
 public interface I_ComputerVisionController {
-
-    // Return the whole table of cards as a SolitaireCards object to the controller.
-    // (Image format is not decided, file is just an example.)
-    SolitaireState getSolitaireCards(File img);
+    // Return all fully visible cards as a list to the controller.
+    // Empty piles should be in the list, so the length is always 12:
+    // drawn card, foundation 1-4, pile 1-7
+    List<Card> getSolitaireCards(Image img);
 }
