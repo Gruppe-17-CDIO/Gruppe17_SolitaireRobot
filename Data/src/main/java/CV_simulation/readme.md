@@ -34,8 +34,8 @@ A Hashtag tells the compiler that the next line should be read and parsed.
 Cards are comma separated, and the exact spelling is important for parsing.
 Note that an empty pile is notated with a blank line.
 
-# Stock is empty (draw pile)
-true
+# Stock (draw pile)
+17
 
 # Cards drawn
 DIAMOND 7

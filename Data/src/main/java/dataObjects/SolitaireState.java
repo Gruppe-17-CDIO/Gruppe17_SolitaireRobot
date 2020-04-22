@@ -23,19 +23,17 @@ import java.util.List;
 public class SolitaireState {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
-    // TODO stockempty not boolean but number of cards left and rename
-    private boolean stockEmpty = true; // Cards to draw, face not visible
+    private int stock = 52; // Cards to draw, face not visible
     private Card drawnCard = null; // Drawn card, just one
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
 
-    public boolean isStockEmpty() {
-        return stockEmpty;
+    public int getStock() {
+        return stock;
     }
 
-    public void setStockEmpty(boolean stockEmpty) {
-        // Set this to true if the stock (draw pile) is empty.
-        this.stockEmpty = stockEmpty;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public Card getDrawnCard() {

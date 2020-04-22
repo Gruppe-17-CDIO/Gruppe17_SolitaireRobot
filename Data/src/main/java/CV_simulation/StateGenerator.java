@@ -21,13 +21,15 @@ public class StateGenerator {
     static SolitaireState buildState(String[][] data) throws Exception {
         SolitaireState state = new SolitaireState();
 
-        // Set stock present
-        state.setStockEmpty(data[0][0].equals("true"));
+        // Set stock (cards left in pile)
+        state.setStock(Integer.parseInt(data[0][0]));
 
         // Set drawn cards
         Card drawn = null;
         if (data[1].length > 0) {
             drawn = buildCard(data[1][0]);
+        } else {
+            drawn = null;
         }
 
         state.setDrawnCard(drawn);
@@ -109,7 +111,7 @@ public class StateGenerator {
                     line = reader.readLine();
                     String[] lines = line.split(",");
                     // Simple regex match for valid cards.
-                    String regex = "((HEART|SPADE|CLUB|DIAMOND)) \\d+|FACEDOWN|true|false|";
+                    String regex = "((HEART|SPADE|CLUB|DIAMOND)) \\d+|FACEDOWN|\\d+|";
                     for (String s : lines) {
                         if (!Pattern.matches(regex, s.trim())) {
                             throw new Exception("Bad formatting: '" + s.trim() + "'.");

@@ -29,12 +29,8 @@ public class StatePrinterUtility {
         printRow(line);
 
         // First text line
-        if (state.isStockEmpty()) {
-            item = "[Stock empty]";
-        } else {
-            item = "[Stock has more cards]";
-        }
-        line[0] = item;
+        line[0] = "[Stock: " + state.getStock() + "]";
+
         for (int i = 1; i < 7; i++) {
             line[i] = empty;
         }
