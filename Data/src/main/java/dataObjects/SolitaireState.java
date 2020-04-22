@@ -28,6 +28,15 @@ public class SolitaireState {
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
 
+    public SolitaireState() {
+        for (int i = 0; i < 4; i++) {
+            foundations.add(null);
+        }
+        for (int i = 0; i < 7; i++) {
+            piles.add(null);
+        }
+    }
+
     public int getStock() {
         return stock;
     }
