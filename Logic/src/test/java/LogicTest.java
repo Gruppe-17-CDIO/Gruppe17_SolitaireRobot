@@ -1,9 +1,11 @@
-import dataObjects.Move;
-import org.junit.jupiter.api.Test;
-import dataObjects.SolitaireState;
 import CV_simulation.StateGenerator;
+import dataObjects.Move;
+import dataObjects.SolitaireState;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LogicTest {
@@ -21,7 +23,7 @@ class LogicTest {
         List<Move> moves;
 
         try {
-            state = StateGenerator.getState(1);
+            state = StateGenerator.getState(0);
             System.out.println(state.getPrintFormat());
         } catch (Exception ex) {
             System.out.println(ex.toString());

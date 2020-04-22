@@ -20,7 +20,7 @@ public class Controller implements I_Controller {
 
     public void getNextMove(Image img, NextMoveCallback callback) {
         try {
-            cardData = CV_Controller.getSolitaireCards(img); // Never null
+            //cardData = CV_Controller.getSolitaireCards(img); // Never null
             SolitaireState state = stateHandler.updateState(cardData, lastMove); // lastMove is null at beginning of game
 
             // TODO Check if cards are as expected after previous move

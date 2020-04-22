@@ -110,8 +110,10 @@ public class StateGenerator {
                     // If line starts with #, parse next line
                     line = reader.readLine();
                     String[] lines = line.split(",");
+
                     // Simple regex match for valid cards.
                     String regex = "((HEART|SPADE|CLUB|DIAMOND)) \\d+|FACEDOWN|\\d+|";
+
                     for (String s : lines) {
                         if (!Pattern.matches(regex, s.trim())) {
                             throw new Exception("Bad formatting: '" + s.trim() + "'.");
