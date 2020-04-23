@@ -1,27 +1,36 @@
 package view.components;
 
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import view.components.card.CardUI;
+import view.components.card.SuitEnum;
+
+import java.awt.*;
 
 /**
  * @author Rasmus Sander Larsen
  */
-public class DeckStackPane extends CardStackPane {
+public class CollectionStackPane extends CardStackPane {
 
     //-------------------------- Fields --------------------------
 
+    private SuitEnum collectionSuit;
     private CardUI topCard;
 
     //----------------------- Constructor -------------------------
 
-    public DeckStackPane() {
+    public CollectionStackPane () {
         super();
         applyDefault();
     }
 
-    public DeckStackPane(boolean isTopCardVisible) {
+    public CollectionStackPane (SuitEnum collectionSuit) {
         super();
+        this.collectionSuit = collectionSuit;
         applyDefault();
-        showCards(isTopCardVisible);
     }
 
     //------------------------ Properties -------------------------
@@ -33,20 +42,14 @@ public class DeckStackPane extends CardStackPane {
 
     //---------------------- Public Methods -----------------------
 
-    public void showBackSide () {
-        if (topCard.isFrontShowing()){
-            topCard.showBackside();
-            showCards(true);
-        }
-    }
+    public void setAndShowCard (CardUI cardUI) {
+        // Displays CardUI's
+        showCards(true);
 
-    public void showFrontSide (CardUI cardUI) {
-        if (!topCard.isFrontShowing()) {
-            topCard.showFrontSide();
-            showCards(true);
-        }
+        // Sets the value of the topCardUI and shows the front side.
         topCard.setValueAndApply(cardUI.getValue());
         topCard.setSuitAndApply(cardUI.getSuit());
+        topCard.showFrontSide();
     }
 
     //---------------------- Support Methods ----------------------    
@@ -54,6 +57,7 @@ public class DeckStackPane extends CardStackPane {
     private void applyDefault () {
         topCard = new CardUI();
         addCardToStackPane(topCard);
+        showCards(false);
     }
 
 }

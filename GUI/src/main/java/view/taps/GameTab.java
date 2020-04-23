@@ -12,7 +12,6 @@ import view.components.FxUtil;
 import view.components.SolitaireGridPane;
 import view.components.TabStd;
 import view.components.card.CardUI;
-import view.components.card.CardUIGridPane;
 import view.components.card.SuitEnum;
 import view.components.webCamImageView.WebCamImageView;
 import view.components.webCamImageView.WebCamStateCallback;
@@ -83,20 +82,14 @@ public class GameTab extends TabStd {
         addToContent( new Group(webCamPane));
 
         SolitaireGridPane solitaireGridPane = new SolitaireGridPane();
-        solitaireGridPane.insetCardInColumn(new CardUIGridPane("2", SuitEnum.Club),1);
-        solitaireGridPane.insetCardInColumn(new CardUIGridPane("3", SuitEnum.Spade),1);
-        solitaireGridPane.insetCardInColumn(new CardUIGridPane("4", SuitEnum.Diamond),1);
-        solitaireGridPane.insetCardInColumn(new CardUI("5", SuitEnum.Spade),2);
-        solitaireGridPane.insetCardInColumn(new CardUI("10", SuitEnum.Diamond),3);
-        solitaireGridPane.insetCardInColumn(new CardUI("K", SuitEnum.Heart),4);
-        solitaireGridPane.insetCardInColumn(new CardUI("J", SuitEnum.Diamond),5);
-        solitaireGridPane.insetCardInColumn(new CardUI("D", SuitEnum.Club),6);
-        solitaireGridPane.insetCardInColumn(new CardUI("8", SuitEnum.Spade),7);
 
-        //solitaireGridPane.insertCardInCollectionDeck(new CardUI("A", SuitEnum.Heart));
-        solitaireGridPane.insertCardInCollectionDeck(new CardUI("2", SuitEnum.Diamond));
-        solitaireGridPane.insertCardInCollectionDeck(new CardUI("A", SuitEnum.Club));
-        solitaireGridPane.insertCardInCollectionDeck(new CardUI("3", SuitEnum.Spade));
+        solitaireGridPane.createFullRow(1, 1, new CardUI("4", SuitEnum.Diamond));
+        solitaireGridPane.createFullRow(2, 2, new CardUI("5", SuitEnum.Spade));
+        solitaireGridPane.createFullRow(3, 3, new CardUI("10", SuitEnum.Diamond));
+        solitaireGridPane.createFullRow(4, 4, new CardUI("K", SuitEnum.Heart));
+        solitaireGridPane.createFullRow(5, 5, new CardUI("J", SuitEnum.Diamond));
+        solitaireGridPane.createFullRow(6, 6, new CardUI("D", SuitEnum.Club));
+        solitaireGridPane.createFullRow(7, 7, new CardUI("8", SuitEnum.Spade));
 
         //addToContent(solitaireGridPane);
 
