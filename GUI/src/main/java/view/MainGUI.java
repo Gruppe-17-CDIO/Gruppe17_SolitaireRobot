@@ -5,6 +5,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import view.components.OutputTextArea;
 import view.taps.TabPane;
@@ -42,12 +43,12 @@ public class MainGUI extends Application {
 
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
-        splitPane.setDividerPositions(500);
+        splitPane.setDividerPositions(600);
         splitPane.getItems().addAll(tabPane, outputTextArea);
 
-        outputTextArea.setMinWidth(500);
+        outputTextArea.setMinWidth(400);
         outputTextArea.setEditable(false);
-        tabPane.setMinWidth(500);
+        tabPane.setMinWidth(600);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 Runnable updater = (Runnable) newValue.getUserData();
@@ -57,7 +58,10 @@ public class MainGUI extends Application {
             }
         });
 
-        primaryStage.setScene(new Scene(splitPane,1000,600));
+        BorderPane mainPane = new BorderPane();
+        mainPane.setCenter(splitPane);
+
+        primaryStage.setScene(new Scene(mainPane,1000,600));
     }
 
     //------------------------ Properties -------------------------

@@ -1,7 +1,6 @@
 package view.taps;
 
 import javafx.scene.control.Tab;
-import view.taps.CameraSourceTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +47,7 @@ public class TabPane extends javafx.scene.control.TabPane {
 
     private void loadDefaultTabs () {
         tabList.add(cameraSourceTab);
+        tabList.add(new GameTab());
 
         getTabs().addAll(tabList);
     }
