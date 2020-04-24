@@ -30,7 +30,7 @@ public class SolitaireState {
 
     public SolitaireState() {
         for (int i = 0; i < 4; i++) {
-            foundations.add(null);
+             foundations.add(new Card(Card.Status.FACEDOWN));
         }
         for (int i = 0; i < 7; i++) {
             piles.add(new ArrayList<>());

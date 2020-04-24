@@ -57,7 +57,7 @@ public class Logic implements I_Logic {
                         continue;
                     }
 
-                    if (destCard.getStatus() == Card.Status.FACEDOWN)
+                    if (destCard.getStatus() == Card.Status.FACEDOWN) 
                         continue;
 
                     if (card.getRank() == destCard.getRank() - 1 && card.getColor() != destCard.getColor()) {
