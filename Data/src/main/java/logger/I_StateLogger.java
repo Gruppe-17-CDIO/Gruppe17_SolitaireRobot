@@ -8,10 +8,10 @@ import java.util.List;
  * @author Erlend
  */
 
-public interface I_CardLogger {
+public interface I_StateLogger {
 
     // Log the current state of the game board 'SolitaireCards'
-    void logCards(SolitaireState currentGameCards);
+    void logState(SolitaireState currentGameCards);
 
     // Returns states from this session and previous.
     List<SolitaireState> getHistory();

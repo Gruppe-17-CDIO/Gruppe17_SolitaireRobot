@@ -1,7 +1,7 @@
-import CV_simulation.StateGenerator;
 import dataObjects.SolitaireState;
-import logger.CardLogger;
+import logger.StateLogger;
 import org.junit.jupiter.api.Test;
+import stateBuilding.StateGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,14 @@ import java.util.List;
 // data in current session's log!
 // **********************************
 
-class CardLoggerTest {
+class StateLoggerTest {
     int iterations = 1000;
 
     @Test
     void logCards() {
         StateGenerator generator = new StateGenerator();
         System.out.println("logCards: Writing to file, then reading...");
-        CardLogger logger = new CardLogger();
+        StateLogger logger = new StateLogger();
         logger.deleteCurrentSessionData();
         List<SolitaireState> cardList = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
@@ -30,7 +30,7 @@ class CardLoggerTest {
             }
             cardList.add(cards);
             //System.out.println("Logging " + (i + 1));
-            logger.logCards(cards);
+            logger.logState(cards);
         }
 
         assert (logger.getHistory().size() == iterations);
@@ -40,14 +40,14 @@ class CardLoggerTest {
     @Test
     void getHistory() {
         System.out.println("getHistory: Writing to file, then reading...");
-        CardLogger logger = new CardLogger();
+        StateLogger logger = new StateLogger();
         logger.deleteCurrentSessionData();
         assert (logger.getHistory().isEmpty());
         List<SolitaireState> cardList = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
             SolitaireState cards = new SolitaireState();
             cardList.add(cards);
-            logger.logCards(cards);
+            logger.logState(cards);
         }
 
         List<SolitaireState> reply = logger.getHistory();
@@ -62,7 +62,7 @@ class CardLoggerTest {
 
     @Test
     void deleteData() {
-        CardLogger logger = new CardLogger();
+        StateLogger logger = new StateLogger();
         logger.deleteCurrentSessionData();
         assert (logger.getHistory().isEmpty());
     }

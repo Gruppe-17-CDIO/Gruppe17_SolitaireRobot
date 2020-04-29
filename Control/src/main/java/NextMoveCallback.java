@@ -1,10 +1,13 @@
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 
-public interface NextMoveCallback {
-        void OnSuccess(Move move);
+import java.util.List;
+import java.util.Stack;
 
-        void OnFailure(String message, Move move, SolitaireState cards);
+public interface NextMoveCallback {
+        void OnSuccess(List<Move> moves, Stack<SolitaireState> history);
+
+        void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history);
 
         void OnError(Exception e);
 }

@@ -1,7 +1,7 @@
-import CV_simulation.StateGenerator;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import org.junit.jupiter.api.Test;
+import stateBuilding.StateGenerator;
 
 import java.util.List;
 
