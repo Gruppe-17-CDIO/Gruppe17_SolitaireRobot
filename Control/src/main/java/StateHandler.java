@@ -6,6 +6,7 @@ import dataObjects.SolitaireState;
 import java.util.List;
 
 public class StateHandler {
+    private List<SolitaireState> history;
     private SolitaireState state;
 
     public SolitaireState updateState(List<Card> cardData, Move move) throws Exception {

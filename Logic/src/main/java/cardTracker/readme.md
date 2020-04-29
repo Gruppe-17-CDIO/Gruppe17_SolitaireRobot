@@ -3,7 +3,7 @@
 Card tracker keeps track of state.
 
 ###Input
-1. Image state from Computer Vision
+1. Image state from Computer Vision, array
 2. Previous state
 3. Move. 
 
@@ -14,7 +14,7 @@ Card tracker keeps track of state.
 
 If no previous state or move are given, it generates a new one based on a starter state and assumes this is a new game.
 
-Image state is a required argument, move is required except in new game.
+Card array is a required argument, move and state is required except in new game.
 
 Maybe this class should leave saving to disk to the controller...
 
@@ -22,8 +22,8 @@ Suggested classes and methods:
 
 ```
 class CardTracker
-state generateState(ImageState imgstate, State prevState, Move move)
-state generateState(ImageState imgstate)
+Solitairestate generateState(List<Card> cardArray, State prevState, Move move)
+Solitairestate generateState(List<Card> cardArray)
 ```
 
 ## Flow Chart
