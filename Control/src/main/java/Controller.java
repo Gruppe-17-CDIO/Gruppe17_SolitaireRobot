@@ -2,8 +2,6 @@ import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import javafx.scene.image.Image;
-import logger.CardLogger;
-import logger.I_CardLogger;
 
 import java.util.List;
 
@@ -11,39 +9,53 @@ import java.util.List;
  * @author Erlend
  */
 public class Controller implements I_Controller {
-    private I_Logic logic; // Instantiate
-    private final I_CardLogger logger = new CardLogger();
+    private final I_Logic logic = new Logic();
+    private final StateManager stateManager = new StateManager();
     private I_ComputerVisionController CV_Controller; // Instantiate
-    private List<Card> cardData;
-    private StateHandler stateHandler;
-    private Move lastMove = null;
+    private Move prevMove;
 
-    public void getNextMove(Image img, NextMoveCallback callback) {
+    @Override
+    public void initiate(Image img, NextMoveCallback callback) {
         try {
-            //cardData = CV_Controller.getSolitaireCards(img); // Never null
-            SolitaireState state = stateHandler.updateState(cardData, lastMove); // lastMove is null at beginning of game
-
-            // TODO Check if cards are as expected after previous move
-            boolean correct = true;
-
-            if (correct) {
-                // State for test and dev
-                lastMove = logic.getMoves(state).get(0);
-                callback.OnSuccess(lastMove);
-                logger.logCards(state);
-            } else {
-                callback.OnFailure("Can't recognise last move.", lastMove, state);
-            }
+            // 1. Get new image
+            Card[] cardData = CV_Controller.getSolitaireCards(img);
+            // 2. reset history and make new logfile
+            // 3. Calculate State
+            // 4. Add to history
+            SolitaireState state = stateManager.initiate(cardData);
+            // 5. Get moves
+            List<Move> moves = logic.getMoves(state);
+            // 6. Store state and moves
+            stateManager.saveState(state, moves);
+            // 6. Store the previous move. (Not list)
+            prevMove = moves.get(0);
+            // 6. Return move and history
+            callback.OnSuccess(moves, stateManager.getHistory());
         } catch (Exception e) {
             callback.OnError(e);
         }
+
     }
 
-    public Image getImage() {
-        return new Image((java.io.InputStream) null);
-    }
-
-    public SolitaireState getCards() throws Exception {
-        return stateHandler.getState();
+    @Override
+    public void getNextMove(Image img, NextMoveCallback callback) {
+        try {
+            // 1. Get new image
+            Card[] cardData = CV_Controller.getSolitaireCards(img);
+            // 2. Calculate current state based on previous state and previous move
+            // 3. Check this against image
+            SolitaireState state = stateManager.updateState(cardData, prevMove);
+            // 4.  Get move
+            List<Move> moves = logic.getMoves(state);
+            // 5. Save state and moves
+            stateManager.saveState(state, moves);
+            // 6. Save this move as previous
+            prevMove = moves.get(0);
+            // 7. Return move and history
+            callback.OnSuccess(moves, stateManager.getHistory());
+        } catch (Exception e) {
+            callback.OnError(e);
+            e.printStackTrace();
+        }
     }
 }

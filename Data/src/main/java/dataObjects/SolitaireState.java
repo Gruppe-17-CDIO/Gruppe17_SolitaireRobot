@@ -27,6 +27,7 @@ public class SolitaireState {
     private Card drawnCard = null; // Drawn card, just one
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
+    private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
 
     public SolitaireState() {
         for (int i = 0; i < 4; i++) {
@@ -98,5 +99,12 @@ public class SolitaireState {
         return new StatePrinterUtility().getPrintFormat(this);
     }
 
+    public List<Move> getSuggestedMoves() {
+        return suggestedMoves;
+    }
+
+    public void setSuggestedMoves(List<Move> suggestedMoves) {
+        this.suggestedMoves = suggestedMoves;
+    }
 }
 
