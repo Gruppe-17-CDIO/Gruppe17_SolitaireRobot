@@ -54,7 +54,6 @@ public class Controller implements I_Controller {
             callback.OnSuccess(moves, stateManager.getHistory());
         } catch (Exception e) {
             callback.OnError(e);
-            e.printStackTrace();
         }
     }
 }
