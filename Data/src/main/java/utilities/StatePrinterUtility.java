@@ -1,6 +1,7 @@
 package utilities;
 
 import dataObjects.Card;
+import dataObjects.Move;
 import dataObjects.SolitaireState;
 
 import java.util.List;
@@ -109,6 +110,17 @@ public class StatePrinterUtility {
             line[i] = "----------------";
         }
         printRow(line);
+
+        // Print moves
+        List<Move> moves = state.getSuggestedMoves();
+        if (moves == null || moves.size() < 1) {
+            result.append("No moves suggested.");
+        } else {
+            result.append("Possible moves: \n");
+            for (int i = 0; i < moves.size(); i++) {
+                result.append(i + ": " + moves.get(i) + "\n");
+            }
+        }
 
         return result.toString();
     }
