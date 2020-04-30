@@ -35,7 +35,7 @@ public class Move {
         } else if (moveType == MoveType.FACEUP) {
             return "Turn " + position[0] + " " + position[1] + " face up.";
         } else {
-            return "Move" + position[0] + " " + position[1] + " to " + destinationType + " " + destPosition + "\n";
+            return "Move" + position[0] + " " + position[1] + " to " + destinationType + " " + destPosition;
         }
     }
 
