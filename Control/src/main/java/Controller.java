@@ -33,7 +33,6 @@ public class Controller implements I_Controller {
         } catch (Exception e) {
             callback.OnError(e);
         }
-
     }
 
     @Override
