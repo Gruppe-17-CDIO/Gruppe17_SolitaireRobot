@@ -9,11 +9,12 @@ or like this:
 ```
 new Card(Card.Status.FACEDOWN)
 ```
-SolitaireState has four fields with setters and getters:
+SolitaireState has five fields with setters and getters:
 1. ```int stock```
 2. ```Card drawnCard```
 3. ```List<Card> foundations```
 4. ```List<List<Card>> piles```
+5. ```List<Move> suggestedMoves```
 
 
 ## Content
@@ -70,10 +71,13 @@ This object is used to store the whole deck of cards as displayed on the table. 
 | drawnCards | Card | The card currently drawn. |
 | foundations | List of Cards. Max size: 4.| Goal for the sorted cards. Values can be null|
 | piles | List of Lists of Cards. Size: 7. | The 7 columns. Values can be empty lists.|
+| suggestedMoves | List of move objects | List of legal moves|
 
 There are getters and setters for all fields. Some basic tests for validity are built-in. Some null values will raise exceptions, and the size ranges are enforced. 
 
 There is an extra setter for individual 'columns' in the pile, ```addColumntToPile()```, in case that is practical.
+
+The moves are added after creating the state object in controller, do document and bugfix.
 
 The `toString()` method returns the ID of the SolitaireState. 
 
