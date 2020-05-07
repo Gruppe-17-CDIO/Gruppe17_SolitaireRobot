@@ -9,6 +9,8 @@ or like this:
 ```
 new Card(Card.Status.FACEDOWN)
 ```
+Of course a card laying face down has no suit and rank.
+
 SolitaireState has five fields with setters and getters:
 1. ```int stock```
 2. ```Card drawnCard```

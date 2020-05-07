@@ -39,6 +39,8 @@ public class Move {
         }
     }
 
+    // TODO: Add an option to return no move if game won / lost?
+
     public enum MoveType {
         FACEUP,
         MOVE,
