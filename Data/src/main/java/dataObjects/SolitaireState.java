@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Andreas, Erlend
  * This class represents state, or 'all cards on the table
- * plus the previous move and suggested moves'.
+ * plus the previous move (if not first state) and suggested moves'.
  * <p>
  * 'stock' is the pile you draw from, represented by an int
  * 'drawnCard' is the card that is currently drawn.
@@ -65,7 +65,7 @@ public class SolitaireState {
             throw new Exception("The List 'foundations' must not be null.");
         }
         if (foundations.size() > 4) {
-            throw new Exception("Maximum four foundations (including empty piles), was " + foundations.size() + ".");
+            throw new Exception("Maximum is 4 foundations (including empty piles), was " + foundations.size() + ".");
         }
         this.foundations = foundations;
     }
