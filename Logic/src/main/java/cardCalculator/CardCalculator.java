@@ -48,6 +48,7 @@ public class CardCalculator {
     public SolitaireState updateState(SolitaireState prevState, Move move) {
         SolitaireState state = prevState;
         // State = state + move
+        // CONSIDER DEEP COPY WHEN UPDATNG STATE
 
         /*
         //Moves are from drawn or piles only.
@@ -66,7 +67,7 @@ public class CardCalculator {
     }
 
     public void checkState(Card[] cardData, SolitaireState state) throws Exception {
-        // CONSIDER DEEP COPY WHEN UPDATNG STATE
+
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
         Card[] stateData = new Card[12];
