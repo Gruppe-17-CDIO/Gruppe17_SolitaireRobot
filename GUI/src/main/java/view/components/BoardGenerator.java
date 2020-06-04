@@ -9,6 +9,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import view.MainGUI;
 
+/**
+ * @author David Fager
+ */
 public class BoardGenerator {
     private final int DEFAULT_SPACING = 5;
     private final String STD_DECK_STYLE = "-fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5; " +
