@@ -1,12 +1,10 @@
 package dataObjects;
 
-import java.util.List;
-
 public class TopCards {
 
-    private Card drawnCard;
-    private List<Card> foundations; // 0-3
-    private List<Card> piles;
+    private Card drawnCard = null;
+    private Card[] foundations;
+    private Card[] piles;
 
 
     public Card getDrawnCard() {
@@ -17,24 +15,30 @@ public class TopCards {
         this.drawnCard = drawnCard;
     }
 
-    public List<Card> getFoundations() {
+    public Card[] getFoundations() {
+        if (foundations == null) {
+            foundations = new Card[4];
+        }
         return foundations;
     }
 
-    public void setFoundations(List<Card> foundations) throws Exception {
-        if (foundations.size() > 4) {
-            throw new Exception("TopCards: Max 4 foundations");
+    public void setFoundations(Card[] foundations) throws Exception {
+        if (foundations.length != 4) {
+            throw new Exception("TopCards: Foundations list must be 4 Cards long. Cards can be null.");
         }
         this.foundations = foundations;
     }
 
-    public List<Card> getPiles() {
+    public Card[] getPiles() {
+        if (piles == null) {
+            piles = new Card[7];
+        }
         return piles;
     }
 
-    public void setPiles(List<Card> piles) throws Exception {
-        if (foundations.size() > 7) {
-            throw new Exception("TopCards: Max 7 piles.");
+    public void setPiles(Card[] piles) throws Exception {
+        if (piles.length != 7) {
+            throw new Exception("TopCards: Piles list must be 7 Cards long. Cards can be null.");
         }
         this.piles = piles;
     }
