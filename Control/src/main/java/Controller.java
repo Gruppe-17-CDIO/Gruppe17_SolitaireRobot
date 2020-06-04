@@ -26,7 +26,7 @@ public class Controller implements I_Controller {
                 TopCards topCards = CV_Controller.getSolitaireCards(img);
                 state = stateManager.initiate(topCards); // Make new history, logfile and state
             } else {
-                state = new StateGenerator().getState(0);
+                state = new StateGenerator().getState(2);
             }
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state, moves); // Saves the suggested moves
