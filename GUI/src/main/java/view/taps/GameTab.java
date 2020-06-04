@@ -8,6 +8,9 @@ import view.components.TabStd;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * @author David Fager
+ */
 public class GameTab extends TabStd {
     private BoardGenerator cg;
     private ToggleButton toggleButton;
