@@ -1,6 +1,6 @@
-import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
+import dataObjects.TopCards;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public class Controller implements I_Controller {
     @Override
     public void getFirstMove(Image img, NextMoveCallBack callBack) {
         try {
-            Card[] cardData = CV_Controller.getSolitaireCards(img);
-            SolitaireState state = stateManager.initiate(cardData); // Make new history, logfile and state
+            TopCards topCards = CV_Controller.getSolitaireCards(img);
+            SolitaireState state = stateManager.initiate(topCards); // Make new history, logfile and state
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state, moves); // Saves the suggested moves
             callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
@@ -47,8 +47,8 @@ public class Controller implements I_Controller {
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         try {
-            Card[] cardData = CV_Controller.getSolitaireCards(img);
-            stateManager.checkState(cardData);
+            TopCards topCards = CV_Controller.getSolitaireCards(img);
+            stateManager.checkState(topCards);
             callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
         } catch (Exception e) {
             callBack.OnError(e);

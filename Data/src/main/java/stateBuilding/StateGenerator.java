@@ -25,14 +25,14 @@ public class StateGenerator {
         state.setStock(Integer.parseInt(data[0][0]));
 
         // Set drawn cards
-        Card drawn = null;
+        List<Card> drawn = new ArrayList<>();
         if (data[1].length > 0) {
-            drawn = buildCard(data[1][0]);
+            drawn.add(buildCard(data[1][0]));
         } else {
             drawn = null;
         }
 
-        state.setDrawnCard(drawn);
+        state.setDrawnCards(drawn);
 
         // Set foundations
         ArrayList<Card> foundations = new ArrayList<>();
@@ -68,7 +68,7 @@ public class StateGenerator {
     /**
      * Parses string to Card
      *
-     * @param input A string to be prsed to Card construcotr args
+     * @param input A string to be parsed to Card constructor args
      * @return Card object
      * @throws Exception if card can't be parsed.
      */
