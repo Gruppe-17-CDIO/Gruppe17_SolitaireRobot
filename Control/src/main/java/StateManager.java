@@ -3,6 +3,7 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import logger.StateLogger;
+import stateBuilding.StateGenerator;
 
 import java.util.List;
 import java.util.Stack;
@@ -18,7 +19,7 @@ import java.util.Stack;
 public class StateManager {
     private Stack<SolitaireState> history; // This is the main history
     private StateLogger logger; // Making logfiles
-    private CardCalculator cardCalculator; // Updating the state
+    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
 
     public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
@@ -31,6 +32,14 @@ public class StateManager {
             state = cardCalculator.initiateState(cardData);
         }
         return state;
+    }
+
+    // Overridden for test mode only
+    public SolitaireState initiate() throws Exception {
+        System.out.println("Test session started. Creating new state, blank history and logfile.\n");
+        history = new Stack<>();
+        logger = new StateLogger();
+        return new StateGenerator().getState(2);
     }
 
     public SolitaireState updateState(Move move) throws Exception {

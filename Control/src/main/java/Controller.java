@@ -2,7 +2,6 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
-import stateBuilding.StateGenerator;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class Controller implements I_Controller {
                 TopCards topCards = CV_Controller.getSolitaireCards(img);
                 state = stateManager.initiate(topCards); // Make new history, logfile and state
             } else {
-                state = new StateGenerator().getState(2);
+                state = stateManager.initiate(); // No args means just a test.
             }
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state, moves); // Saves the suggested moves
@@ -41,12 +40,12 @@ public class Controller implements I_Controller {
     public void performMove(Move move, CompletionCallBack callBack) {
         try {
             if (move == null) {
-                callBack.OnFailure("Please supply a move", stateManager.getHistory());
+                callBack.OnFailure("Please supply a move");
             } else {
                 SolitaireState state = stateManager.updateState(move);
                 List<Move> moves = logic.getMoves(state);
                 stateManager.saveState(state, moves);
-                callBack.OnSuccess("OK: Move registered, and suggested moves generated.", stateManager.getHistory());
+                callBack.OnSuccess("OK: Move registered, and suggested moves generated.");
             }
         } catch (Exception e) {
             callBack.OnError(e);
@@ -70,7 +69,7 @@ public class Controller implements I_Controller {
     public void undo(CompletionCallBack callBack) {
         try {
             stateManager.undo();
-            callBack.OnSuccess("UNDO registered. Last move and state logged, but deleted from current history. \n\tPlease try to move your cards back and run thi method,'getNextMove' again. \n\tRestart if this doesn't work.", stateManager.getHistory());
+            callBack.OnSuccess("UNDO registered. Last move and state logged, but deleted from current history. \n\tPlease try to move your cards back and run thi method,'getNextMove' again. \n\tRestart if this doesn't work.");
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -84,7 +83,7 @@ public class Controller implements I_Controller {
             if (!testmode) {
                 status = "Test mode OFF.";
             }
-            callBack.OnSuccess(status, stateManager.getHistory());
+            callBack.OnSuccess(status);
         } catch (Exception e) {
             callBack.OnError(e);
         }

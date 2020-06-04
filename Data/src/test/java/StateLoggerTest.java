@@ -24,7 +24,7 @@ class StateLoggerTest {
         for (int i = 0; i < iterations; i++) {
             SolitaireState cards = null;
             try {
-                cards = StateGenerator.getState(1);
+                cards = new StateGenerator().getState(1);
             } catch (Exception e) {
                 e.printStackTrace();
             }

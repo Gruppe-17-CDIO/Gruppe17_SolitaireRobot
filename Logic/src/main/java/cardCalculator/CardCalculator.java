@@ -44,7 +44,7 @@ public class CardCalculator {
         }
 
 
-        SolitaireState state = StateGenerator.getState(999); // State template
+        SolitaireState state = new StateGenerator().getState(999); // State template
 
         ArrayList<Card> drawnCards = new ArrayList<>();
         drawnCards.add(topCards.getDrawnCard());
