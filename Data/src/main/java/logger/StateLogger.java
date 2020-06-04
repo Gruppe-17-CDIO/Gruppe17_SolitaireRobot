@@ -17,7 +17,7 @@ import java.util.List;
  * @author Erlend
  */
 
-public class CardLogger implements I_CardLogger {
+public class StateLogger implements I_StateLogger {
 
     // Filepath for current session with timestamp
     static final String FILE_PATH = "src/main/resources/SolitaireData_" +
@@ -25,7 +25,7 @@ public class CardLogger implements I_CardLogger {
             ".json";
 
     @Override
-    public synchronized void logCards(SolitaireState currentGameCards) {
+    public synchronized void logState(SolitaireState currentGameCards) {
         List<SolitaireState> historyCards = getHistory();
         historyCards.add(currentGameCards);
         try {
@@ -68,5 +68,9 @@ public class CardLogger implements I_CardLogger {
             e.printStackTrace();
         }
 
+    }
+
+    public String getLogFileName() {
+        return FILE_PATH;
     }
 }

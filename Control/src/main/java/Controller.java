@@ -2,48 +2,66 @@ import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import javafx.scene.image.Image;
-import logger.CardLogger;
-import logger.I_CardLogger;
 
 import java.util.List;
 
 /**
  * @author Erlend
+ * See interface for comments.
  */
+
 public class Controller implements I_Controller {
-    private I_Logic logic; // Instantiate
-    private final I_CardLogger logger = new CardLogger();
-    private I_ComputerVisionController CV_Controller; // Instantiate
-    private List<Card> cardData;
-    private StateHandler stateHandler;
-    private Move lastMove = null;
+    private final I_Logic logic = new Logic();
+    private final StateManager stateManager = new StateManager();
+    private I_ComputerVisionController CV_Controller; // Instantiate here
 
-    public void getNextMove(Image img, NextMoveCallback callback) {
+    @Override
+    public void getFirstMove(Image img, NextMoveCallBack callBack) {
         try {
-            //cardData = CV_Controller.getSolitaireCards(img); // Never null
-            SolitaireState state = stateHandler.updateState(cardData, lastMove); // lastMove is null at beginning of game
-
-            // TODO Check if cards are as expected after previous move
-            boolean correct = true;
-
-            if (correct) {
-                // State for test and dev
-                lastMove = logic.getMoves(state).get(0);
-                callback.OnSuccess(lastMove);
-                logger.logCards(state);
-            } else {
-                callback.OnFailure("Can't recognise last move.", lastMove, state);
-            }
+            Card[] cardData = CV_Controller.getSolitaireCards(img);
+            SolitaireState state = stateManager.initiate(cardData); // Make new history, logfile and state
+            List<Move> moves = logic.getMoves(state);
+            stateManager.saveState(state, moves); // Saves the suggested moves
+            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
         } catch (Exception e) {
-            callback.OnError(e);
+            callBack.OnError(e);
         }
     }
 
-    public Image getImage() {
-        return new Image((java.io.InputStream) null);
+    @Override
+    public void performMove(Move move, CompletionCallBack callBack) {
+        try {
+            if (move == null) {
+                callBack.OnFailure("Please supply a move", stateManager.getHistory());
+            } else {
+                SolitaireState state = stateManager.updateState(move);
+                List<Move> moves = logic.getMoves(state);
+                stateManager.saveState(state, moves);
+                callBack.OnSuccess("OK: Move registered, and suggested moves generated.", stateManager.getHistory());
+            }
+        } catch (Exception e) {
+            callBack.OnError(e);
+        }
     }
 
-    public SolitaireState getCards() throws Exception {
-        return stateHandler.getState();
+    @Override
+    public void getNextMove(Image img, NextMoveCallBack callBack) {
+        try {
+            Card[] cardData = CV_Controller.getSolitaireCards(img);
+            stateManager.checkState(cardData);
+            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
+        } catch (Exception e) {
+            callBack.OnError(e);
+        }
+    }
+
+    @Override
+    public void undo(CompletionCallBack callBack) {
+        try {
+            stateManager.undo();
+            callBack.OnSuccess("UNDO registered, try to move your cards back and run 'getNextMove' to control.", stateManager.getHistory());
+        } catch (Exception e) {
+            callBack.OnError(e);
+        }
     }
 }

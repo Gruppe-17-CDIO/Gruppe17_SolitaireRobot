@@ -1,4 +1,4 @@
-import dataObjects.SolitaireState;
+import dataObjects.Move;
 import javafx.scene.image.Image;
 
 /**
@@ -7,17 +7,41 @@ import javafx.scene.image.Image;
 
 public interface I_Controller {
 
-    // 1. Gets SolitaireCards from ComputerVision
-    // 2. Gets move from logic
-    // 3. Returns the recommended Objects.Move to GUI.
-    void getNextMove(Image img, NextMoveCallback callback) throws Exception;
+    /**
+     * This method calculates the first list of moves.
+     * Can be used to start and restart game.
+     *
+     * @param img      Image input from view
+     * @param callBack return suggested moves and history
+     */
+    void getFirstMove(Image img, NextMoveCallBack callBack);
 
-    // Returns image to GUI if needed
-    Image getImage();
+    /**
+     * Stores move and calculates new moves
+     *
+     * @param move The chosen move
+     */
+    void performMove(Move move, CompletionCallBack callBack);
 
-    // Returns 'cards'-object to gui if needed
-    SolitaireState getCards() throws Exception;
+    /**
+     * This method controls state against the
+     * data from the image, and returns a move list.
+     * Can be run several times in a row, as it doesn't
+     * change state.
+     *
+     * @param img      Image to control the state
+     * @param callBack List of suggested moves and history
+     */
+    void getNextMove(Image img, NextMoveCallBack callBack);
 
+    /**
+     * Undo the last move, giving the player a
+     * chance to save a broken game.
+     * (The 'bad' state is still in the log file.)
+     *
+     * @param callBack A status message and history
+     */
+    void undo(CompletionCallBack callBack);
 }
 
 

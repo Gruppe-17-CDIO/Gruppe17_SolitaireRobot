@@ -9,10 +9,11 @@ import java.util.List;
 
 /**
  * @author Andreas, Erlend
- * This class represents state, or 'all cards on the table'.
+ * This class represents state, or 'all cards on the table
+ * plus the previous move (if not first state) and suggested moves'.
  * <p>
- * 'stock' is the pile you draw from, a boolean for empty or not empty.
- * 'drawnCards' is a list of 0 - 3 cards that are currently drawn.
+ * 'stock' is the pile you draw from, represented by an int
+ * 'drawnCard' is the card that is currently drawn.
  * 'foundations' are the sorted cards, the result of the game. 4 top cards are visible.
  * 'piles' (List of 7 Lists) are the seven columns of cards.
  * <p>
@@ -27,6 +28,8 @@ public class SolitaireState {
     private Card drawnCard = null; // Drawn card, just one
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
+    private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
+    private Move performedMove; // The move perfomed right before this state.
 
     public SolitaireState() {
         for (int i = 0; i < 4; i++) {
@@ -62,7 +65,7 @@ public class SolitaireState {
             throw new Exception("The List 'foundations' must not be null.");
         }
         if (foundations.size() > 4) {
-            throw new Exception("Maximum four foundations (including empty piles), was " + foundations.size() + ".");
+            throw new Exception("Maximum is 4 foundations (including empty piles), was " + foundations.size() + ".");
         }
         this.foundations = foundations;
     }
@@ -98,5 +101,20 @@ public class SolitaireState {
         return new StatePrinterUtility().getPrintFormat(this);
     }
 
+    public List<Move> getSuggestedMoves() {
+        return suggestedMoves;
+    }
+
+    public void setSuggestedMoves(List<Move> suggestedMoves) {
+        this.suggestedMoves = suggestedMoves;
+    }
+
+    public Move getPerformedMove() {
+        return performedMove;
+    }
+
+    public void setPerformedMove(Move performedMove) {
+        this.performedMove = performedMove;
+    }
 }
 

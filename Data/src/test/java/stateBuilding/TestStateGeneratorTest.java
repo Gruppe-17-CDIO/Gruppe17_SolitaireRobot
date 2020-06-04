@@ -1,4 +1,4 @@
-package CV_simulation;
+package stateBuilding;
 
 import dataObjects.SolitaireState;
 import org.junit.jupiter.api.Test;

@@ -1,0 +1,40 @@
+|‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
+|  Default state  |
+|_________________|
+
+Stock number assumes:
+1. One card is drawn to 'Drawn'
+2. Seven cards are put on top of the 'Piles'
+
+Add these cards to state, without changing the size oft he stock.
+
+# Stock
+29
+
+# Drawn
+
+
+# Foundation
+
+
+# Pile 1
+
+
+# Pile 2
+FACEDOWN,
+
+# Pile 3
+FACEDOWN, FACEDOWN,
+
+# Pile 4
+FACEDOWN, FACEDOWN, FACEDOWN,
+
+# Pile 5
+FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN,
+
+# Pile 6
+FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN,
+
+# Pile 7
+FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN, FACEDOWN,
+
