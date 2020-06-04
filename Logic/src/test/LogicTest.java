@@ -23,7 +23,7 @@ class LogicTest {
         List<Move> moves;
 
         try {
-            state = StateGenerator.getState(0);
+            state = StateGenerator.getState(1);
             System.out.println(state.getPrintFormat());
         } catch (Exception ex) {
             System.out.println(ex.toString());
@@ -85,7 +85,6 @@ class LogicTest {
 
         // Drawn card -> foundation[2]
         assertEquals(Move.MoveType.DRAW, moves.get(0).getMoveType());
-        //assertArrayEquals(new int[]{0,0}, moves.get(0).getPosition());
         assertEquals(Move.DestinationType.FOUNDATION, moves.get(0).getDestinationType());
         assertEquals(2, moves.get(0).getDestPosition());
 
@@ -115,7 +114,6 @@ class LogicTest {
 
         // Drawn card -> piles[4]
         assertEquals(Move.MoveType.DRAW, moves.get(5).getMoveType());
-        //assertArrayEquals(new int[]{0,0}, moves.get(5).getPosition());
         assertEquals(Move.DestinationType.PILE, moves.get(5).getDestinationType());
         assertEquals(4, moves.get(5).getDestPosition());
     }

@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Logic implements I_Logic {
+    private List<Move> moves = new ArrayList<>();
+    private SolitaireState state;
+    private Card card;
+
     @Override
     public List<Move> getMoves(SolitaireState state) {
-        List<Move> moves = new ArrayList<>();
+        this.state = state;
 
         /*
          * Outer loop iterates through pile 1 to 7
@@ -15,7 +19,7 @@ public class Logic implements I_Logic {
          */
         for (int i = 0; i < 7; i++) {
             for (int j = state.getPiles().get(i).size() - 1; j >= 0; j--) {
-                Card card = state.getPiles().get(i).get(j);
+                card = state.getPiles().get(i).get(j);
                 if (card == null)
                     continue;
 
@@ -25,47 +29,11 @@ public class Logic implements I_Logic {
                     break;
                 }
 
-                // Check out possible move to foundation stack
-                for (int f = 0; f < state.getFoundations().size(); f++) {
-                    // If foundation pile is empty and card rank is 1 add move
-                    // Else if foundation pile is same suit and rank fits add move
-                    if (state.getFoundations().get(f) == null) {
-                        if (card.getRank() == 1) {
-                            moves.add(0, new Move(Move.MoveType.MOVE, new int[]{i,j}, Move.DestinationType.FOUNDATION, f));
-                            break;
-                        }
-                    } else if (state.getFoundations().get(f).getSuit() == card.getSuit()) {
-                        if (card.getRank() - 1 == state.getFoundations().get(f).getRank()) {
-                            moves.add(0, new Move(Move.MoveType.MOVE, new int[]{i,j}, Move.DestinationType.FOUNDATION, f));
-                            break;
-                        }
-                    }
-                }
+                // Check possible move to foundation stack
+                foundationMove(i, j);
 
-                // Check out possible moves to other rows/piles
-                for (int p = 0; p < 7; p++) {
-                    // Continue loop if pile is itself or pile is empty
-                    if (p == i || state.getPiles().get(p).size() == 0)
-                        continue;
-
-                    Card destCard = state.getPiles().get(p).get(state.getPiles().get(p).size() - 1);
-
-                    if (destCard == null) {
-                        if (card.getRank() == 13 && j != 0) {
-                            moves.add(new Move(Move.MoveType.MOVE, new int[]{i,j}, Move.DestinationType.PILE, p));
-                        }
-                        continue;
-                    }
-
-                    if (destCard.getStatus() == Card.Status.FACEDOWN) 
-                        continue;
-
-                    if (card.getRank() == destCard.getRank() - 1 && card.getColor() != destCard.getColor()) {
-                        moves.add(
-                                new Move(Move.MoveType.MOVE, new int[]{i,j}, Move.DestinationType.PILE, p)
-                        );
-                    }
-                }
+                // Check possible move(s) to other rows/piles
+                pileMoves(i, j);
 
                 // Drawn card move
                 if (state.getDrawnCard().getRank() == card.getRank() - 1 && state.getDrawnCard().getColor() != card.getColor()) {
@@ -81,7 +49,7 @@ public class Logic implements I_Logic {
             moves.add(0, new Move(Move.MoveType.DRAW, new int[]{0,0}, Move.DestinationType.SELF, 0));
         } else {
             // Check out possible move to foundation stack
-            for (int f = 0; f < state.getFoundations().size(); f++) {
+            for (int f = 0; f < 4; f++) {
                 // If foundation pile is empty and card rank is 1 add move
                 // Else if foundation pile is same suit and rank fits add move
                 if (state.getFoundations().get(f) == null) {
@@ -99,5 +67,49 @@ public class Logic implements I_Logic {
         }
 
         return moves;
+    }
+
+    private void foundationMove(int pileNumber, int cardNumber) {
+        for (int f = 0; f < state.getFoundations().size(); f++) {
+            // If foundation pile is empty and card rank is 1 add move
+            // Else if foundation pile is same suit and rank fits add move
+            if (state.getFoundations().get(f) == null) {
+                if (card.getRank() == 1) {
+                    moves.add(0, new Move(Move.MoveType.MOVE, new int[]{pileNumber, cardNumber}, Move.DestinationType.FOUNDATION, f));
+                    break;
+                }
+            } else if (state.getFoundations().get(f).getSuit() == card.getSuit()) {
+                if (card.getRank() - 1 == state.getFoundations().get(f).getRank()) {
+                    moves.add(0, new Move(Move.MoveType.MOVE, new int[]{pileNumber, cardNumber}, Move.DestinationType.FOUNDATION, f));
+                    break;
+                }
+            }
+        }
+    }
+
+    private void pileMoves(int pileNumber, int cardNumber) {
+        for (int p = 0; p < 7; p++) {
+            // Continue loop if pile is itself or pile is empty
+            if (p == pileNumber || state.getPiles().get(p).size() == 0)
+                continue;
+
+            Card destCard = state.getPiles().get(p).get(state.getPiles().get(p).size() - 1);
+
+            if (destCard == null) {
+                if (card.getRank() == 13 && cardNumber != 0) {
+                    moves.add(new Move(Move.MoveType.MOVE, new int[]{pileNumber, cardNumber}, Move.DestinationType.PILE, p));
+                }
+                continue;
+            }
+
+            if (destCard.getStatus() == Card.Status.FACEDOWN)
+                continue;
+
+            if (card.getRank() == destCard.getRank() - 1 && card.getColor() != destCard.getColor()) {
+                moves.add(
+                        new Move(Move.MoveType.MOVE, new int[]{pileNumber, cardNumber}, Move.DestinationType.PILE, p)
+                );
+            }
+        }
     }
 }

@@ -39,6 +39,11 @@ public class StateGenerator {
         for (int i = 0; i < data[2].length; i++) {
             foundations.add(buildCard(data[2][i]));
         }
+
+        while (foundations.size() < 4) {
+            foundations.add(null);
+        }
+
         state.setFoundations(foundations);
 
         // All piles in one List
