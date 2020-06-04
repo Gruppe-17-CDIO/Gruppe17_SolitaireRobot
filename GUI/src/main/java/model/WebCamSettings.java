@@ -48,7 +48,8 @@ public class WebCamSettings {
     public void setWebcam(Webcam webcam) {
 
         this.webcam = webcam;
-        MainGUI.printToOutputAreaNewline("Print from setWebcam().\n" +toString());
+        //TODO:REMOVE!!!
+        //MainGUI.printToOutputAreaNewline("Print from setWebcam().\n" +toString());
     }
 
     public boolean isMirrored() {
@@ -58,7 +59,8 @@ public class WebCamSettings {
 
     public void setMirrored(boolean mirrored) {
         isMirrored = mirrored;
-        MainGUI.printToOutputAreaNewline("Print from setMirrored().\n" +toString());
+        //TODO:REMOVE!!!
+        //MainGUI.printToOutputAreaNewline("Print from setMirrored().\n" +toString());
     }
 
     public Dimension getSelectedResolution() {
@@ -68,7 +70,8 @@ public class WebCamSettings {
     public void setSelectedResolution(Dimension selectedResolution) {
 
         this.selectedResolution = selectedResolution;
-        MainGUI.printToOutputAreaNewline("Print from setSelectedResolution().\n" + toString());
+        //TODO:REMOVE!!!
+        //MainGUI.printToOutputAreaNewline("Print from setSelectedResolution().\n" + toString());
     }
 
     // endregion
@@ -97,11 +100,15 @@ public class WebCamSettings {
             webCamImageView.setWebCam(webcam);
             webCamImageView.mirrorWebCamImage(isMirrored);
             webCamImageView.setWebCamResolution(selectedResolution);
-            MainGUI.printToOutputAreaNewline("Settings Applied to WebCamImageView in " + TAG);
+            if (MainGUI.isTesting) {
+                MainGUI.printToOutputAreaNewline("Settings Applied to WebCamImageView in " + TAG);
+            }
             return true;
         } else {
             webCamImageView.resetVariables();
-            MainGUI.printToOutputAreaNewline("Setting NOT applied to WebCamImageView in " + TAG +" as no settings is set");
+            if (MainGUI.isTesting){
+                MainGUI.printToOutputAreaNewline("Setting NOT applied to WebCamImageView in " + TAG +" as no settings is set");
+            }
             return false;
         }
     }

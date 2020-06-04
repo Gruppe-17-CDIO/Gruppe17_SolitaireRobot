@@ -39,7 +39,8 @@ public class GameTab extends TabStd {
     //----------------------- Constructor -------------------------
 
     public GameTab () {
-        super("Game", "Title", "Desc");
+        super("Game", "Game", "The webcam should point at the solitaire that you have layed out and we will help you to a win!" +
+                " Get ready to play!");
 
         webCamImageView = new WebCamImageView();
         // If Testing is active adds the options to manipulate the view and find the image to insert.

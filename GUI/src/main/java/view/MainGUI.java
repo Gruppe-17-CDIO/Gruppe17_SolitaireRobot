@@ -46,7 +46,7 @@ public class MainGUI extends Application {
         outputTextArea = new OutputTextArea();
         printTestStatus();
         TabPane tabPane = new TabPane();
-        tabPane.getSelectionModel().selectLast();
+        //tabPane.getSelectionModel().selectLast();
         //tabPane.getSelectionModel().clearAndSelect(0);
 
         SplitPane splitPane = new SplitPane();

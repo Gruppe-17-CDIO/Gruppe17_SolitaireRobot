@@ -312,13 +312,17 @@ public class WebCamImageView extends ImageView {
 
     public void stopRunning(){
         if (isRunning.compareAndSet(true,false)) {
-            MainGUI.printToOutputAreaNewline(TAG +".stop() // isRunning is set to false");
+            if (MainGUI.isTesting) {
+                MainGUI.printToOutputAreaNewline(TAG +".stop() // isRunning is set to false");
+            }
 
             killImageBindingThread();
 
             stateCallback.onStopped();
         } else {
-            MainGUI.printToOutputAreaNewline(TAG +".stop() // isRunning is already false");
+            if (MainGUI.isTesting){
+                MainGUI.printToOutputAreaNewline(TAG +".stop() // isRunning is already false");
+            }
         }
     }
 
