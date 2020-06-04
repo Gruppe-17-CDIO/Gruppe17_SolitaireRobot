@@ -7,66 +7,100 @@ import logger.StateLogger;
 import java.util.List;
 import java.util.Stack;
 
-/* Responsibility:
-    Communicate with cardTracker,
-    save state,
-    keep track of history,
-    return current history to controller */
+/**
+ * Responsibility:
+ * 1. Communicate with cardcalculator
+ * 2. save state
+ * 3. keep track of history
+ * 4. return current history to controller
+ */
 
 public class StateManager {
-    private Stack<SolitaireState> history;
-    private StateLogger logger;
+    private Stack<SolitaireState> history; // This is the main history
+    private StateLogger logger; // Making logfiles
+    private CardCalculator cardCalculator; // Updating the state
 
     public SolitaireState initiate(Card[] cardData) throws Exception {
         SolitaireState state;
         if (cardData == null) {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
         } else {
-            System.out.println("New session started. Creating new state, history and logfile.");
+            System.out.println("New session started. Creating new state, blank history and logfile.");
             history = new Stack<>();
             logger = new StateLogger();
-            state = new CardCalculator().initiateState(cardData);
-            history.push(state);
-            logger.logState(state);
+            state = cardCalculator.initiateState(cardData);
         }
         return state;
     }
 
-    public SolitaireState updateState(Card[] cardData, Move prevMove) throws Exception {
+    public SolitaireState updateState(Move move) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
-        if (prevMove == null) {
+        if (move == null) {
             throw new Exception("Previous move was null, but a move has been made: " +
                     "call initiate first.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
-        // Update state based on move and return.
-        SolitaireState state = new CardCalculator().updateState(cardData, history.peek(), prevMove);
-        return state;
+        // Update state based on previous state and move.
+        return cardCalculator.updateState(history.peek(), move);
     }
 
-    public void saveState(SolitaireState state, List<Move> currentMoves) throws Exception {
+    public void saveState(SolitaireState state, List<Move> suggestedMoves) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
-        if (currentMoves == null) {
-            throw new Exception("currentMoves was null. Call this method after calculating moves.");
+        if (suggestedMoves == null) {
+            throw new Exception("suggestedMoves was null. Call this method after calculating moves.");
         }
-        state.setSuggestedMoves(currentMoves);
+        state.setSuggestedMoves(suggestedMoves);
         history.push(state);
         logger.logState(state);
     }
 
     public Stack<SolitaireState> getHistory() throws Exception {
         if (history == null) {
-            throw new Exception("History was null.");
+            throw new Exception("getHistory: History was null.");
         }
         return history;
+    }
+
+    public void checkState(Card[] cardData) throws Exception {
+        // Checking if state fits with image data.
+        cardCalculator.checkState(cardData, history.peek());
+    }
+
+    public SolitaireState getState() throws Exception {
+        if (history == null) {
+            throw new Exception("getState: History was null.");
+        } else if (history.peek() == null) {
+            throw new Exception("getState: History was empty. No state saved yet.");
+        }
+        return history.peek();
+    }
+
+    public List<Move> getMoves() throws Exception {
+        if (history == null) {
+            throw new Exception("getMoves: History was null.");
+        } else if (history.peek() == null) {
+            throw new Exception("getState: History was empty. No state saved yet.");
+        } else if (history.peek().getSuggestedMoves() == null) {
+            throw new Exception("getState: State has no moves.");
+        }
+        return history.peek().getSuggestedMoves();
+    }
+
+    public void undo() throws Exception {
+        history.pop();
+        try {
+            logger.logState(history.peek());
+        } catch (Exception e) {
+            throw new Exception("Could not log state. If this is initial state, you should use 'getFirstMove' to restart, not undo.\n" + e.getMessage());
+        }
     }
 }
