@@ -14,7 +14,7 @@ public interface I_Controller {
      * @param img      Image input from view
      * @param callBack return suggested moves and history
      */
-    void getFirstMove(Image img, NextMoveCallBack callBack);
+    void startNewGame(Image img, NextMoveCallBack callBack);
 
     /**
      * Stores move and calculates new moves
@@ -42,6 +42,14 @@ public interface I_Controller {
      * @param callBack A status message and history
      */
     void undo(CompletionCallBack callBack);
+
+    /**
+     * Enter test mode, which maintains state without computervision
+     *
+     * @param test,    boolean to indicate test mode on or off
+     * @param callBack
+     */
+    void setTestModeOn(boolean test, CompletionCallBack callBack);
 }
 
 

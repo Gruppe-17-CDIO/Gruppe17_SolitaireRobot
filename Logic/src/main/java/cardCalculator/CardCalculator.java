@@ -66,7 +66,7 @@ public class CardCalculator {
      */
     public SolitaireState updateState(SolitaireState prevState, Move move) {
         SolitaireState state = prevState;
-        // TODO: Fucking implement!
+        // TODO: Implement!
         // State = state + move
         // CONSIDER DEEP COPY WHEN UPDATNG STATE
 
