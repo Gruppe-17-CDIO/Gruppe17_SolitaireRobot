@@ -1,7 +1,7 @@
 import cardCalculator.CardCalculator;
-import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
+import dataObjects.TopCards;
 import logger.StateLogger;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class StateManager {
     private StateLogger logger; // Making logfiles
     private CardCalculator cardCalculator; // Updating the state
 
-    public SolitaireState initiate(Card[] cardData) throws Exception {
+    public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
         if (cardData == null) {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
@@ -70,9 +70,9 @@ public class StateManager {
         return history;
     }
 
-    public void checkState(Card[] cardData) throws Exception {
+    public void checkState(TopCards topCards) throws Exception {
         // Checking if state fits with image data.
-        cardCalculator.checkState(cardData, history.peek());
+        cardCalculator.checkState(topCards, history.peek());
     }
 
     public SolitaireState getState() throws Exception {
