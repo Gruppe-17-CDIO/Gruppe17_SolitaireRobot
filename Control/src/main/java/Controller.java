@@ -20,6 +20,7 @@ public class Controller implements I_Controller {
     @Override
     // Note that this method returns the first move suggestion and saves state
     public void startNewGame(Image img, NextMoveCallBack callBack) {
+        //System.out.println("STARTING!");
         try {
             SolitaireState state;
             if (!testmode) {

@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StateGenerator {
-    static final String PATH = "src/main/resources/builderFiles/build-a-state_";
+    // static final String PATH = "src/main/resources/builderFiles/build-a-state_";
+    static final String PATH = "Data/src/main/resources/builderFiles/build-a-state_";
 
     public static SolitaireState getState(int id) throws Exception {
         String[][] data = readBuilderFile(id);
