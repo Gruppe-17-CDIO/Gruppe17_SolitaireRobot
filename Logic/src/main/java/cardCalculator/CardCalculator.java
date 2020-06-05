@@ -93,7 +93,8 @@ public class CardCalculator {
     }
 
     /**
-     * Method to check the integrity of state against real cards
+     * Method to check the integrity of state against real cards. New cards not previously seen are copied from
+     * topCards to state.
      *
      * @param topCards
      * @param state
@@ -104,6 +105,13 @@ public class CardCalculator {
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
+
+        //TODO:
+        // 1: From state, the moves are known: From the moves, you can check if a new card was drawn. If a new card
+        // is drawn, that card must be read from computer vision and added to the drawn pile. If a card was added,
+        // the test must allow this.
+        // 2: Also, if any card is face down, it can be replaced by a card read from computer
+        // vision. A facedown card (In the piles) means that card can be turned face up.
 
         // Check drawn card pile
         Card drawnCard = null;
@@ -159,4 +167,3 @@ public class CardCalculator {
         }
     }
 }
-
