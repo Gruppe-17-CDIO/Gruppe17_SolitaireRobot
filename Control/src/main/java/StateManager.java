@@ -10,7 +10,7 @@ import java.util.Stack;
 
 /**
  * Responsibility:
- * 1. Communicate with cardcalculator
+ * 1. Communicate with cardcalculator (logic module)
  * 2. save state
  * 3. keep track of history
  * 4. return current history to controller

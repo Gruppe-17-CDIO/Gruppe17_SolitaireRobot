@@ -47,7 +47,6 @@ public class Controller implements I_Controller {
             if (move == null) {
                 callBack.OnFailure("Please supply a move");
             } else {
-                currentState = stateManager.updateState(move); // Has class scope!
                 currentMove = move;
                 callBack.OnSuccess("OK: Move registered.");
             }
@@ -58,8 +57,10 @@ public class Controller implements I_Controller {
 
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
+        // TODO refactor & clean up so humans can read
+        //  Maybe fix newly discovered cards in updateState?
         try {
-            SolitaireState state = currentState;
+            SolitaireState state = stateManager.updateState(currentMove); // Has class scope!
             if (!testmode) {
                 TopCards topCards = CV_Controller.getSolitaireCards(img);
                 state = stateManager.checkStateAgainstImage(topCards, currentState, currentMove);
