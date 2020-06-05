@@ -3,6 +3,7 @@ package dataObjects;
 import org.jetbrains.annotations.NotNull;
 import utilities.StatePrinterUtility;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * The inner lists handle null by making a new list.
  */
 
-public class SolitaireState {
+public class SolitaireState implements Serializable {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private int stock = 52; // Cards to draw, face not visible
@@ -60,7 +61,7 @@ public class SolitaireState {
         return foundations;
     }
 
-    public void setFoundations(@NotNull ArrayList<Card> foundations) throws Exception {
+    public void setFoundations(@NotNull List<Card> foundations) throws Exception {
         if (foundations == null) {
             throw new Exception("The List 'foundations' must not be null.");
         }

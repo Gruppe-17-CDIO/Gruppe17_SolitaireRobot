@@ -34,8 +34,10 @@ public class Move {
             return "Draw a card from the stock.";
         } else if (moveType == MoveType.FACEUP) {
             return "Turn " + position[0] + " " + position[1] + " face up.";
+        } else if (moveType == MoveType.USEDRAWN) {
+            return "Moved card from drawn cards to " + destinationType + " " + destPosition + ".";
         } else {
-            return "Move" + position[0] + " " + position[1] + " to " + destinationType + " " + destPosition;
+            return "Move " + position[0] + " " + position[1] + " to " + destinationType + " " + destPosition + ".";
         }
     }
 
@@ -44,7 +46,8 @@ public class Move {
     public enum MoveType {
         FACEUP,
         MOVE,
-        DRAW
+        DRAW,
+        USEDRAWN
     }
 
     public enum DestinationType {

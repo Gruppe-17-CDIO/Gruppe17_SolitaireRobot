@@ -21,33 +21,37 @@ public class Controller implements I_Controller {
     @Override
     // Note that this method returns the first move suggestion and saves state
     public void startNewGame(Image img, NextMoveCallBack callBack) {
-        //System.out.println("STARTING!");
         try {
+            TopCards topCards;
             SolitaireState state;
             if (!testmode) {
-                TopCards topCards = CV_Controller.getSolitaireCards(img);
-                state = stateManager.initiate(topCards); // Make new history, logfile and state
+                topCards = CV_Controller.getSolitaireCards(img);
             } else {
-                state = stateManager.initiate(); // No args means just a test.
+                topCards = new TopCards(); // TODO: Make test cards
             }
+            state = stateManager.initiate(topCards); // Make new history, logfile and state
             List<Move> moves = logic.getMoves(state);
-
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
-
             callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
         } catch (Exception e) {
             callBack.OnError(e);
         }
     }
 
+    /**
+     * precondition: A state exists in history & a list of moves have been generated. This method simply saves
+     * the selected move, to allow the player to set the cards before calculating next move.
+     *
+     * @param move     The chosen move
+     * @param callBack
+     */
     @Override
     public void performMove(Move move, CompletionCallBack callBack) {
         try {
             if (move == null) {
-                callBack.OnFailure("Please supply a move");
+                callBack.OnFailure("Move was null. Please supply a move.");
             } else {
-                currentState = stateManager.updateState(move); // Has class scope!
                 currentMove = move;
                 callBack.OnSuccess("OK: Move registered.");
             }
@@ -56,20 +60,34 @@ public class Controller implements I_Controller {
         }
     }
 
+    /**
+     * Precondition: A move has been selected, saved as currentMove. The cards are moved in the same way as the
+     * selected move. A State exists in history.
+     * <p>
+     * This method starts image analysis, creates a new state based on move and image data, checks for inconsistencies,
+     * calculates moves and saves new state + move list.
+     *
+     * @param img      Image to control the state
+     * @param callBack List of suggested moves and history
+     */
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         try {
-            SolitaireState state = currentState;
+            TopCards topCards;
             if (!testmode) {
-                TopCards topCards = CV_Controller.getSolitaireCards(img);
-                state = stateManager.checkStateAgainstImage(topCards, currentState, currentMove);
+                topCards = CV_Controller.getSolitaireCards(img);
+            } else {
+                topCards = new TopCards(); // TODO: Make test cards
             }
+            SolitaireState state = stateManager.updateState(currentMove, topCards); // Needs topCards to discover new cards
+            state = stateManager.checkStateAgainstImage(topCards, currentState);
             List<Move> moves = logic.getMoves(state);
 
-            stateManager.saveState(currentState);
+            // Save the new state and it's move list
+            stateManager.saveState(state);
             stateManager.addMovesToState(moves);
 
-            currentState = null;
+            // Reset move
             currentMove = null;
 
             callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
@@ -82,7 +100,8 @@ public class Controller implements I_Controller {
     public void undo(CompletionCallBack callBack) {
         try {
             stateManager.undo();
-            callBack.OnSuccess("UNDO registered. Last move and state logged, but deleted from current history. \n\tPlease try to move your cards back and run thi method,'getNextMove' again. \n\tRestart if this doesn't work.");
+            callBack.OnSuccess("UNDO registered. Last move and state logged, but deleted from current history. " +
+                    "\nPerform move again to continue");
         } catch (Exception e) {
             callBack.OnError(e);
         }
