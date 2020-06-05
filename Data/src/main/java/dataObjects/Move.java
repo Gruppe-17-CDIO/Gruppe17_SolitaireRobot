@@ -1,6 +1,8 @@
 package dataObjects;
 
-public class Move {
+import java.io.Serializable;
+
+public class Move implements Serializable {
     private final MoveType moveType;
     private final DestinationType destinationType;
     private final int[] position;

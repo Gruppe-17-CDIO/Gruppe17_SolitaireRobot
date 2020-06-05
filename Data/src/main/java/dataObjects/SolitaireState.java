@@ -1,7 +1,7 @@
 package dataObjects;
 
 import org.jetbrains.annotations.NotNull;
-import utilities.StatePrinterUtility;
+import stateBuilding.StatePrinterUtility;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
