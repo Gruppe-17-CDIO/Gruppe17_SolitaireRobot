@@ -23,7 +23,7 @@ class LogicTest {
         List<Move> moves;
 
         try {
-            state = new StateGenerator().getState(0);
+            state = new StateGenerator().getState(1);
             System.out.println(state.getPrintFormat());
         } catch (Exception ex) {
             System.out.println(ex.toString());
