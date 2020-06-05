@@ -3,7 +3,7 @@ package stateBuilding;
 import dataObjects.SolitaireState;
 import org.junit.jupiter.api.Test;
 
-class TestStateGeneratorTest {
+class StateGeneratorTest {
 
     @Test
     void getTestState() {
@@ -11,7 +11,7 @@ class TestStateGeneratorTest {
         for (int i = 0; i < iterations; i++) {
             SolitaireState state = null;
             try {
-                state = StateGenerator.getState(i);
+                state = new StateGenerator().getState(i);
                 System.out.println(state.getPrintFormat());
             } catch (Exception e) {
                 e.printStackTrace();

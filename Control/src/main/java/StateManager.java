@@ -3,6 +3,7 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import logger.StateLogger;
+import stateBuilding.StateGenerator;
 
 import java.util.List;
 import java.util.Stack;
@@ -18,7 +19,7 @@ import java.util.Stack;
 public class StateManager {
     private Stack<SolitaireState> history; // This is the main history
     private StateLogger logger; // Making logfiles
-    private CardCalculator cardCalculator; // Updating the state
+    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
 
     public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
@@ -31,6 +32,14 @@ public class StateManager {
             state = cardCalculator.initiateState(cardData);
         }
         return state;
+    }
+
+    // Overridden for test mode only
+    public SolitaireState initiate() throws Exception {
+        System.out.println("Test session started. Creating new state, blank history and logfile.\n");
+        history = new Stack<>();
+        logger = new StateLogger();
+        return new StateGenerator().getState(2);
     }
 
     public SolitaireState updateState(Move move) throws Exception {
@@ -48,19 +57,23 @@ public class StateManager {
         return cardCalculator.updateState(history.peek(), move);
     }
 
-    public void saveState(SolitaireState state, List<Move> suggestedMoves) throws Exception {
+    public void saveState(SolitaireState state) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
+        history.push(state);
+        logger.logState(state);
+    }
+
+    public void addMovesToState(List<Move> suggestedMoves) throws Exception {
+        SolitaireState state = history.peek();
         if (suggestedMoves == null) {
             throw new Exception("suggestedMoves was null. Call this method after calculating moves.");
         }
         state.setSuggestedMoves(suggestedMoves);
-        history.push(state);
-        logger.logState(state);
     }
 
     public Stack<SolitaireState> getHistory() throws Exception {
@@ -70,9 +83,9 @@ public class StateManager {
         return history;
     }
 
-    public void checkState(TopCards topCards) throws Exception {
+    public SolitaireState checkStateAgainstImage(TopCards topCards, SolitaireState currentState, Move currentMove) throws Exception {
         // Checking if state fits with image data.
-        cardCalculator.checkState(topCards, history.peek());
+        return cardCalculator.checkState(topCards, currentState, currentMove);
     }
 
     public SolitaireState getState() throws Exception {

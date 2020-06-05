@@ -11,14 +11,15 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StateGenerator {
-    static final String PATH = "src/main/resources/builderFiles/build-a-state_";
+    //final String PATH = "src/main/resources/builderFiles/build-a-state_";
+    final String PATH = "Data/src/main/resources/builderFiles/build-a-state_";
 
-    public static SolitaireState getState(int id) throws Exception {
+    public SolitaireState getState(int id) throws Exception {
         String[][] data = readBuilderFile(id);
         return buildState(data);
     }
 
-    static SolitaireState buildState(String[][] data) throws Exception {
+    SolitaireState buildState(String[][] data) throws Exception {
         SolitaireState state = new SolitaireState();
 
         // Set stock (cards left in pile)
@@ -72,7 +73,7 @@ public class StateGenerator {
      * @return Card object
      * @throws Exception if card can't be parsed.
      */
-    static Card buildCard(String input) throws Exception {
+    Card buildCard(String input) throws Exception {
         input = input.trim();
         String[] in = input.split(" ");
         if (input.length() > 0) {
@@ -100,7 +101,7 @@ public class StateGenerator {
      * @param id id of the file to read
      * @return list of token lists
      */
-    static String[][] readBuilderFile(int id) throws Exception {
+    String[][] readBuilderFile(int id) throws Exception {
         SolitaireState state = new SolitaireState();
         String[][] data = new String[12][];
         int i = 0;
