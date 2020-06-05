@@ -80,7 +80,6 @@ public class CardCalculator {
         // Deep copy, just in case
         SolitaireState state = (SolitaireState) SerializationUtils.clone(prevState);
 
-        // Udate newly flipped cards.
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
@@ -112,12 +111,12 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
 
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
-                foundations.add(move.getDestPosition(), card);
+                foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.add(move.getDestPosition(), cards);
+                piles.set(move.getDestPosition(), cards);
                 state.setPiles(piles);
             }
         }
@@ -127,27 +126,27 @@ public class CardCalculator {
             int cardIndex = move.getPosition()[1];
 
             // Pick up the cards and all cards on top of it.
-            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size() - 1);
+            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
             piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
             state.setPiles(piles);
 
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 if (cards.size() != 1) {
-                    throw new Exception("Cannot only move exactly one card to foundation at a time. Was "
+                    throw new Exception("Move exactly one card to foundation at a time. Was "
                             + cards.size() + ".");
                 }
                 Card card = cards.get(0);
                 foundations.add(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.add(move.getDestPosition(), cards);
+                piles.set(move.getDestPosition(), cards);
                 state.setPiles(piles);
             }
         }
         return state;
     }
 
-    public SolitaireState updateStateTestMode(SolitaireState prevState, Move move, TopCardsSimulator topCardsSimulator) throws Exception {
+    public SolitaireState updateState_TestMode(SolitaireState prevState, Move move, TopCardsSimulator topCardsSimulator) throws Exception {
         // Deep copy, just in case
         SolitaireState state = (SolitaireState) SerializationUtils.clone(prevState);
 
@@ -183,35 +182,35 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
 
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
-                foundations.add(move.getDestPosition(), card);
+                foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.add(move.getDestPosition(), cards);
+                piles.set(move.getDestPosition(), cards);
                 state.setPiles(piles);
             }
         }
 
         if (move.getMoveType() == Move.MoveType.MOVE) {
             int pileIndex = move.getPosition()[0];
-            int cardIndex = move.getPosition()[1];
+            int cardIndex = move.getPosition()[1];// Udate newly flipped cards.
 
             // Pick up the cards and all cards on top of it.
-            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size() - 1);
+            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
             piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
             state.setPiles(piles);
 
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 if (cards.size() != 1) {
-                    throw new Exception("Cannot only move exactly one card to foundation at a time. Was "
+                    throw new Exception("Move exactly one card to foundation at a time. Was "
                             + cards.size() + ".");
                 }
                 Card card = cards.get(0);
-                foundations.add(move.getDestPosition(), card);
+                foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.add(move.getDestPosition(), cards);
+                piles.set(move.getDestPosition(), cards);
                 state.setPiles(piles);
             }
         }

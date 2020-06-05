@@ -57,7 +57,10 @@ public class StateGenerator {
             List<Card> pile = new ArrayList<>();
             for (String s : data[i]) {
                 //System.out.println(s);
-                pile.add(buildCard(s));
+                Card card = buildCard(s);
+                if (card != null) {
+                    pile.add(card);
+                }
             }
             piles.add(pile);
         }

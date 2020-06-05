@@ -14,7 +14,6 @@ public class TopCardsSimulator {
         Card[] piles = {deck.getCard(), deck.getCard(), deck.getCard(), deck.getCard(),
                 deck.getCard(), deck.getCard(), deck.getCard()};
         topCards.setPiles(piles);
-
         return topCards;
     }
 

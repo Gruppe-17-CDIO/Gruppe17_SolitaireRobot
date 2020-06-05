@@ -52,7 +52,7 @@ public class StateManager {
 
     // TEST ONLY!
     public SolitaireState updateState_TestMode(Move move, TopCardsSimulator topCardsSimulator) throws Exception {
-        return cardCalculator.updateStateTestMode(history.peek(), move, topCardsSimulator);
+        return cardCalculator.updateState_TestMode(history.peek(), move, topCardsSimulator);
     }
 
     public void saveState(SolitaireState state) throws Exception {
