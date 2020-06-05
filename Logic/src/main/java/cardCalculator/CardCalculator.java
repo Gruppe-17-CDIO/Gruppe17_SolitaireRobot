@@ -4,6 +4,7 @@ import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
+import org.apache.commons.lang.SerializationUtils;
 import stateBuilding.StateGenerator;
 
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ public class CardCalculator {
      * 2. Updating state based on move and previous state.
      * 3. Checking state against the new TopCard object from CV.
      *
-     * @param topCards, the cards as seen by computer vision on initial setup
+     * @param topCards, the cards as seen by computer vision
      * @return state, a Full SoliaireState Object
-     * @throws Exception if CardData cannot be used
+     * @throws Exception if CardData cannot be used or is inconsistent
      * @author erlend
      * /
      * <p>
@@ -30,7 +31,8 @@ public class CardCalculator {
             throw new Exception("initiateState(): topCards was null.");
         }
         if (topCards.getDrawnCard() == null) {
-            throw new Exception("initiateState(): Missing a drawn card in the setup. Draw exactly one card before calling initiate.");
+            throw new Exception("initiateState(): Missing a drawn card in the setup. " +
+                    "Draw exactly one card before calling initiate.");
         }
         for (int i = 0; i < 4; i++) {
             if (topCards.getFoundations()[i] != null) {
@@ -39,10 +41,10 @@ public class CardCalculator {
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + i + ". All piles must have one card at start of new game.");
+                throw new Exception("initiateState(): Missing card from pile: " + i + ". " +
+                        "All piles must have one card at start of new game.");
             }
         }
-
 
         SolitaireState state = new StateGenerator().getState(999); // State template
 
@@ -70,25 +72,77 @@ public class CardCalculator {
      *
      * @param prevState
      * @param move
+     * @param topCards
      * @return state
      */
-    public SolitaireState updateState(SolitaireState prevState, Move move) {
-        SolitaireState state = prevState;
-        // TODO: Implement!
-        // State = state + move
-        // CONSIDER DEEP COPY WHEN UPDATNG STATE
+    public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards) throws Exception {
+        // Deep copy, just in case
+        SolitaireState state = (SolitaireState) SerializationUtils.clone(prevState);
 
-        /*
-        //Moves are from drawn or piles.
-        if (mvoetype == DRAW) update drawn, update stock
-        if (movetype == MOVE) maybe focus on this first:
-                //if pile which pile? Remember drawn cards is a pile too.
-                // which card
-                // move card at position + all card up to this pile.length - 1 to destination.
-       */
+        // Udate newly flipped cards.
+        List<Card> drawnCards = state.getDrawnCards();
+        List<Card> foundations = state.getFoundations();
+        List<List<Card>> piles = state.getPiles();
 
-        // Add move to state as previous move
-        // Do not save state!
+        // If move is draw, add the newly turned card from CV
+        if (move.getMoveType() == Move.MoveType.DRAW) {
+            int stock = state.getStock();
+            state.setStock(stock - 1);
+            drawnCards.add(topCards.getDrawnCard());
+            state.setDrawnCards(drawnCards);
+        }
+
+        // If a face down card is uncovered on top of a pile in state, replace with a new card from CV.
+        // (Implicitly this is the FACEUP move type.)
+        for (int i = 0; i < 7; i++) {
+            List<Card> pile = piles.get(i);
+            if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
+                piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
+                state.setPiles(piles);
+            }
+        }
+
+        if (move.getMoveType() == Move.MoveType.USEDRAWN) {
+            if (drawnCards.size() < 1) {
+                throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
+            }
+            Card card = drawnCards.get(drawnCards.size() - 1);
+            drawnCards.remove(drawnCards.size() - 1);
+            state.setDrawnCards(drawnCards);
+
+            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
+                foundations.add(move.getDestPosition(), card);
+                state.setFoundations(foundations);
+            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
+                List<Card> cards = new ArrayList<>();
+                cards.add(card);
+                piles.add(move.getDestPosition(), cards);
+                state.setPiles(piles);
+            }
+        }
+
+        if (move.getMoveType() == Move.MoveType.MOVE) {
+            int pileIndex = move.getPosition()[0];
+            int cardIndex = move.getPosition()[1];
+
+            // Pick up the cards and all cards on top of it.
+            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size() - 1);
+            piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
+            state.setPiles(piles);
+
+            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
+                if (cards.size() != 1) {
+                    throw new Exception("Cannot only move exactly one card to foundation at a time. Was "
+                            + cards.size() + ".");
+                }
+                Card card = cards.get(0);
+                foundations.add(move.getDestPosition(), card);
+                state.setFoundations(foundations);
+            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
+                piles.add(move.getDestPosition(), cards);
+                state.setPiles(piles);
+            }
+        }
         return state;
     }
 
@@ -100,26 +154,11 @@ public class CardCalculator {
      * @param state
      * @throws Exception
      */
-    public SolitaireState checkState(TopCards topCards, SolitaireState state, Move move) throws Exception {
+    public SolitaireState checkState(TopCards topCards, SolitaireState state) throws Exception {
 
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
-
-        // If move is draw, add the new card value from CV
-        if (move.getMoveType() == Move.MoveType.DRAW) {
-            drawnCards.add(topCards.getDrawnCard());
-            state.setDrawnCards(drawnCards);
-        }
-
-        // If a face down card is uncovered in a pile, replace with card from CV
-        for (int i = 0; i < 7; i++) {
-            List<Card> pile = piles.get(i);
-            if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
-                piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
-                state.setPiles(piles);
-            }
-        }
 
         // Check drawn card pile
         Card drawnCard = null;

@@ -3,7 +3,6 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import logger.StateLogger;
-import stateBuilding.StateGenerator;
 
 import java.util.List;
 import java.util.Stack;
@@ -34,15 +33,7 @@ public class StateManager {
         return state;
     }
 
-    // Overridden for test mode only
-    public SolitaireState initiate() throws Exception {
-        System.out.println("Test session started. Creating new state, blank history and logfile.\n");
-        history = new Stack<>();
-        logger = new StateLogger();
-        return new StateGenerator().getState(2);
-    }
-
-    public SolitaireState updateState(Move move) throws Exception {
+    public SolitaireState updateState(Move move, TopCards topCards) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
@@ -54,7 +45,7 @@ public class StateManager {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
         // Update state based on previous state and move.
-        return cardCalculator.updateState(history.peek(), move);
+        return cardCalculator.updateState(history.peek(), move, topCards);
     }
 
     public void saveState(SolitaireState state) throws Exception {
@@ -83,9 +74,9 @@ public class StateManager {
         return history;
     }
 
-    public SolitaireState checkStateAgainstImage(TopCards topCards, SolitaireState currentState, Move currentMove) throws Exception {
+    public SolitaireState checkStateAgainstImage(TopCards topCards, SolitaireState state) throws Exception {
         // Checking if state fits with image data.
-        return cardCalculator.checkState(topCards, currentState, currentMove);
+        return cardCalculator.checkState(topCards, state);
     }
 
     public SolitaireState getState() throws Exception {
