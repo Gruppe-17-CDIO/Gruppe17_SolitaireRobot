@@ -57,19 +57,23 @@ public class StateManager {
         return cardCalculator.updateState(history.peek(), move);
     }
 
-    public void saveState(SolitaireState state, List<Move> suggestedMoves) throws Exception {
+    public void saveState(SolitaireState state) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
+        history.push(state);
+        logger.logState(state);
+    }
+
+    public void addMovesToState(List<Move> suggestedMoves) throws Exception {
+        SolitaireState state = history.peek();
         if (suggestedMoves == null) {
             throw new Exception("suggestedMoves was null. Call this method after calculating moves.");
         }
         state.setSuggestedMoves(suggestedMoves);
-        history.push(state);
-        logger.logState(state);
     }
 
     public Stack<SolitaireState> getHistory() throws Exception {
@@ -79,9 +83,9 @@ public class StateManager {
         return history;
     }
 
-    public void checkState(TopCards topCards) throws Exception {
+    public SolitaireState checkStateAgainstImage(TopCards topCards, SolitaireState currentState, Move currentMove) throws Exception {
         // Checking if state fits with image data.
-        cardCalculator.checkState(topCards, history.peek());
+        return cardCalculator.checkState(topCards, currentState, currentMove);
     }
 
     public SolitaireState getState() throws Exception {

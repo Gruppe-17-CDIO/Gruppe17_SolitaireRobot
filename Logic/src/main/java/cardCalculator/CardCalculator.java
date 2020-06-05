@@ -61,12 +61,12 @@ public class CardCalculator {
             piles.get(i).add(topCards.getPiles()[i]); // Add the 7 visible cards
         }
         state.setPiles(piles);
-        // Do not save state here
+
         return state;
     }
 
     /**
-     * Updates the state based on previous state and previous move.
+     * Makes new state based on previous state and move.
      *
      * @param prevState
      * @param move
@@ -100,18 +100,26 @@ public class CardCalculator {
      * @param state
      * @throws Exception
      */
-    public void checkState(TopCards topCards, SolitaireState state) throws Exception {
+    public SolitaireState checkState(TopCards topCards, SolitaireState state, Move move) throws Exception {
 
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
 
-        //TODO:
-        // 1: From state, the moves are known: From the moves, you can check if a new card was drawn. If a new card
-        // is drawn, that card must be read from computer vision and added to the drawn pile. If a card was added,
-        // the test must allow this.
-        // 2: Also, if any card is face down, it can be replaced by a card read from computer
-        // vision. A facedown card (In the piles) means that card can be turned face up.
+        // If move is draw, add the new card value from CV
+        if (move.getMoveType() == Move.MoveType.DRAW) {
+            drawnCards.add(topCards.getDrawnCard());
+            state.setDrawnCards(drawnCards);
+        }
+
+        // If a face down card is uncovered in a pile, replace with card from CV
+        for (int i = 0; i < 7; i++) {
+            List<Card> pile = piles.get(i);
+            if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
+                piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
+                state.setPiles(piles);
+            }
+        }
 
         // Check drawn card pile
         Card drawnCard = null;
@@ -165,5 +173,7 @@ public class CardCalculator {
                 }
             }
         }
+
+        return state;
     }
 }

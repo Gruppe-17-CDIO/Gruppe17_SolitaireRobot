@@ -15,6 +15,8 @@ public class Controller implements I_Controller {
     private final StateManager stateManager = new StateManager();
     private I_ComputerVisionController CV_Controller; // Instantiate here
     private boolean testmode = false;
+    private SolitaireState currentState;
+    private Move currentMove;
 
     @Override
     // Note that this method returns the first move suggestion and saves state
@@ -29,7 +31,10 @@ public class Controller implements I_Controller {
                 state = stateManager.initiate(); // No args means just a test.
             }
             List<Move> moves = logic.getMoves(state);
-            stateManager.saveState(state, moves); // Saves the suggested moves
+
+            stateManager.saveState(state);
+            stateManager.addMovesToState(moves);
+
             callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
         } catch (Exception e) {
             callBack.OnError(e);
@@ -42,10 +47,9 @@ public class Controller implements I_Controller {
             if (move == null) {
                 callBack.OnFailure("Please supply a move");
             } else {
-                SolitaireState state = stateManager.updateState(move);
-                List<Move> moves = logic.getMoves(state);
-                stateManager.saveState(state, moves);
-                callBack.OnSuccess("OK: Move registered, and suggested moves generated.");
+                currentState = stateManager.updateState(move); // Has class scope!
+                currentMove = move;
+                callBack.OnSuccess("OK: Move registered.");
             }
         } catch (Exception e) {
             callBack.OnError(e);
@@ -55,10 +59,19 @@ public class Controller implements I_Controller {
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         try {
+            SolitaireState state = currentState;
             if (!testmode) {
                 TopCards topCards = CV_Controller.getSolitaireCards(img);
-                stateManager.checkState(topCards);
+                state = stateManager.checkStateAgainstImage(topCards, currentState, currentMove);
             }
+            List<Move> moves = logic.getMoves(state);
+
+            stateManager.saveState(currentState);
+            stateManager.addMovesToState(moves);
+
+            currentState = null;
+            currentMove = null;
+
             callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory());
         } catch (Exception e) {
             callBack.OnError(e);
