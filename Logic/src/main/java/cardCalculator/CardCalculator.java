@@ -1,10 +1,10 @@
 package cardCalculator;
 
+import com.google.gson.Gson;
 import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
-import org.apache.commons.lang.SerializationUtils;
 import stateBuilding.StateGenerator;
 import stateBuilding.TopCardsSimulator;
 
@@ -77,8 +77,10 @@ public class CardCalculator {
      * @return state
      */
     public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards) throws Exception {
-        // Deep copy, just in case
-        SolitaireState state = (SolitaireState) SerializationUtils.clone(prevState);
+        // Deep copy
+        Gson gson = new Gson();
+        SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+        state.setSuggestedMoves(new ArrayList<>());
 
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
@@ -147,8 +149,12 @@ public class CardCalculator {
     }
 
     public SolitaireState updateState_TestMode(SolitaireState prevState, Move move, TopCardsSimulator topCardsSimulator) throws Exception {
-        // Deep copy, just in case
-        SolitaireState state = (SolitaireState) SerializationUtils.clone(prevState);
+        // Deep copy
+        Gson gson = new Gson();
+        SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+
+        //SolitaireState state = prevState;
+        state.setSuggestedMoves(new ArrayList<>());
 
         // Udate newly flipped cards.
         List<Card> drawnCards = state.getDrawnCards();
@@ -187,7 +193,7 @@ public class CardCalculator {
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.set(move.getDestPosition(), cards);
+                piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
@@ -210,7 +216,7 @@ public class CardCalculator {
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.set(move.getDestPosition(), cards);
+                piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }

@@ -78,6 +78,11 @@ public class StatePrinterUtility {
 
         printEmptyRow();
 
+        for (int i = 0; i < 7; i++) {
+            line[i] = "   Pile " + i;
+        }
+        printRow(line);
+
         // Piles, the 7 columns of cards
         List<List<Card>> piles = state.getPiles();
         for (int i = 0; i < 20; i++) {

@@ -3,7 +3,6 @@ package dataObjects;
 import org.jetbrains.annotations.NotNull;
 import stateBuilding.StatePrinterUtility;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.List;
  * The inner lists handle null by making a new list.
  */
 
-public class SolitaireState implements Serializable {
+public class SolitaireState implements Cloneable {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private int stock = 52; // Cards to draw, face not visible
