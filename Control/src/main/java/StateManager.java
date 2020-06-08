@@ -36,16 +36,19 @@ public class StateManager {
     }
 
     public SolitaireState updateState(Move move, TopCards topCards, TopCardsSimulator topCardsSimulator, Boolean test) throws Exception {
+        // Exceptions
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
-        }
-        if (move == null) {
-            throw new Exception("Previous move was null, but a move has been made: " +
-                    "call initiate first.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
+
+        if (move == null) {
+            System.out.println("'updatestate' was called twice with no new move. Returning current state.");
+            return (history.peek());
+        }
+
         // Update state based on previous state and move.
         if (test) {
             if (topCardsSimulator == null) {
