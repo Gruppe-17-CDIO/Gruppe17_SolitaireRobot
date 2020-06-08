@@ -75,7 +75,11 @@ public class CardCalculator {
      * @param topCards
      * @return state
      */
+
+    /*
     public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards) throws Exception {
+
+        /*
         // Deep copy
         Gson gson = new Gson();
         SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
@@ -145,15 +149,18 @@ public class CardCalculator {
             }
         }
         return state;
-    }
 
-    public SolitaireState updateState_TestMode(SolitaireState prevState, Move move, TopCardsSimulator topCardsSimulator) throws Exception {
+
+    }
+    */
+    public SolitaireState updateState(SolitaireState prevState, Move move, TopCardsSimulator topCardsSimulator, TopCards topCards, boolean test) throws Exception {
         // Deep copy
         Gson gson = new Gson();
         SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+
+        // Clear suggestedmoves
         state.setSuggestedMoves(new ArrayList<>());
 
-        // Udate newly flipped cards.
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
@@ -162,7 +169,11 @@ public class CardCalculator {
         if (move.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
             state.setStock(stock - 1);
-            drawnCards.add(topCardsSimulator.getCard());
+            if (test) {
+                drawnCards.add(topCards.getDrawnCard());
+            } else {
+                drawnCards.add(topCardsSimulator.getCard());
+            }
             state.setDrawnCards(drawnCards);
         }
 
@@ -171,7 +182,11 @@ public class CardCalculator {
         for (int i = 0; i < 7; i++) {
             List<Card> pile = piles.get(i);
             if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
-                piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
+                if (test) {
+                    piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
+                } else {
+                    piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
+                }
                 state.setPiles(piles);
             }
         }
@@ -219,6 +234,7 @@ public class CardCalculator {
         }
         return state;
     }
+
 
     /**
      * Method to check the integrity of state against real cards. New cards not previously seen are copied from

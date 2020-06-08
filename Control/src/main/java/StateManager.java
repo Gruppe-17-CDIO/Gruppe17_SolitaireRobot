@@ -47,12 +47,12 @@ public class StateManager {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
         // Update state based on previous state and move.
-        return cardCalculator.updateState(history.peek(), move, topCards);
+        return cardCalculator.updateState(history.peek(), move, null, topCards, false);
     }
 
-    // TEST ONLY!
+    // TEST ONLY! This method exists because the exceptions above assume topcards exists.
     public SolitaireState updateState_TestMode(Move move, TopCardsSimulator topCardsSimulator) throws Exception {
-        return cardCalculator.updateState_TestMode(history.peek(), move, topCardsSimulator);
+        return cardCalculator.updateState(history.peek(), move, topCardsSimulator, null, false);
     }
 
     public void saveState(SolitaireState state) throws Exception {
