@@ -1,3 +1,4 @@
+import Converter.I_ComputerVisionController;
 import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
