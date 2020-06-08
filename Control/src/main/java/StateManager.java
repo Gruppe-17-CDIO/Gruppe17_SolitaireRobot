@@ -44,6 +44,7 @@ public class StateManager {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
 
+        // Special case:
         if (move == null) {
             System.out.println("'updatestate' was called twice with no new move. Returning current state.");
             return (history.peek());
