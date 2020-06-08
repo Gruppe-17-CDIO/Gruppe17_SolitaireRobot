@@ -1,5 +1,8 @@
 package Converter;
 
+import Data.PreCard;
+import dataObjects.Card;
+import dataObjects.ConvertState;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -22,7 +25,7 @@ public class ImageBoxes {
     // 2 will be the piles.
     List<double[]> imageBoxesList = new ArrayList<>();
     /*
-   Divide the image into sections. Ex heigth/2  and length/7.
+   Divide the image into sections. Ex height/2  and length/7.
    _____________________________
    |      |      |      |
    |      |      |      |
@@ -31,7 +34,6 @@ public class ImageBoxes {
    |   |   |   |   |   |   |   |
    -----------------------------
    These boundary boxes will be used to to check if the incoming coordinates (From darknet) are located in one of the boxes.
-
     */
     public List<double[]> calibrateImgBoxes(Image img){
 
@@ -69,5 +71,48 @@ public class ImageBoxes {
         imageBoxesList.add(pileBoxes);
 
         return imageBoxesList;
+    }
+
+
+    public ConvertState boxMapping(List<PreCard> precard, List<double[]> coordinateList, Image img){
+        ConvertState currentState = new ConvertState();
+
+        //Mapping the draw cart
+        //It is located in the upper side of the image
+        double upperHight = img.getHeight()/2;
+
+        for(int i = 0; i<precard.size();i++){
+            if(locate(precard.get(i),coordinateList.get(0)[0],upperHeight)){
+                Card card = new Card(precard.get(i).getColor(),precard.get(i).getRank());
+                currentState.setDraw(card);
+            }
+        }
+
+        for(int i = 0; i<precard.size();i++){
+            for (int j =0;j<coordinateList.get(1).length;j++) {
+                if (locate(precard.get(i), coordinateList.get(1)[j], upperHeight)) {
+                    //Create cardobject
+                }
+            }
+        }
+
+        for(int i = 0; i<precard.size();i++){
+            for (int j =0;j<coordinateList.get(1).length;j++) {
+                if (locate(precard.get(i), coordinateList.get(2)[j], upperHeight)) {
+                    //Create cardobject
+                }
+            }
+        }
+
+
+
+    }
+
+    private boolean locate(PreCard preCard, double endXCoordinate, double height){
+        if(preCard.getUpperCoordinate().getX()<endXCoordinate || preCard.getUpperCoordinate().getY()<=height){
+            return true;
+        }
+        return false;
+
     }
 }

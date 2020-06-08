@@ -14,8 +14,8 @@ public class Darknet_Stub implements I_Connection {
     final static int DRAW = 1;
     final static int ROW = 7;
     final static int FOUNDATION = 4;
-    final static int BOX_HEIGHT = 10;
-    final static int BOX_WIDTH = 10;
+    final static int BOX_HEIGHT = 100;
+    final static int BOX_WIDTH = 50;
     // Koordinat af bounding boxes
     // Højde og bredda af bounding boxes
     // Procentsats for hvad hvilket kort den tror det er
@@ -29,38 +29,58 @@ public class Darknet_Stub implements I_Connection {
 
 
     private JsonArray init_Stup_Cards(){
+
+        int fistRowCarPositionX;
+        int rowXStride;
+
+        int fistRowCarPositionY;
+        int rowYStride;
         JsonArray returnJson = new JsonArray();
 
+        fistRowCarPositionX = 30;
+        rowXStride = 0;
+        fistRowCarPositionY = 26;
+        rowYStride = 0;
         //Add draw
-        for (int i = 0; i<DRAW;i++){
+        for (int i = 1; i<=DRAW;i++){
 
             JsonObject draw = new JsonObject();
-            draw.addProperty("upperKoordinate_X",i);
-            draw.addProperty("upperKoordinate_Y",i);
-            draw.addProperty("lowerKoordinate_X",i+BOX_WIDTH);
-            draw.addProperty("lowerKoordinate_Y",i-BOX_HEIGHT);
+            draw.addProperty("upperKoordinate_X",i*rowXStride+fistRowCarPositionX);
+            draw.addProperty("upperKoordinate_Y",i*rowYStride+fistRowCarPositionY);
+            draw.addProperty("lowerKoordinate_X",i*rowXStride+fistRowCarPositionX+BOX_WIDTH);
+            draw.addProperty("lowerKoordinate_Y",i*rowYStride+fistRowCarPositionY+BOX_HEIGHT);
             draw.addProperty("Classification",classes.getClasssification());
             returnJson.add(draw);
         }
+
+        fistRowCarPositionX = 200;
+        rowXStride = 120;
+        fistRowCarPositionY = 26;
+        rowYStride = 0;
         //Adding foundation
-        for (int i = 0; i<FOUNDATION;i++){
+        for (int i = 1; i<=FOUNDATION;i++){
             JsonObject foundation = new JsonObject();
-            foundation.addProperty("upperKoordinate_X",i+5);
-            foundation.addProperty("upperKoordinate_Y",i+5);
-            foundation.addProperty("lowerKoordinate_X",i+BOX_WIDTH);
-            foundation.addProperty("lowerKoordinate_Y",i-BOX_HEIGHT);
+            foundation.addProperty("upperKoordinate_X",i*rowXStride+fistRowCarPositionX);
+            foundation.addProperty("upperKoordinate_Y",i*rowYStride+fistRowCarPositionY);
+            foundation.addProperty("lowerKoordinate_X",i*rowXStride+fistRowCarPositionX+BOX_WIDTH);
+            foundation.addProperty("lowerKoordinate_Y",i*rowYStride+fistRowCarPositionY+BOX_HEIGHT);
             foundation.addProperty("Classification",classes.getClasssification());
             returnJson.add(foundation);
         }
 
         //Add row
+        fistRowCarPositionX = 30;
+        rowXStride = 120;
+        fistRowCarPositionY = 155;
+        rowYStride = 15;
+
         for (int i = 0; i<ROW;i++){
 
             JsonObject row = new JsonObject();
-            row.addProperty("upperKoordinate_X",i);
-            row.addProperty("upperKoordinate_Y",i-50);
-            row.addProperty("lowerKoordinate_X",i+BOX_WIDTH);
-            row.addProperty("lowerKoordinate_Y",i-BOX_HEIGHT);
+            row.addProperty("upperKoordinate_X",i*rowXStride+fistRowCarPositionX);
+            row.addProperty("upperKoordinate_Y",i*rowYStride+fistRowCarPositionY);
+            row.addProperty("lowerKoordinate_X",i*rowXStride+fistRowCarPositionX+BOX_WIDTH);
+            row.addProperty("lowerKoordinate_Y",i*rowYStride+fistRowCarPositionY+BOX_HEIGHT);
             row.addProperty("Classification",classes.getClasssification());
             returnJson.add(row);
         }

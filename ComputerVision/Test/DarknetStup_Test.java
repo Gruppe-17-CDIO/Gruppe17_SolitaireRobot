@@ -16,7 +16,7 @@ public class DarknetStup_Test {
 
 
     @Test
-    public static void Test_Stub(){
+    public void Test_Stub(){
         Image img = null;
         JsonArray array = connection.Get_Image_Information(img);
         System.out.println(array.toString());
