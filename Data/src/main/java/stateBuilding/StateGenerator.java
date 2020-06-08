@@ -1,5 +1,6 @@
 package stateBuilding;
 
+import PropertyLoader.SinglePropertyLoader;
 import dataObjects.Card;
 import dataObjects.SolitaireState;
 
@@ -11,8 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StateGenerator {
-    //final String PATH = "src/main/resources/builderFiles/build-a-state_";
-    final String PATH = "Data/src/main/resources/builderFiles/build-a-state_";
+    final String PATH = SinglePropertyLoader.getInstance().getProperty("project.root");
 
     public SolitaireState getState(int id) throws Exception {
         String[][] data = readBuilderFile(id);
@@ -108,7 +108,7 @@ public class StateGenerator {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    PATH + id));
+                    PATH + "/Data/src/main/resources/builderFiles/build-a-state_" + id));
             String line = reader.readLine();
             while (line != null) {
                 //System.out.println(line);
