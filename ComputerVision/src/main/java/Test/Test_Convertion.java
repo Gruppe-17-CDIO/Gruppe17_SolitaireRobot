@@ -20,7 +20,7 @@ public class Test_Convertion {
         System.out.println(image.getWidth());
         System.out.println(image.getHeight());
 
-        converter.calibrateImgBoxes(im);
+
 
 
 
