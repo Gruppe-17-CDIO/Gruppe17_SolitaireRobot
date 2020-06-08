@@ -1,4 +1,4 @@
-package utilities;
+package stateBuilding;
 
 import dataObjects.Card;
 import dataObjects.Move;
@@ -77,6 +77,11 @@ public class StatePrinterUtility {
         printRow(line);
 
         printEmptyRow();
+
+        for (int i = 0; i < 7; i++) {
+            line[i] = "   Pile " + i;
+        }
+        printRow(line);
 
         // Piles, the 7 columns of cards
         List<List<Card>> piles = state.getPiles();

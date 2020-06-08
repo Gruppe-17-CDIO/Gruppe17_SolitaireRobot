@@ -44,7 +44,7 @@ public class StateLogger implements I_StateLogger {
             new Gson().toJson(historyCards, writer);
             writer.close();
         } catch (IOException e) {
-            System.out.println("StateSaver failed to log game data in the file '" + FILE_PATH + "'.");
+            System.out.println("StateLogger failed to log game data in the file '" + FILE_PATH + "'.");
             e.printStackTrace();
         }
     }
@@ -59,7 +59,7 @@ public class StateLogger implements I_StateLogger {
             }.getType();
             history = new Gson().fromJson(reader, type);
         } catch (IOException i) {
-            System.out.println("StateSaver did not find a file at'" + FILE_PATH + "'.");
+            System.out.println("StateLogger could not read file '" + FILE_PATH + "'.");
             //i.printStackTrace();
         }
         if (history == null) {

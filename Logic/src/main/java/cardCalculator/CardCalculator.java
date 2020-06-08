@@ -1,11 +1,13 @@
 package cardCalculator;
 
+import com.google.gson.Gson;
 import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import org.apache.commons.lang.SerializationUtils;
 import stateBuilding.StateGenerator;
+import stateBuilding.TopCardsSimulator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +19,9 @@ public class CardCalculator {
      * 2. Updating state based on move and previous state.
      * 3. Checking state against the new TopCard object from CV.
      *
-     * @param topCards, the cards as seen by computer vision
+     * @param topCards, the cards as seen by computer vision on initial setup
      * @return state, a Full SoliaireState Object
-     * @throws Exception if CardData cannot be used or is inconsistent
+     * @throws Exception if CardData cannot be used
      * @author erlend
      * /
      * <p>
@@ -41,8 +43,7 @@ public class CardCalculator {
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + i + ". " +
-                        "All piles must have one card at start of new game.");
+                throw new Exception("initiateState(): Missing card from pile: " + i + ". All piles must have one card at start of new game.");
             }
         }
 
@@ -76,15 +77,16 @@ public class CardCalculator {
      * @return state
      */
     public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards) throws Exception {
-        // Deep copy, just in case
-        SolitaireState state = (SolitaireState) SerializationUtils.clone(prevState);
+        // Deep copy
+        Gson gson = new Gson();
+        SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+        state.setSuggestedMoves(new ArrayList<>());
 
-        // Udate newly flipped cards.
         List<Card> drawnCards = state.getDrawnCards();
         List<Card> foundations = state.getFoundations();
         List<List<Card>> piles = state.getPiles();
 
-        // If move is draw, add the newly turned card from CV
+        // If move is draw, add the new card value from CV
         if (move.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
             state.setStock(stock - 1);
@@ -92,8 +94,7 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
         }
 
-        // If a face down card is uncovered on top of a pile in state, replace with a new card from CV.
-        // (Implicitly this is the FACEUP move type.)
+        // If a face down card is uncovered in a pile, replace with card from CV
         for (int i = 0; i < 7; i++) {
             List<Card> pile = piles.get(i);
             if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
@@ -111,12 +112,12 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
 
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
-                foundations.add(move.getDestPosition(), card);
+                foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.add(move.getDestPosition(), cards);
+                piles.set(move.getDestPosition(), cards);
                 state.setPiles(piles);
             }
         }
@@ -126,20 +127,95 @@ public class CardCalculator {
             int cardIndex = move.getPosition()[1];
 
             // Pick up the cards and all cards on top of it.
-            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size() - 1);
+            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
             piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
             state.setPiles(piles);
 
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 if (cards.size() != 1) {
-                    throw new Exception("Cannot only move exactly one card to foundation at a time. Was "
+                    throw new Exception("Move exactly one card to foundation at a time. Was "
                             + cards.size() + ".");
                 }
                 Card card = cards.get(0);
                 foundations.add(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.add(move.getDestPosition(), cards);
+                piles.set(move.getDestPosition(), cards);
+                state.setPiles(piles);
+            }
+        }
+        return state;
+    }
+
+    public SolitaireState updateState_TestMode(SolitaireState prevState, Move move, TopCardsSimulator topCardsSimulator) throws Exception {
+        // Deep copy
+        Gson gson = new Gson();
+        SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+
+        //SolitaireState state = prevState;
+        state.setSuggestedMoves(new ArrayList<>());
+
+        // Udate newly flipped cards.
+        List<Card> drawnCards = state.getDrawnCards();
+        List<Card> foundations = state.getFoundations();
+        List<List<Card>> piles = state.getPiles();
+
+        // If move is draw, add the newly turned card from CV
+        if (move.getMoveType() == Move.MoveType.DRAW) {
+            int stock = state.getStock();
+            state.setStock(stock - 1);
+            drawnCards.add(topCardsSimulator.getCard());
+            state.setDrawnCards(drawnCards);
+        }
+
+        // If a face down card is uncovered on top of a pile in state, replace with a new card from CV.
+        // (Implicitly this is the FACEUP move type.)
+        for (int i = 0; i < 7; i++) {
+            List<Card> pile = piles.get(i);
+            if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
+                piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
+                state.setPiles(piles);
+            }
+        }
+
+        if (move.getMoveType() == Move.MoveType.USEDRAWN) {
+            if (drawnCards.size() < 1) {
+                throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
+            }
+            Card card = drawnCards.get(drawnCards.size() - 1);
+            drawnCards.remove(drawnCards.size() - 1);
+            state.setDrawnCards(drawnCards);
+
+            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
+                foundations.set(move.getDestPosition(), card);
+                state.setFoundations(foundations);
+            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
+                List<Card> cards = new ArrayList<>();
+                cards.add(card);
+                piles.get(move.getDestPosition()).addAll(cards);
+                state.setPiles(piles);
+            }
+        }
+
+        if (move.getMoveType() == Move.MoveType.MOVE) {
+            int pileIndex = move.getPosition()[0];
+            int cardIndex = move.getPosition()[1];// Udate newly flipped cards.
+
+            // Pick up the cards and all cards on top of it.
+            List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
+            piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
+            state.setPiles(piles);
+
+            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
+                if (cards.size() != 1) {
+                    throw new Exception("Move exactly one card to foundation at a time. Was "
+                            + cards.size() + ".");
+                }
+                Card card = cards.get(0);
+                foundations.set(move.getDestPosition(), card);
+                state.setFoundations(foundations);
+            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
+                piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }

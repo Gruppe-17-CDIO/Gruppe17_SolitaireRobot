@@ -2,6 +2,8 @@ package dataObjects;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * This class represent a single card-object.
  * <p>
@@ -18,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Andreas & Erlend
  */
 
-public class Card {
-    private Status status;
+public class Card implements Serializable {
+    private final Status status;
     private Suit suit;
     private int rank;
 

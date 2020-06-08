@@ -3,13 +3,14 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import logger.StateLogger;
+import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
 import java.util.Stack;
 
 /**
  * Responsibility:
- * 1. Communicate with cardcalculator (logic module)
+ * 1. Communicate with cardcalculator
  * 2. save state
  * 3. keep track of history
  * 4. return current history to controller
@@ -25,7 +26,8 @@ public class StateManager {
         if (cardData == null) {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
         } else {
-            System.out.println("New session started. Creating new state, blank history and logfile.");
+            System.out.println("New session started. Creating new state, blank history and logfile. " +
+                    "Ignore missing logfile for read!");
             history = new Stack<>();
             logger = new StateLogger();
             state = cardCalculator.initiateState(cardData);
@@ -46,6 +48,11 @@ public class StateManager {
         }
         // Update state based on previous state and move.
         return cardCalculator.updateState(history.peek(), move, topCards);
+    }
+
+    // TEST ONLY!
+    public SolitaireState updateState_TestMode(Move move, TopCardsSimulator topCardsSimulator) throws Exception {
+        return cardCalculator.updateState_TestMode(history.peek(), move, topCardsSimulator);
     }
 
     public void saveState(SolitaireState state) throws Exception {

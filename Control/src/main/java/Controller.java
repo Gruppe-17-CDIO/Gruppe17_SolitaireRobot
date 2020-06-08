@@ -2,6 +2,7 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
+import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class Controller implements I_Controller {
     private final StateManager stateManager = new StateManager();
     private I_ComputerVisionController CV_Controller; // Instantiate here
     private boolean testmode = false;
-    private SolitaireState currentState;
     private Move currentMove;
+    private TopCardsSimulator topCardsSimulator;
 
     @Override
     // Note that this method returns the first move suggestion and saves state
@@ -27,7 +28,8 @@ public class Controller implements I_Controller {
             if (!testmode) {
                 topCards = CV_Controller.getSolitaireCards(img);
             } else {
-                topCards = new TopCards(); // TODO: Make test cards
+                topCardsSimulator = new TopCardsSimulator();
+                topCards = topCardsSimulator.getSimTopCards();
             }
             state = stateManager.initiate(topCards); // Make new history, logfile and state
             List<Move> moves = logic.getMoves(state);
@@ -74,13 +76,15 @@ public class Controller implements I_Controller {
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         try {
             TopCards topCards;
+            SolitaireState state;
             if (!testmode) {
                 topCards = CV_Controller.getSolitaireCards(img);
+                state = stateManager.updateState(currentMove, topCards); // Needs topCards to discover new cards
+                stateManager.checkStateAgainstImage(topCards, state);
+
             } else {
-                topCards = new TopCards(); // TODO: Make test cards
+                state = stateManager.updateState_TestMode(currentMove, topCardsSimulator); // Test mode
             }
-            SolitaireState state = stateManager.updateState(currentMove, topCards); // Needs topCards to discover new cards
-            state = stateManager.checkStateAgainstImage(topCards, currentState);
             List<Move> moves = logic.getMoves(state);
 
             // Save the new state and it's move list

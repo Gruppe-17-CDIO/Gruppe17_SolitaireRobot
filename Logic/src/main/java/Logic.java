@@ -9,13 +9,14 @@ import java.util.List;
  */
 
 public class Logic implements I_Logic {
-    private List<Move> moves = new ArrayList<>();
+    private List<Move> moves;
     private SolitaireState state;
     private Card card;
 
     @Override
     public List<Move> getMoves(SolitaireState state) {
         this.state = state;
+        moves = new ArrayList<>();
 
         /*
          * Outer loop iterates through pile 1 to 7
