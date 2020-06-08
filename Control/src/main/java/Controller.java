@@ -79,11 +79,11 @@ public class Controller implements I_Controller {
             SolitaireState state;
             if (!testmode) {
                 topCards = CV_Controller.getSolitaireCards(img);
-                state = stateManager.updateState(currentMove, topCards); // Needs topCards to discover new cards
+                state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
                 stateManager.checkStateAgainstImage(topCards, state);
 
             } else {
-                state = stateManager.updateState_TestMode(currentMove, topCardsSimulator); // Test mode
+                state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
             }
             List<Move> moves = logic.getMoves(state);
 
