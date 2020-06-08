@@ -5,7 +5,6 @@ import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
-import org.apache.commons.lang.SerializationUtils;
 import stateBuilding.StateGenerator;
 import stateBuilding.TopCardsSimulator;
 
@@ -95,6 +94,7 @@ public class CardCalculator {
         }
 
         // If a face down card is uncovered in a pile, replace with card from CV
+        // (Implicitly this is the FACEUP move type.)
         for (int i = 0; i < 7; i++) {
             List<Card> pile = piles.get(i);
             if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
@@ -117,7 +117,7 @@ public class CardCalculator {
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.set(move.getDestPosition(), cards);
+                piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
@@ -137,10 +137,10 @@ public class CardCalculator {
                             + cards.size() + ".");
                 }
                 Card card = cards.get(0);
-                foundations.add(move.getDestPosition(), card);
+                foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.set(move.getDestPosition(), cards);
+                piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
@@ -151,8 +151,6 @@ public class CardCalculator {
         // Deep copy
         Gson gson = new Gson();
         SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
-
-        //SolitaireState state = prevState;
         state.setSuggestedMoves(new ArrayList<>());
 
         // Udate newly flipped cards.
@@ -168,7 +166,7 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
         }
 
-        // If a face down card is uncovered on top of a pile in state, replace with a new card from CV.
+        // If a face down card is uncovered in a pile, replace with card from CV
         // (Implicitly this is the FACEUP move type.)
         for (int i = 0; i < 7; i++) {
             List<Card> pile = piles.get(i);
@@ -199,7 +197,7 @@ public class CardCalculator {
 
         if (move.getMoveType() == Move.MoveType.MOVE) {
             int pileIndex = move.getPosition()[0];
-            int cardIndex = move.getPosition()[1];// Udate newly flipped cards.
+            int cardIndex = move.getPosition()[1];
 
             // Pick up the cards and all cards on top of it.
             List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
