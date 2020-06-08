@@ -35,7 +35,7 @@ public class StateManager {
         return state;
     }
 
-    public SolitaireState updateState(Move move, TopCards topCards) throws Exception {
+    public SolitaireState updateState(Move move, TopCards topCards, TopCardsSimulator topCardsSimulator, Boolean test) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
@@ -47,12 +47,18 @@ public class StateManager {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
         // Update state based on previous state and move.
-        return cardCalculator.updateState(history.peek(), move, null, topCards, false);
-    }
+        if (test) {
+            if (topCardsSimulator == null) {
+                throw new Exception("updateState: Test needs TopCardsSimulator.");
+            }
+            return cardCalculator.updateState(history.peek(), move, null, topCardsSimulator, true);
+        } else {
+            if (topCards == null) {
+                throw new Exception("updatestate: Missing TopCards");
+            }
+            return cardCalculator.updateState(history.peek(), move, topCards, null, false);
+        }
 
-    // TEST ONLY! This method exists because the exceptions above assume topcards exists.
-    public SolitaireState updateState_TestMode(Move move, TopCardsSimulator topCardsSimulator) throws Exception {
-        return cardCalculator.updateState(history.peek(), move, topCardsSimulator, null, true);
     }
 
     public void saveState(SolitaireState state) throws Exception {
