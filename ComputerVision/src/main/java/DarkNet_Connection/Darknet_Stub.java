@@ -53,7 +53,7 @@ public class Darknet_Stub implements I_Connection {
             returnJson.add(draw);
         }
 
-        fistRowCarPositionX = 200;
+        fistRowCarPositionX = 180;
         rowXStride = 120;
         fistRowCarPositionY = 26;
         rowYStride = 0;
@@ -71,7 +71,7 @@ public class Darknet_Stub implements I_Connection {
         //Add row
         fistRowCarPositionX = 30;
         rowXStride = 120;
-        fistRowCarPositionY = 155;
+        fistRowCarPositionY = 250;
         rowYStride = 15;
 
         for (int i = 0; i<ROW;i++){
@@ -94,8 +94,11 @@ public class Darknet_Stub implements I_Connection {
         ArrayList<String> classes = new ArrayList<>();
         ArrayList<String> Left_Cards = new ArrayList<>();
 
-        public String getClasssification(){
+        Classification(){
             init();
+        }
+
+        public String getClasssification(){
             int rnd = new Random().nextInt(classes.size());
             return classes.remove(rnd);
         }

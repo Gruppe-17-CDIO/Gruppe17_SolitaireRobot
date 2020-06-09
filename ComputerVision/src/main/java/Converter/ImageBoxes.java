@@ -82,37 +82,89 @@ public class ImageBoxes {
         double upperHight = img.getHeight()/2;
 
         for(int i = 0; i<precard.size();i++){
-            if(locate(precard.get(i),coordinateList.get(0)[0],upperHeight)){
-                Card card = new Card(precard.get(i).getColor(),precard.get(i).getRank());
-                currentState.setDraw(card);
-            }
-        }
+            if(locate(precard.get(i),coordinateList.get(0)[0],upperHight,"upper")){
 
-        for(int i = 0; i<precard.size();i++){
-            for (int j =0;j<coordinateList.get(1).length;j++) {
-                if (locate(precard.get(i), coordinateList.get(1)[j], upperHeight)) {
-                    //Create cardobject
+                Card.Suit suit = createSuit(precard.get(i));
+
+                if(suit!=null) {
+
+                    Card card = null;
+                    try {
+                        card = new Card(suit, precard.get(i).getRank());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    currentState.setDraw(card);
+
                 }
             }
         }
 
         for(int i = 0; i<precard.size();i++){
             for (int j =0;j<coordinateList.get(1).length;j++) {
-                if (locate(precard.get(i), coordinateList.get(2)[j], upperHeight)) {
-                    //Create cardobject
+                if (locate(precard.get(i), coordinateList.get(1)[j], upperHight,"upper")) {
+
+                    Card.Suit suit = createSuit(precard.get(i));
+
+                    if(suit!=null) {
+
+                        Card card = null;
+                        try {
+                            card = new Card(suit, precard.get(i).getRank());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        currentState.setFoundation1(card,j);
+                    }
                 }
             }
         }
 
+        for(int i = 0; i<precard.size();i++){
+            for (int j =0;j<coordinateList.get(2).length;j++) {
+                if (locate(precard.get(i), coordinateList.get(2)[j], upperHight,"lower")) {
+                    Card.Suit suit = createSuit(precard.get(i));
 
+                    if(suit!=null) {
 
+                        Card card = null;
+                        try {
+                            card = new Card(suit, precard.get(i).getRank());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        currentState.setRow(card,j);
+                    }
+                }
+            }
+        }
+        return currentState;
     }
 
-    private boolean locate(PreCard preCard, double endXCoordinate, double height){
-        if(preCard.getUpperCoordinate().getX()<endXCoordinate || preCard.getUpperCoordinate().getY()<=height){
-            return true;
+    private boolean locate(PreCard preCard, double endXCoordinate, double height,String position){
+        if(position.equals("upper")) {
+            if (preCard.getUpperCoordinate().getX() < endXCoordinate && preCard.getUpperCoordinate().getY() <= height) {
+                return true;
+            }
+        }else{
+            if (preCard.getUpperCoordinate().getX() < endXCoordinate && preCard.getUpperCoordinate().getY() > height) {
+                return true;
+            }
         }
         return false;
 
+    }
+
+
+    private Card.Suit createSuit(PreCard preCard){
+
+        switch (preCard.getColor()){
+            case "H": return Card.Suit.HEART;
+            case "D": return Card.Suit.DIAMOND;
+            case "S": return Card.Suit.SPADE;
+            case "K": return Card.Suit.CLUB;
+
+        }
+        return null;
     }
 }

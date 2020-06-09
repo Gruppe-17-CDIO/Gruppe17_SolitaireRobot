@@ -6,6 +6,7 @@ import DarkNet_Connection.I_Connection;
 import Data.PreCard;
 import com.google.gson.JsonArray;
 import dataObjects.Card;
+import dataObjects.ConvertState;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -13,28 +14,29 @@ import java.util.List;
 public class Convertion implements I_ComputerVisionController {
     Util utility = new Util();
     I_Connection connection = new Darknet_Stub();
+    ImageBoxes boxCreator = new ImageBoxes();
     Image img;
 
 
 
 
     @Override
-    public Card[] getSolitaireCards(Image img) {
+    public ConvertState getSolitaireCards(Image img) {
 
-        this.img = img;
+        List<PreCard> returnImages = ConvertImage(img);
+        List<double[]> boxesArea = boxCreator.calibrateImgBoxes(img);
 
-        return new Card[0];
+
+        return boxCreator.boxMapping(returnImages,boxesArea,img);
     }
 
 
 
 
 
-    private JsonArray ConvertImage(Image img){
+    public List<PreCard> ConvertImage(Image img){
         JsonArray returnArray = connection.Get_Image_Information(img);
-        List<PreCard> preCardList = utility.getPreCard(returnArray);
-
-        return null;
+        return utility.getPreCard(returnArray);
 
     }
 }
