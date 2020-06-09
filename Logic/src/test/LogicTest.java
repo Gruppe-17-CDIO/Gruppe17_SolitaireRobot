@@ -2,11 +2,13 @@ import dataObjects.Move;
 import dataObjects.SolitaireState;
 import org.junit.jupiter.api.Test;
 import stateBuilding.StateGenerator;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * @author Anders Frandsen
+ */
 
 class LogicTest {
     @Test
@@ -14,7 +16,7 @@ class LogicTest {
 
         /*
          * Possible moves between the seven piles
-         * Uses build-a-state_1 with three possible moves
+         * Uses build-a-state_202 with four possible moves
          */
 
         // Arrange
@@ -23,7 +25,7 @@ class LogicTest {
         List<Move> moves;
 
         try {
-            state = StateGenerator.getState(0);
+            state = new StateGenerator().getState(202);
             System.out.println(state.getPrintFormat());
         } catch (Exception ex) {
             System.out.println(ex.toString());
@@ -36,7 +38,6 @@ class LogicTest {
 
         // Drawn card -> foundations[1]
         assertEquals(Move.MoveType.DRAW, moves.get(0).getMoveType());
-        //assertArrayEquals(new int[]{0,0}, moves.get(0).getPosition());
         assertEquals(Move.DestinationType.FOUNDATION, moves.get(0).getDestinationType());
         assertEquals(1, moves.get(0).getDestPosition());
 
@@ -63,7 +64,7 @@ class LogicTest {
     void mixedTest() {
 
         /*
-         * Uses build-a-state_0 with two possible moves
+         * Uses build-a-state_201 with six possible moves
          */
 
         // Arrange
@@ -72,7 +73,7 @@ class LogicTest {
         List<Move> moves;
 
         try {
-            state = StateGenerator.getState(0);
+            state = new StateGenerator().getState(201);
             System.out.println(state.getPrintFormat());
         } catch (Exception ex) {
             System.out.println(ex.toString());
@@ -85,7 +86,6 @@ class LogicTest {
 
         // Drawn card -> foundation[2]
         assertEquals(Move.MoveType.DRAW, moves.get(0).getMoveType());
-        //assertArrayEquals(new int[]{0,0}, moves.get(0).getPosition());
         assertEquals(Move.DestinationType.FOUNDATION, moves.get(0).getDestinationType());
         assertEquals(2, moves.get(0).getDestPosition());
 
@@ -115,7 +115,6 @@ class LogicTest {
 
         // Drawn card -> piles[4]
         assertEquals(Move.MoveType.DRAW, moves.get(5).getMoveType());
-        //assertArrayEquals(new int[]{0,0}, moves.get(5).getPosition());
         assertEquals(Move.DestinationType.PILE, moves.get(5).getDestinationType());
         assertEquals(4, moves.get(5).getDestPosition());
     }

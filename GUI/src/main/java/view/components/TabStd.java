@@ -8,8 +8,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import view.MainGUI;
-import view.components.FxUtil;
 
 import java.io.File;
 
@@ -19,6 +17,8 @@ import java.io.File;
 public abstract class TabStd extends Tab {
 
     //-------------------------- Fields --------------------------
+
+    protected final String TAG = getClass().getSimpleName();
 
     protected String header, desc;
     protected VBox content = FxUtil.vBox(true);

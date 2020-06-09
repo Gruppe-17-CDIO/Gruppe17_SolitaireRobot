@@ -1,4 +1,4 @@
-package utilities;
+package stateBuilding;
 
 import dataObjects.Card;
 import dataObjects.Move;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class StatePrinterUtility {
     final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
-    final String empty = "            ";
+    final String empty = "                ";
     private final StringBuilder result = new StringBuilder();
 
     /**
@@ -50,14 +50,17 @@ public class StatePrinterUtility {
         printRow(line);
 
         // Drawn cards
-        Card drawn = state.getDrawnCard();
-        for (int i = 0; i < 3; i++) {
-            if (drawn == null) {
-                line[i] = empty;
-            } else {
-                line[i] = drawn.toString();
-            }
+        Card drawn = state.getDrawnCards().get(0);
+        if (drawn == null) {
+            line[0] = empty;
+        } else {
+            line[0] = drawn.toString();
         }
+
+        // Two empty spaces after drawn card
+        line[1] = empty;
+        line[2] = empty;
+
         // Spaces next to drawn card:
         line[1] = empty;
         line[2] = empty;
@@ -75,6 +78,11 @@ public class StatePrinterUtility {
 
         printEmptyRow();
 
+        for (int i = 0; i < 7; i++) {
+            line[i] = "   Pile " + i;
+        }
+        printRow(line);
+
         // Piles, the 7 columns of cards
         List<List<Card>> piles = state.getPiles();
         for (int i = 0; i < 20; i++) {
@@ -84,7 +92,7 @@ public class StatePrinterUtility {
                 } else if (piles.get(j).size() - 1 < i || piles.get(j).get(i) == null) {
                     line[j] = empty;
                 } else if (piles.get(j).get(i).getStatus() == Card.Status.FACEDOWN) {
-                    line[j] = faceDown;
+                    line[j] = "|''''''''''" + i + "|";
                 } else if (piles.get(j).get(i) != null) {
                     line[j] = piles.get(j).get(i).toString();
                 } else {
@@ -128,7 +136,8 @@ public class StatePrinterUtility {
     private void printRow(String[] s) {
         String line = "";
         for (int i = 0; i < 7; i++) {
-            line += String.format("%-" + 16 + "s", s[i]);
+            String temp = String.format("%-16s", s[i]);
+            line += temp.substring(0, 16);
         }
         result.append(line + "\n");
     }

@@ -1,5 +1,7 @@
 package view.taps;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
@@ -17,8 +19,8 @@ public class TabPane extends javafx.scene.control.TabPane {
      */
 
     private List<Tab> tabList = new ArrayList<>();
-    private CameraSourceTab cameraSourceTab = new CameraSourceTab();
-    
+    private CameraSourceTabNew cameraSourceTabNew = new CameraSourceTabNew();
+    private GameTab gameTab = new GameTab();
     /*
     ----------------------- Constructor -------------------------
      */
@@ -26,6 +28,7 @@ public class TabPane extends javafx.scene.control.TabPane {
     public TabPane () {
         setTabMinWidth(TAB_MIN_WIDTH);
         loadDefaultTabs();
+        setSelectionProperty();
     }
     
     /*
@@ -46,10 +49,31 @@ public class TabPane extends javafx.scene.control.TabPane {
      */
 
     private void loadDefaultTabs () {
-        tabList.add(cameraSourceTab);
-        tabList.add(new GameTab());
+        tabList.add(cameraSourceTabNew);
+        tabList.add(gameTab);
 
         getTabs().addAll(tabList);
+    }
+
+    private void setSelectionProperty () {
+        getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
+                if (oldValue != null) {
+                    TabUserData oldTabUserData = (TabUserData) oldValue.getUserData();
+                    if (oldTabUserData != null) {
+                        oldTabUserData.runCloseRunnable();
+                    }
+                }
+                if (newValue != null) {
+                    TabUserData newTabUserData = (TabUserData) newValue.getUserData();
+                    if (newTabUserData != null) {
+                        newTabUserData.runOpenRunnable();
+                    }
+                }
+
+            }
+        });
     }
 
 }

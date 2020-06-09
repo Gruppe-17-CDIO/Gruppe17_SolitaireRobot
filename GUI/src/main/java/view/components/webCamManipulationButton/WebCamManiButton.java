@@ -1,4 +1,4 @@
-package view.components;
+package view.components.webCamManipulationButton;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 import view.MainGUI;
 
 import java.io.File;
-import java.util.PrimitiveIterator;
 
 /**
  * @author Rasmus Sander Larsen
@@ -15,6 +14,8 @@ import java.util.PrimitiveIterator;
 public class WebCamManiButton extends Button {
 
     //-------------------------- Fields --------------------------
+
+    private ManipulationStateCallback callback;
 
     private final String DEFAULT_BUTTON_TEXT = "Select webcam image";
     private final String REMOVE_BUTTON_TEXT = "Remove webcam image";
@@ -27,8 +28,9 @@ public class WebCamManiButton extends Button {
 
     //----------------------- Constructor -------------------------
 
-    public WebCamManiButton () {
+    public WebCamManiButton (ManipulationStateCallback callback) {
         super();
+        this.callback = callback;
         applySettings();
     }
 
@@ -48,6 +50,16 @@ public class WebCamManiButton extends Button {
 
     //---------------------- Public Methods -----------------------
 
+    public void setManipulationState(boolean isWebCamManipulated) {
+        if (isWebCamManipulated) {
+            setText(REMOVE_BUTTON_TEXT);
+        } else {
+            setText(DEFAULT_BUTTON_TEXT);
+        }
+
+        this.isWebCamManipulated = isWebCamManipulated;
+    }
+
     public Image imageOfFile() {
         return new Image(selectedFile.toURI().toString());
     }
@@ -58,7 +70,8 @@ public class WebCamManiButton extends Button {
         setText(DEFAULT_BUTTON_TEXT);
         setOnAction(event -> {
             if (isWebCamManipulated) {
-                isWebCamManipulated = false;
+                setManipulationState(false);
+                callback.stopManipulateAction();
             } else {
                 browseForImageFile();
             }
@@ -67,22 +80,28 @@ public class WebCamManiButton extends Button {
 
     private void browseForImageFile () {
         fileChooser = new FileChooser();
+        // Starts the filechooser from the directory of the lastly selected file.
         if (selectedFile != null) {
             fileChooser.setInitialDirectory(folderOfFile(selectedFile));
         } else {
             fileChooser.setInitialDirectory(null);
         }
+        // The file selected in the filechooser is loaded into "selectedFile".
         selectedFile = fileChooser.showOpenDialog(new Stage());
         if (selectedFile != null) {
             MainGUI.printToOutputAreaNewline(DEFAULT_SELECTED_TEXT + "\n" + selectedFile.getAbsolutePath());
             isWebCamManipulated = true;
 
             setText(REMOVE_BUTTON_TEXT);
+            // Runs the manipulation method
+            callback.startManipulateAction();
         } else {
             MainGUI.printToOutputAreaNewline(DEFAULT_SELECTED_TEXT + "\nNothing");
             isWebCamManipulated = false;
 
             setText(DEFAULT_BUTTON_TEXT);
+            // Runs the no manipulation method
+            callback.stopManipulateAction();
         }
     }
 
@@ -92,4 +111,5 @@ public class WebCamManiButton extends Button {
         String folder = filePath.substring(0,lastBackSlash);
         return new File(folder);
     }
+
 }

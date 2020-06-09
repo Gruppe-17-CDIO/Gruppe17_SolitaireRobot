@@ -1,8 +1,9 @@
 import cardCalculator.CardCalculator;
-import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
+import dataObjects.TopCards;
 import logger.StateLogger;
+import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
 import java.util.Stack;
@@ -18,14 +19,15 @@ import java.util.Stack;
 public class StateManager {
     private Stack<SolitaireState> history; // This is the main history
     private StateLogger logger; // Making logfiles
-    private CardCalculator cardCalculator; // Updating the state
+    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
 
-    public SolitaireState initiate(Card[] cardData) throws Exception {
+    public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
         if (cardData == null) {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
         } else {
-            System.out.println("New session started. Creating new state, blank history and logfile.");
+            System.out.println("New session started. Creating new state, blank history and logfile. " +
+                    "Ignore missing logfile for read!");
             history = new Stack<>();
             logger = new StateLogger();
             state = cardCalculator.initiateState(cardData);
@@ -33,34 +35,53 @@ public class StateManager {
         return state;
     }
 
-    public SolitaireState updateState(Move move) throws Exception {
+    public SolitaireState updateState(Move move, TopCards topCards, TopCardsSimulator topCardsSimulator, Boolean test) throws Exception {
+        // Exceptions
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
-        }
-        if (move == null) {
-            throw new Exception("Previous move was null, but a move has been made: " +
-                    "call initiate first.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
+
+        // Special case:
+        if (move == null) {
+            System.out.println("'updatestate' was called twice with no new move. Returning current state.");
+            return (history.peek());
+        }
+
         // Update state based on previous state and move.
-        return cardCalculator.updateState(history.peek(), move);
+        if (test) {
+            if (topCardsSimulator == null) {
+                throw new Exception("updateState: Test needs TopCardsSimulator.");
+            }
+            return cardCalculator.updateState(history.peek(), move, null, topCardsSimulator, true);
+        } else {
+            if (topCards == null) {
+                throw new Exception("updatestate: Missing TopCards");
+            }
+            return cardCalculator.updateState(history.peek(), move, topCards, null, false);
+        }
+
     }
 
-    public void saveState(SolitaireState state, List<Move> suggestedMoves) throws Exception {
+    public void saveState(SolitaireState state) throws Exception {
         if (logger == null) {
             throw new Exception("The StateLogger was null, but a move has been made. Log may be corrupted.");
         }
         if (history == null) {
             throw new Exception("History was null, but a move has been made. History may be corrupted.");
         }
+        history.push(state);
+        logger.logState(state);
+    }
+
+    public void addMovesToState(List<Move> suggestedMoves) throws Exception {
+        SolitaireState state = history.peek();
         if (suggestedMoves == null) {
             throw new Exception("suggestedMoves was null. Call this method after calculating moves.");
         }
         state.setSuggestedMoves(suggestedMoves);
-        history.push(state);
-        logger.logState(state);
     }
 
     public Stack<SolitaireState> getHistory() throws Exception {
@@ -70,9 +91,9 @@ public class StateManager {
         return history;
     }
 
-    public void checkState(Card[] cardData) throws Exception {
+    public SolitaireState checkStateAgainstImage(TopCards topCards, SolitaireState state) throws Exception {
         // Checking if state fits with image data.
-        cardCalculator.checkState(cardData, history.peek());
+        return cardCalculator.checkState(topCards, state);
     }
 
     public SolitaireState getState() throws Exception {

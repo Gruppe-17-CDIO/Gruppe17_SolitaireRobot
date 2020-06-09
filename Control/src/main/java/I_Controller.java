@@ -14,20 +14,21 @@ public interface I_Controller {
      * @param img      Image input from view
      * @param callBack return suggested moves and history
      */
-    void getFirstMove(Image img, NextMoveCallBack callBack);
+    void startNewGame(Image img, NextMoveCallBack callBack);
 
     /**
-     * Stores move and calculates new moves
+     * Stores move
      *
      * @param move The chosen move
      */
     void performMove(Move move, CompletionCallBack callBack);
 
     /**
-     * This method controls state against the
-     * data from the image, and returns a move list.
-     * Can be run several times in a row, as it doesn't
-     * change state.
+     * Precondition: A move has been selected, saved as currentMove. The cards are moved in the same way as the
+     * selected move. A State exists in history.
+     * <p>
+     * This method starts image analysis, creates a new state based on move and image data, checks for inconsistencies,
+     * calculates moves and saves new state + move list.
      *
      * @param img      Image to control the state
      * @param callBack List of suggested moves and history
@@ -42,6 +43,14 @@ public interface I_Controller {
      * @param callBack A status message and history
      */
     void undo(CompletionCallBack callBack);
+
+    /**
+     * Enter test mode, which maintains state without computervision
+     *
+     * @param test,    boolean to indicate test mode on or off
+     * @param callBack
+     */
+    void setTestModeOn(boolean test, CompletionCallBack callBack);
 }
 
 
