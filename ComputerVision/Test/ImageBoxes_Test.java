@@ -278,7 +278,7 @@ public class ImageBoxes_Test {
 
         while(tempList.size()!=listNr){
             tempPreCard = list.get(0);
-            for(int i = 0; i<list.size()-1;i++){
+            for(int i = 0; i<list.size();i++){
                 if(list.get(i).getUpperCoordinate().getX()<=tempPreCard.getUpperCoordinate().getX()){
                     tempPreCard = list.get(i);
                 }
@@ -295,15 +295,18 @@ public class ImageBoxes_Test {
 
         PreCard tempPreCard;
 
+        int listLength = list.size();
 
 
-        for(int i = 0; i<list.size();i++){
+        for(int i = 0; i<listLength;i++){
             if(list.get(i).getUpperCoordinate().getY()>lowerHight){
 
                 tempPreCard = list.get(i);
 
                 list.remove(tempPreCard);
                 list.add(tempPreCard);
+                i--;
+                listLength--;
             }
 
         }

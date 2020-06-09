@@ -86,29 +86,4 @@ public class Util {
         return color;
     }
 
-    /*
-    private class Sorting {
-        boolean moover = true;
-        private List<PreCard> Sorting(List<PreCard> list){
-            for(int i = 0; i<list.size();i++){
-
-                if(list.get(list.size()-i-1).getUpperCoordinate().getX()<list.get(list.size()-i-1-1).getUpperCoordinate().getX()&&
-                        list.get(list.size()-i-1).getUpperCoordinate().getY()<list.get(list.size()-i-1-1).getUpperCoordinate().getY()){
-
-                }
-
-            }
-        }
-
-        private void MoveUp(){
-
-        }
-
-        private void MoveDown(){
-
-        }
-    }
-
-     */
-
 }
