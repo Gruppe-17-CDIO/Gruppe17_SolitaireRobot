@@ -1,6 +1,7 @@
 import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +42,6 @@ public class Logic implements I_Logic {
                 pileMoves(i, j);
 
                 // Drawn card move
-                // *************************************************************************
-                // Hej jeg konverterede til List, så der er lidt ekstra kode her! Erlend :-)
-                // *************************************************************************
                 List<Card> drawnCards = state.getDrawnCards();
                 Card drawnCard = null;
                 if (drawnCards.size() > 0) {
@@ -58,9 +56,6 @@ public class Logic implements I_Logic {
         }
 
         // Drawn card
-        // ****************************************************
-        // Samme her! Drawn card er lavet om til liste. Erlend
-        // ****************************************************
         List<Card> drawnCards = state.getDrawnCards();
         Card drawnCard = null;
         if (drawnCards.size() > 0) {

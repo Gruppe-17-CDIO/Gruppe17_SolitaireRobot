@@ -33,7 +33,7 @@ public class CardCalculator {
         }
         if (topCards.getDrawnCard() == null) {
             throw new Exception("initiateState(): Missing a drawn card in the setup. " +
-                    "Draw exactly one card before calling initiate.");
+                    "Draw exactly one card from stock before calling initiate.");
         }
         for (int i = 0; i < 4; i++) {
             if (topCards.getFoundations()[i] != null) {
@@ -42,7 +42,8 @@ public class CardCalculator {
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + i + ". All piles must have one card at start of new game.");
+                throw new Exception("initiateState(): Missing card from pile: " + i + ". " +
+                        "All piles must have one card at start of new game.");
             }
         }
 
@@ -75,7 +76,8 @@ public class CardCalculator {
      * @param topCards
      * @return state
      */
-    public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards, TopCardsSimulator topCardsSimulator, boolean test) throws Exception {
+    public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards,
+                                      TopCardsSimulator topCardsSimulator, boolean test) throws Exception {
         // Deep copy
         Gson gson = new Gson();
         SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
@@ -90,6 +92,18 @@ public class CardCalculator {
         // If move is draw, add the newly turned card from CV
         if (move.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
+
+            if (stock < 0) {
+                throw new Exception("Stock is below zero. Should not be possible.");
+            } else if (stock == 0 && drawnCards.size() > 0) {
+                stock = drawnCards.size();
+                drawnCards = new ArrayList<>();
+                int flipped = state.getStockTurned();
+                state.setStockTurned(flipped + 1); // 3 means you lose
+            } else if (stock == 0) { // No cards left to draw
+                throw new Exception("Draw was suggested, but there are no cards left in stock or drawn cards.");
+            }
+
             state.setStock(stock - 1);
             if (test) {
                 drawnCards.add(topCardsSimulator.getCard());
@@ -117,6 +131,7 @@ public class CardCalculator {
             if (drawnCards.size() < 1) {
                 throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
             }
+
             Card card = drawnCards.get(drawnCards.size() - 1);
             drawnCards.remove(drawnCards.size() - 1);
             state.setDrawnCards(drawnCards);
@@ -124,6 +139,7 @@ public class CardCalculator {
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
+                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
@@ -149,12 +165,26 @@ public class CardCalculator {
                 Card card = cards.get(0);
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
+                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
+
         return state;
+    }
+
+    private boolean checkWin(SolitaireState state) {
+        boolean won = true;
+        for (int i = 0; i < 4; i++) {
+            Card foundation = state.getFoundations().get(i);
+            if (foundation == null || foundation.getRank() != 13) {
+                won = false;
+            }
+        }
+        state.setWon(won);
+        return won;
     }
 
 
@@ -196,10 +226,12 @@ public class CardCalculator {
         for (int i = 0; i < 4; i++) {
             if (foundations.get(i) == null) {
                 if (topCards.getFoundations()[i] != null) {
-                    throw new Exception("checkState: State's foundation " + i + " was null, but corresponding card from image was NOT null.");
+                    throw new Exception("checkState: State's foundation " + i + " was null, " +
+                            "but corresponding card from image was NOT null.");
                 }
             } else if (topCards.getFoundations()[i] == null) {
-                throw new Exception("checkState: Image foundations " + i + " was null, corresponding card in state was NOT null.");
+                throw new Exception("checkState: Image foundations " + i + " was null, " +
+                        "corresponding card in state was NOT null.");
             } else {
                 if (!(topCards.getFoundations()[i].toString().equals(foundations.get(i).toString()))) {
                     throw new Exception("checkState: The foundation card " + i + " doesn't match." +
@@ -213,10 +245,12 @@ public class CardCalculator {
         for (int i = 0; i < 7; i++) {
             if (piles.get(i) == null) {
                 if (topCards.getPiles()[i] != null) {
-                    throw new Exception("checkState: State's pile " + i + " was null, but corresponding card from image was NOT null.");
+                    throw new Exception("checkState: State's pile " + i + " was null, " +
+                            "but corresponding card from image was NOT null.");
                 }
             } else if (topCards.getPiles()[i] == null) {
-                throw new Exception("checkState: Image pile " + i + " was null, corresponding card in state was NOT null.");
+                throw new Exception("checkState: Image pile " + i + " was null, " +
+                        "corresponding card in state was NOT null.");
             } else {
                 if (!(topCards.getPiles()[i].toString().equals(piles.get(i).toString()))) {
                     throw new Exception("checkState: The pile card " + i + " doesn't match." +
