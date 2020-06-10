@@ -25,10 +25,10 @@ public class Deck {
             }
         }
 
-        print();
+        //print();
         Collections.shuffle(cards);
         System.out.println("\nShuffle shuffle...\n");
-        print();
+        //print();
     }
 
     public Card getCard() throws Exception {

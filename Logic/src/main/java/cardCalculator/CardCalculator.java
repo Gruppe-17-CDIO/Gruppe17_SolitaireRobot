@@ -100,7 +100,7 @@ public class CardCalculator {
                 stock = drawnCards.size();
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
-                state.setStockTurned(flipped + 1); // 3 means you lose
+                state.setStockTurned(flipped + 1); // 3 means you can't draw
             } else if (stock == 0) { // No cards left to draw
                 throw new Exception("Draw was suggested, but there are no cards left in stock or drawn cards.");
             }
@@ -108,25 +108,10 @@ public class CardCalculator {
             state.setStock(stock - 1);
             if (test) {
                 drawnCards.add(topCardsSimulator.getCard());
-                System.out.println("BOMBIBOFF");
             } else {
                 drawnCards.add(topCards.getDrawnCard());
             }
             state.setDrawnCards(drawnCards);
-        }
-
-        // If a face down card is uncovered in a pile, replace with card from CV
-        // (Implicitly this is the FACEUP move type.)
-        for (int i = 0; i < 7; i++) {
-            List<Card> pile = piles.get(i);
-            if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
-                if (test) {
-                    piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
-                } else {
-                    piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
-                }
-                state.setPiles(piles);
-            }
         }
 
         if (move.getMoveType() == Move.MoveType.USEDRAWN) {
@@ -170,6 +155,23 @@ public class CardCalculator {
                 checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 piles.get(move.getDestPosition()).addAll(cards);
+                state.setPiles(piles);
+            }
+        }
+
+        // Lastly: If a face down card is uncovered on top of a pile, replace with card from CV
+        // (Implicitly this is the FACEUP move type.)
+        for (int i = 0; i < 7; i++) {
+            List<Card> pile = piles.get(i);
+            if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == Card.Status.FACEDOWN) {
+                if (test) {
+                    piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
+                } else {
+                    // Replace if there is a visible topcard (This assumes that face down cards are null in the array)
+                    if (topCards.getPiles()[i] != null) {
+                        piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
+                    }
+                }
                 state.setPiles(piles);
             }
         }
