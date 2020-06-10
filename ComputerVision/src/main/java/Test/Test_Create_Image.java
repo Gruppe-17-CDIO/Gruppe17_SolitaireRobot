@@ -10,9 +10,9 @@ import javafx.scene.image.WritableImage;
 
 import java.awt.image.BufferedImage;
 
-public class Test_Convertion {
+public class Test_Create_Image {
 
-    private void Test_calibrateImgBoxes(){
+    public Image Test_calibrateImgBoxes(){
         Convertion converter = new Convertion();
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         Image im = convertToFxImage(image);
@@ -21,7 +21,7 @@ public class Test_Convertion {
         System.out.println(image.getHeight());
 
 
-
+        return im;
 
 
 

@@ -7,6 +7,11 @@ import org.openimaj.image.MBFImage;
 import java.io.File;
 import java.io.IOException;
 
+
+/*
+This is a test class.
+
+ */
 public class stubImageCoordinates {
 
     public static void coordinate(){

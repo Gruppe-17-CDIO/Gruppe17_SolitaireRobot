@@ -5,6 +5,7 @@ import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.I_Connection;
 import Data.PreCard;
 import com.google.gson.JsonArray;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import dataObjects.Card;
 import dataObjects.ConvertState;
 import javafx.scene.image.Image;
@@ -35,7 +36,12 @@ public class Convertion implements I_ComputerVisionController {
 
 
     public List<PreCard> ConvertImage(Image img){
-        JsonArray returnArray = connection.Get_Image_Information(img);
+        JsonArray returnArray = null;
+        try {
+            returnArray = connection.Get_Image_Information(img);
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
         return utility.getPreCard(returnArray);
 
     }
