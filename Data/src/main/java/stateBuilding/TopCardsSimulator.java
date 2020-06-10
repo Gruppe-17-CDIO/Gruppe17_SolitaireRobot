@@ -18,6 +18,13 @@ public class TopCardsSimulator {
     }
 
     public Card getCard() throws Exception {
-        return deck.getCard();
+        try {
+            return deck.getCard();
+        } catch (Exception e) {
+            deck = new Deck();
+            System.out.println("All cards in deck used up. Duplicates can occur from this point int he test game!" +
+                    "");
+            return deck.getCard();
+        }
     }
 }

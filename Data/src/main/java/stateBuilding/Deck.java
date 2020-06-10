@@ -31,11 +31,6 @@ public class Deck {
         print();
     }
 
-    public static void main(String[] args) {
-        // Test building deck
-        Deck deck = new Deck();
-    }
-
     public Card getCard() throws Exception {
         if (cards.size() < 1) {
             throw new Exception("Deck: Deck is now empty.");

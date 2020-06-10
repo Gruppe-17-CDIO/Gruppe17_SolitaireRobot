@@ -35,7 +35,7 @@ public class Move {
         } else if (moveType == MoveType.FACEUP) {
             return "Turn " + position[0] + " " + position[1] + " face up.";
         } else if (moveType == MoveType.USEDRAWN) {
-            return "Moved card from drawn cards to " + destinationType + " " + destPosition + ".";
+            return "Move card from drawn cards to " + destinationType + " " + destPosition + ".";
         } else if (moveType == MoveType.MOVE) {
             return "Move from piles " + position[0] + ", card " + position[1] +
                     " to " + destinationType + " " + destPosition + ".";
