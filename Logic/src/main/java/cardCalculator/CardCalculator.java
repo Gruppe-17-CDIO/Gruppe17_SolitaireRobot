@@ -96,6 +96,7 @@ public class CardCalculator {
             if (stock < 0) {
                 throw new Exception("Stock is below zero. Should not be possible.");
             } else if (stock == 0 && drawnCards.size() > 0) {
+                // Drawn cards become new stock ("turn draw pile").
                 stock = drawnCards.size();
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
@@ -107,6 +108,7 @@ public class CardCalculator {
             state.setStock(stock - 1);
             if (test) {
                 drawnCards.add(topCardsSimulator.getCard());
+                System.out.println("BOMBIBOFF");
             } else {
                 drawnCards.add(topCards.getDrawnCard());
             }

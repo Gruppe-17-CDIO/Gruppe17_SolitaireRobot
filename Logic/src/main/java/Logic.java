@@ -32,6 +32,7 @@ public class Logic implements I_Logic {
                 if (card == null)
                     continue;
 
+                // Turn card face up
                 if (card.getStatus() == Card.Status.FACEDOWN) {
                     if (j == state.getPiles().get(i).size() - 1)
                         moves.add(0, new Move(Move.MoveType.FACEUP, new int[]{i, j}, Move.DestinationType.SELF, 0));
@@ -46,12 +47,13 @@ public class Logic implements I_Logic {
 
                 // Drawn card move
                 List<Card> drawnCards = state.getDrawnCards();
-                Card drawnCard = null;
+                Card drawnCard;
                 if (drawnCards.size() > 0) {
                     drawnCard = drawnCards.get(drawnCards.size() - 1);
                     if (drawnCard.getRank() == card.getRank() - 1 && drawnCard.getColor() != card.getColor()) {
                         moves.add(
-                                new Move(Move.MoveType.DRAW, new int[]{0, 0}, Move.DestinationType.PILE, i)
+                                // From position not needed.
+                                new Move(Move.MoveType.USEDRAWN, null, Move.DestinationType.PILE, i)
                         );
                     }
                 }
@@ -84,6 +86,15 @@ public class Logic implements I_Logic {
                     }
                 }
             }
+        }
+
+        // "Draw new card from stock" is added at the end of each list if one of the conditions are true:
+        // 1 There are more cards in the stock
+        // 2 here are cards in drawncards AND you are allowed to turn the pile again
+        if (state.getStock() > 0 ||
+                state.getDrawnCards().size() > 0 && state.getStockTurned() < 3) {
+            // Values are null: there is only one place to put the card: drawn cards
+            moves.add(new Move(Move.MoveType.DRAW, null, null, 0));
         }
 
         return moves;
