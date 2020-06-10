@@ -57,24 +57,6 @@ public class Logic implements I_Logic {
 
                 // Check out possible moves to other rows/piles
                 pileMoves(i, j);
-
-                // Drawn card move TO this pile
-                List<Card> drawnCards = state.getDrawnCards();
-                if (drawnCards.size() > 0) {
-                    Card drawnCard = drawnCards.get(drawnCards.size() - 1);
-                    // If empty pile, move king there
-                    // If rank one lower and opposite color move there
-                    if (
-                            (drawnCard.getRank() == 13 && pile.size() < 1) ||
-                                    (drawnCard.getRank() == card.getRank() - 1
-                                            && drawnCard.getColor() != card.getColor()
-                                            && j == state.getPiles().get(i).size() - 1)) {
-                        moves.add(
-                                // From position not needed.
-                                new Move(Move.MoveType.USEDRAWN, null, Move.DestinationType.PILE, i)
-                        );
-                    }
-                }
             }
         }
 
@@ -98,6 +80,28 @@ public class Logic implements I_Logic {
                         moves.add(0, new Move(Move.MoveType.USEDRAWN, null, Move.DestinationType.FOUNDATION, f));
                         break;
                     }
+                }
+            }
+        }
+
+        // Drawn card move to a pile
+        for (int i = 0; i < 7; i++) {
+            List<Card> pile = piles.get(i);
+            if (drawnCards.size() > 0) {
+                Card drawnCard = drawnCards.get(drawnCards.size() - 1);
+                // If empty pile, move king there
+                // or if top card rank one lower and opposite color move card there
+                if (
+                        (drawnCard.getRank() == 13 && pile.size() < 1) ||
+                                (
+                                        pile.size() > 0 &&
+                                                drawnCard.getRank() == pile.get(pile.size() - 1).getRank() - 1
+                                                && drawnCard.getColor() != pile.get(pile.size() - 1).getColor()
+                                )) {
+                    moves.add(
+                            // From position not needed.
+                            new Move(Move.MoveType.USEDRAWN, null, Move.DestinationType.PILE, i)
+                    );
                 }
             }
         }
