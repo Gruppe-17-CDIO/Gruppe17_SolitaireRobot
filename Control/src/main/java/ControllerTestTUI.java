@@ -55,7 +55,8 @@ public class ControllerTestTUI {
             }
         }), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history) {
+
+            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                 try {
                     System.out.println(history.peek().getPrintFormat());
                 } catch (Exception e) {
@@ -119,7 +120,7 @@ public class ControllerTestTUI {
             }
         }), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history) {
+            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                 try {
                     System.out.println(history.peek().getPrintFormat());
                 } catch (Exception e) {

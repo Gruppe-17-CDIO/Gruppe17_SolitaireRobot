@@ -21,7 +21,7 @@ import java.util.List;
  * The inner lists handle null by making a new list.
  */
 
-public class SolitaireState implements Cloneable {
+public class SolitaireState {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private int stock = 52; // Cards to draw, face not visible
@@ -30,10 +30,12 @@ public class SolitaireState implements Cloneable {
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
     private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
     private Move performedMove; // The move perfomed right before this state.
+    private boolean won = false;
+    private int stockTurned = 0; // How many times is the stock pile turned?
 
     public SolitaireState() {
         for (int i = 0; i < 4; i++) {
-             foundations.add(new Card(Card.Status.FACEDOWN));
+            foundations.add(new Card(Card.Status.FACEDOWN));
         }
         for (int i = 0; i < 7; i++) {
             piles.add(new ArrayList<>());
@@ -115,6 +117,22 @@ public class SolitaireState implements Cloneable {
 
     public void setPerformedMove(Move performedMove) {
         this.performedMove = performedMove;
+    }
+
+    public boolean isWon() {
+        return won;
+    }
+
+    public void setWon(boolean won) {
+        this.won = won;
+    }
+
+    public int getStockTurned() {
+        return stockTurned;
+    }
+
+    public void setStockTurned(int stockTurned) {
+        this.stockTurned = stockTurned;
     }
 }
 

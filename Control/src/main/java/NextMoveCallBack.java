@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 public interface NextMoveCallBack {
-        void OnSuccess(List<Move> moves, Stack<SolitaireState> history);
+        void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won);
 
         void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history);
 
