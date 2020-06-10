@@ -101,6 +101,7 @@ public class CardCalculator {
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
                 state.setStockTurned(flipped + 1); // 3 means you can't draw
+
             } else if (stock == 0) { // No cards left to draw
                 throw new Exception("Draw was suggested, but there are no cards left in stock or drawn cards.");
             }
@@ -108,6 +109,7 @@ public class CardCalculator {
             state.setStock(stock - 1);
             if (test) {
                 drawnCards.add(topCardsSimulator.getCard());
+                System.out.println("BOMBIBOFF");
             } else {
                 drawnCards.add(topCards.getDrawnCard());
             }
