@@ -47,7 +47,6 @@ public class ControllerTestTUI {
     }
 
     private void setupGame() {
-        System.out.println("A deck of cards, please!");
         controller.startNewGame(new Image(new InputStream() { // Dummy InputStream
             @Override
             public int read() throws IOException {
@@ -55,7 +54,8 @@ public class ControllerTestTUI {
             }
         }), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history) {
+
+            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                 try {
                     System.out.println(history.peek().getPrintFormat());
                 } catch (Exception e) {
@@ -119,7 +119,7 @@ public class ControllerTestTUI {
             }
         }), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history) {
+            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                 try {
                     System.out.println(history.peek().getPrintFormat());
                 } catch (Exception e) {

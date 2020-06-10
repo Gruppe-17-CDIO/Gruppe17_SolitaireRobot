@@ -1,6 +1,8 @@
 package view.components;
 
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -16,7 +18,7 @@ public class FxUtil {
     private static final int textSize = 12;
     private static final int headerSize = 18;
     private static final int spacing = 10;
-    private static final int padding = 25;
+    private static final int padding = 15;
 
     /*
     -------------------------- Fields --------------------------
@@ -92,5 +94,18 @@ public class FxUtil {
             vBox.setAlignment(Pos.CENTER);
 
         return vBox;
+    }
+
+    public static FlowPane emptySpace(Orientation orientation, int size) {
+        FlowPane emptySpaceHBox = new FlowPane();
+        emptySpaceHBox.setOrientation(orientation);
+        if (orientation.equals(Orientation.HORIZONTAL)) {
+            emptySpaceHBox.setMinSize(size,0);
+            emptySpaceHBox.setMaxSize(size,0);
+        } else  {
+            emptySpaceHBox.setMinSize(0,size);
+            emptySpaceHBox.setMaxSize(0,size);
+        }
+        return emptySpaceHBox;
     }
 }
