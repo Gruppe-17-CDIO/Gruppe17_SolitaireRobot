@@ -25,15 +25,10 @@ public class Deck {
             }
         }
 
-        print();
+        //print();
         Collections.shuffle(cards);
         System.out.println("\nShuffle shuffle...\n");
-        print();
-    }
-
-    public static void main(String[] args) {
-        // Test building deck
-        Deck deck = new Deck();
+        //print();
     }
 
     public Card getCard() throws Exception {

@@ -47,7 +47,6 @@ public class ControllerTestTUI {
     }
 
     private void setupGame() {
-        System.out.println("A deck of cards, please!");
         controller.startNewGame(new Image(new InputStream() { // Dummy InputStream
             @Override
             public int read() throws IOException {
