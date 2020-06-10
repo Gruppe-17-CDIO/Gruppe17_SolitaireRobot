@@ -2,6 +2,7 @@ package Converter;
 
 import Converter.Util.Util;
 import DarkNet_Connection.Darknet_Stub;
+import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.I_Connection;
 import Data.PreCard;
 import com.google.gson.JsonArray;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class Convertion implements I_ComputerVisionController {
     Util utility = new Util();
-    I_Connection connection = new Darknet_Stub();
+    I_Connection connection = new DatknetConnection();
     ImageBoxes boxCreator = new ImageBoxes();
     Image img;
 

@@ -1,11 +1,17 @@
 import Converter.Convertion;
+import Data.PreCard;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import org.junit.jupiter.api.Test;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class Convertion_Test {
     Convertion converter = new Convertion();
@@ -49,5 +55,22 @@ public class Convertion_Test {
         }
 
         return new ImageView(wr).getImage();
+    }
+
+
+    @Test
+    public void Convert_Image_Test(){
+        BufferedImage  img = null;
+        try {
+            img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\AllDeck.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Image image = SwingFXUtils.toFXImage(img, null);
+
+        List<PreCard> preCardList = converter.ConvertImage(image);
+        System.out.println();
     }
 }

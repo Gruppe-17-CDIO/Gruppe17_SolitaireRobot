@@ -3,6 +3,10 @@ package Converter.Util;
 import Data.PreCard;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
 
 import javax.swing.*;
@@ -91,7 +95,7 @@ public class Util {
         return color;
     }
 
-    private static void display(BufferedImage image){
+    public static void display(BufferedImage image){
         JFrame frame = null;
         JLabel label = null;
         if(frame==null){
@@ -106,6 +110,21 @@ public class Util {
             frame.pack();
             frame.setVisible(true);
         }else label.setIcon(new ImageIcon(image));
+    }
+
+    public static Image convertToFxImage(BufferedImage image) {
+        WritableImage wr = null;
+        if (image != null) {
+            wr = new WritableImage(image.getWidth(), image.getHeight());
+            PixelWriter pw = wr.getPixelWriter();
+            for (int x = 0; x < image.getWidth(); x++) {
+                for (int y = 0; y < image.getHeight(); y++) {
+                    pw.setArgb(x, y, image.getRGB(x, y));
+                }
+            }
+        }
+
+        return new ImageView(wr).getImage();
     }
 
 }
