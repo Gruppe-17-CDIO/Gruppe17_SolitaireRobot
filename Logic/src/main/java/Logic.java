@@ -193,7 +193,6 @@ public class Logic implements I_Logic {
         for (int i = 0; i < moves.size(); i++) {
             int repeat = 0;
             Move move = moves.get(i);
-            // Compare 7 last past moves
             for (int j = 0; j < pastMoves.size(); j++) {
                 if (move.toString().equals(pastMoves.get(j).toString())) {
                     repeat++;
