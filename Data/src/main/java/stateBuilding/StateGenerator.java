@@ -53,11 +53,8 @@ public class StateGenerator {
 
         // Set piles
         for (int i = 3; i < 10; i++) {
-
-            //System.out.println("This is pile " + (i - 2));
             List<Card> pile = new ArrayList<>();
             for (String s : data[i]) {
-                //System.out.println(s);
                 Card card = buildCard(s);
                 if (card != null) {
                     pile.add(card);

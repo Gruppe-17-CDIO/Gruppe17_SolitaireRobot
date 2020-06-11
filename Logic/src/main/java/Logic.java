@@ -193,20 +193,22 @@ public class Logic implements I_Logic {
         for (int i = 0; i < moves.size(); i++) {
             int repeat = 0;
             Move move = moves.get(i);
-            for (int j = 0; j < pastMoves.size(); j++) {
-                if (move.toString().equals(pastMoves.get(j).toString())) {
-                    repeat++;
-                    if (repeat > 5) {
-                        break;
+            if (move.getMoveType() != Move.MoveType.MOVE) {
+                filteredMoves.add(move);
+            } else {
+                for (int j = 0; j < pastMoves.size(); j++) {
+                    if (move.toString().equals(pastMoves.get(j).toString())) {
+                        repeat++;
+                        if (repeat > 5) {
+                            break;
+                        }
                     }
                 }
-            }
-            if (repeat < 6 || move.getMoveType() != Move.MoveType.MOVE) {
-
-                filteredMoves.add(move);
+                if (repeat < 6) {
+                    filteredMoves.add(move);
+                }
             }
         }
         return filteredMoves;
     }
 }
-
