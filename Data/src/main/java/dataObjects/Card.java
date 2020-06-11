@@ -1,5 +1,6 @@
 package dataObjects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -63,7 +64,7 @@ public class Card implements Serializable {
         if (this.status == Status.FACEDOWN) {
             return status + "";
         }
-        return suit + " " + rank;
+        return StringUtils.rightPad(suit.toString(), 8) + StringUtils.leftPad(Integer.toString(rank), 2);
     }
 
     /*

@@ -98,6 +98,9 @@ public class CardCalculator {
             } else if (stock == 0 && drawnCards.size() > 0) {
                 // Drawn cards become new stock ("turn draw pile").
                 stock = drawnCards.size();
+                if (test) {
+                    topCardsSimulator.setUsedCards(drawnCards);
+                }
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
                 state.setStockTurned(flipped + 1); // 3 means you can't draw
@@ -108,8 +111,13 @@ public class CardCalculator {
 
             state.setStock(stock - 1);
             if (test) {
-                drawnCards.add(topCardsSimulator.getCard());
-                System.out.println("BOMBIBOFF");
+                List<Card> cards = topCardsSimulator.getUsedCards();
+                if (state.getStockTurned() > 0 && cards.size() > 0) {
+                    drawnCards.add(cards.get(0));
+                    topCardsSimulator.getUsedCards().remove(0);
+                } else {
+                    drawnCards.add(topCardsSimulator.getCard());
+                }
             } else {
                 drawnCards.add(topCards.getDrawnCard());
             }

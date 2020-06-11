@@ -5,7 +5,6 @@ import javafx.scene.image.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -77,6 +76,7 @@ public class ControllerTestTUI {
     }
 
     private void playTurn(List<Move> moves, Stack<SolitaireState> history) {
+        /*
         int accept = 0, choice = 0;
         while (accept == 0) {
             System.out.println("Choose your move from the list. Integer, then enter.");
@@ -92,6 +92,15 @@ public class ControllerTestTUI {
                 System.out.println("Not an int.");
             }
         }
+         */
+        if (history.peek().isWon()) {
+            System.out.println("IT WON!");
+            System.exit(0);
+        } else if (moves.size() < 1) {
+            System.out.println("IT LOST.");
+            System.exit(0);
+        }
+        int choice = 0;
         controller.performMove(moves.get(choice), new CompletionCallBack() {
             @Override
             public void OnSuccess(String status) {

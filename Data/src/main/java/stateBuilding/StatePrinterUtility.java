@@ -79,7 +79,7 @@ public class StatePrinterUtility {
         printEmptyRow();
 
         for (int i = 0; i < 7; i++) {
-            line[i] = "   Pile " + i;
+            line[i] = "# " + (i);
         }
         printRow(line);
 
