@@ -16,6 +16,7 @@ public class Logic implements I_Logic {
     private List<Move> moves;
     private SolitaireState state;
     private Card card;
+    private final List<Move> pastMoves = new ArrayList<>();
 
     // Priority
     // 1: Turn discovered cards face up
@@ -30,7 +31,6 @@ public class Logic implements I_Logic {
         moves = new ArrayList<>();
 
         /*
-         * PILE MOVES
          * Outer loop iterates through pile 1 to 7
          * Inner loop iterates each pile-stack from top to bottom
          */
@@ -118,6 +118,12 @@ public class Logic implements I_Logic {
             moves.add(new Move(Move.MoveType.DRAW, null, null, 0));
         }
 
+        // Same move can only be made five times in total (or game never ends)
+        moves = removeRepeatMoves(moves);
+        if (moves.size() > 0) {
+            pastMoves.add(moves.get(0));
+        }
+
         return moves;
     }
 
@@ -165,12 +171,8 @@ public class Logic implements I_Logic {
             if (destCard.getStatus() == Card.Status.FACEDOWN)
                 continue;
 
-            // Ignore if card is not bottom card or on top of a face down card:
-            if (
-                    card != null && card.getStatus() != Card.Status.FACEDOWN &&
-                            (cardNumber == 0 ||
-                                    fromPile.get(cardNumber - 1).getStatus() == Card.Status.FACEDOWN)
-            ) {
+            if (card != null && card.getStatus() != Card.Status.FACEDOWN) {
+                // Priority: (cardNumber == 0 || fromPile.get(cardNumber - 1).getStatus() == Card.Status.FACEDOWN)
                 // Add card to series if opposite color and rank one lower
                 if (card.getRank() == destCard.getRank() - 1 && card.getColor() != destCard.getColor()) {
                     moves.add(
@@ -179,5 +181,31 @@ public class Logic implements I_Logic {
                 }
             }
         }
+    }
+
+    private List<Move> removeRepeatMoves(List<Move> moves) {
+        // Don't allow same move to be executed six times
+        if (moves.size() < 1) {
+            return moves;
+        }
+        List<Move> filteredMoves = new ArrayList<>();
+        for (int i = 0; i < moves.size(); i++) {
+            int repeat = 0;
+            Move move = moves.get(i);
+            // Compare 7 last past moves
+            for (int j = 0; j < pastMoves.size(); j++) {
+                if (move.toString().equals(pastMoves.get(j).toString())) {
+                    repeat++;
+                    if (repeat > 5) {
+                        break;
+                    }
+                }
+            }
+            if (repeat < 6 || move.getMoveType() != Move.MoveType.MOVE) {
+
+                filteredMoves.add(move);
+            }
+        }
+        return filteredMoves;
     }
 }
