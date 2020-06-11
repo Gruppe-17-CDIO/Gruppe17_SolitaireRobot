@@ -9,9 +9,6 @@ import java.util.List;
  * @author Anders Frandsen
  */
 
-// TODO: Ikke tillad træk fra bunken, hvis 0 kort i "stock + drawncards" tilbage
-//  ELLER state.getStockTurned() > 2.
-
 public class Logic implements I_Logic {
     private List<Move> moves;
     private SolitaireState state;
@@ -213,3 +210,4 @@ public class Logic implements I_Logic {
         return filteredMoves;
     }
 }
+
