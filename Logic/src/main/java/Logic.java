@@ -50,6 +50,10 @@ public class Logic implements I_Logic {
             for (int j = pile.size() - 1; j >= 0; j--) {
                 card = state.getPiles().get(i).get(j);
 
+                if (card.getStatus() == Card.Status.FACEDOWN) {
+                    break; // No moves possible for cards under this one.
+                }
+
                 // Check out possible move to foundation (Must be last card in list)
                 if (j == state.getPiles().get(i).size() - 1) {
                     foundationMove(i, j);
@@ -206,3 +210,4 @@ public class Logic implements I_Logic {
         return filteredMoves;
     }
 }
+
