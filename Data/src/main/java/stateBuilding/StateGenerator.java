@@ -136,7 +136,8 @@ public class StateGenerator {
             }
             reader.close();
         } catch (IOException e) {
-            System.out.println("Could not parse " + filepath + +id + ". \nMake sure the file exists and is formatted like " + filepath + 0 + ".");
+            System.out.println("Could not parse " + filepath + +id +
+                    ". \nMake sure the file exists and is formatted like " + filepath + 0 + ".");
             e.printStackTrace();
         }
         return data;
