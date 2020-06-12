@@ -76,7 +76,7 @@ public class ImageBoxes {
         return imageBoxesList;
     }
 
-
+    //TODO: Implement so that this method so it return TopCards object
     public ConvertState boxMapping(List<PreCard> precard, List<double[]> coordinateList, Image img){
         ConvertState currentState = new ConvertState();
 

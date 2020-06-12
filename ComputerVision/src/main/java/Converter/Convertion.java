@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import dataObjects.Card;
 import dataObjects.ConvertState;
+import dataObjects.TopCards;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -24,15 +25,16 @@ public class Convertion implements I_ComputerVisionController {
 
 
 
-
+//TODO: Implement so that this method
     @Override
-    public ConvertState getSolitaireCards(Image img) {
+    public TopCards getSolitaireCards(Image img) {
 
         List<PreCard> returnImages = ConvertImage(img);
         List<double[]> boxesArea = boxCreator.calibrateImgBoxes(img);
 
 
-        return boxCreator.boxMapping(returnImages,boxesArea,img);
+        //return boxCreator.boxMapping(returnImages,boxesArea,img);
+        return null;
     }
 
 

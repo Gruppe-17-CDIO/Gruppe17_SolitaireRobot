@@ -17,6 +17,6 @@ public interface I_ComputerVisionController {
     // Empty piles should be in the list, so the length is always 12:
     // 0 = drawn card, foundation 1-4, pile 5-13
 
-    ConvertState getSolitaireCards(Image img);
+    TopCards getSolitaireCards(Image img);
 
 }
