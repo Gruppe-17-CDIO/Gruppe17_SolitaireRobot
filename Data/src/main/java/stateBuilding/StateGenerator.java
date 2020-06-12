@@ -1,5 +1,6 @@
 package stateBuilding;
 
+import PropertyLoader.SinglePropertyLoader;
 import dataObjects.Card;
 import dataObjects.SolitaireState;
 
@@ -11,34 +12,39 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StateGenerator {
-    static final String PATH = "src/main/resources/builderFiles/build-a-state_";
+    final String PATH = SinglePropertyLoader.getInstance().getProperty("project.root");
 
-    public static SolitaireState getState(int id) throws Exception {
+    public SolitaireState getState(int id) throws Exception {
         String[][] data = readBuilderFile(id);
         return buildState(data);
     }
 
-    static SolitaireState buildState(String[][] data) throws Exception {
+    SolitaireState buildState(String[][] data) throws Exception {
         SolitaireState state = new SolitaireState();
 
         // Set stock (cards left in pile)
         state.setStock(Integer.parseInt(data[0][0]));
 
         // Set drawn cards
-        Card drawn = null;
+        List<Card> drawn = new ArrayList<>();
         if (data[1].length > 0) {
-            drawn = buildCard(data[1][0]);
+            drawn.add(buildCard(data[1][0]));
         } else {
             drawn = null;
         }
 
-        state.setDrawnCard(drawn);
+        state.setDrawnCards(drawn);
 
         // Set foundations
         ArrayList<Card> foundations = new ArrayList<>();
         for (int i = 0; i < data[2].length; i++) {
             foundations.add(buildCard(data[2][i]));
         }
+
+        while (foundations.size() < 4) {
+            foundations.add(null);
+        }
+
         state.setFoundations(foundations);
 
         // All piles in one List
@@ -51,7 +57,10 @@ public class StateGenerator {
             List<Card> pile = new ArrayList<>();
             for (String s : data[i]) {
                 //System.out.println(s);
-                pile.add(buildCard(s));
+                Card card = buildCard(s);
+                if (card != null) {
+                    pile.add(card);
+                }
             }
             piles.add(pile);
         }
@@ -63,11 +72,11 @@ public class StateGenerator {
     /**
      * Parses string to Card
      *
-     * @param input A string to be prsed to Card construcotr args
+     * @param input A string to be parsed to Card constructor args
      * @return Card object
      * @throws Exception if card can't be parsed.
      */
-    static Card buildCard(String input) throws Exception {
+    Card buildCard(String input) throws Exception {
         input = input.trim();
         String[] in = input.split(" ");
         if (input.length() > 0) {
@@ -95,14 +104,14 @@ public class StateGenerator {
      * @param id id of the file to read
      * @return list of token lists
      */
-    static String[][] readBuilderFile(int id) throws Exception {
+    String[][] readBuilderFile(int id) throws Exception {
         SolitaireState state = new SolitaireState();
         String[][] data = new String[12][];
         int i = 0;
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    PATH + id));
+                    PATH + "/Data/src/main/resources/builderFiles/build-a-state_" + id));
             String line = reader.readLine();
             while (line != null) {
                 //System.out.println(line);

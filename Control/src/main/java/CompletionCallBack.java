@@ -1,11 +1,7 @@
-import dataObjects.SolitaireState;
-
-import java.util.Stack;
-
 public interface CompletionCallBack {
-        void OnSuccess(String status, Stack<SolitaireState> history);
+        void OnSuccess(String status);
 
-        void OnFailure(String message, Stack<SolitaireState> history);
+        void OnFailure(String message);
 
         void OnError(Exception e);
 }

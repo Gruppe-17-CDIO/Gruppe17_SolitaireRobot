@@ -1,7 +1,7 @@
 package dataObjects;
 
 import org.jetbrains.annotations.NotNull;
-import utilities.StatePrinterUtility;
+import stateBuilding.StatePrinterUtility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -25,15 +25,17 @@ public class SolitaireState {
     public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private int stock = 52; // Cards to draw, face not visible
-    private Card drawnCard = null; // Drawn card, just one
+    private List<Card> drawnCards = new ArrayList<>(); // Drawn card, must keep track of these
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
     private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
     private Move performedMove; // The move perfomed right before this state.
+    private boolean won = false;
+    private int stockTurned = 0; // How many times is the stock pile turned?
 
     public SolitaireState() {
         for (int i = 0; i < 4; i++) {
-             foundations.add(new Card(Card.Status.FACEDOWN));
+            foundations.add(new Card(Card.Status.FACEDOWN));
         }
         for (int i = 0; i < 7; i++) {
             piles.add(new ArrayList<>());
@@ -48,19 +50,19 @@ public class SolitaireState {
         this.stock = stock;
     }
 
-    public Card getDrawnCard() {
-        return drawnCard;
+    public List<Card> getDrawnCards() {
+        return drawnCards;
     }
 
-    public void setDrawnCard(Card drawnCard) {
-        this.drawnCard = drawnCard;
+    public void setDrawnCards(List<Card> drawnCards) {
+        this.drawnCards = drawnCards;
     }
 
     public List<Card> getFoundations() {
         return foundations;
     }
 
-    public void setFoundations(@NotNull ArrayList<Card> foundations) throws Exception {
+    public void setFoundations(@NotNull List<Card> foundations) throws Exception {
         if (foundations == null) {
             throw new Exception("The List 'foundations' must not be null.");
         }
@@ -115,6 +117,22 @@ public class SolitaireState {
 
     public void setPerformedMove(Move performedMove) {
         this.performedMove = performedMove;
+    }
+
+    public boolean isWon() {
+        return won;
+    }
+
+    public void setWon(boolean won) {
+        this.won = won;
+    }
+
+    public int getStockTurned() {
+        return stockTurned;
+    }
+
+    public void setStockTurned(int stockTurned) {
+        this.stockTurned = stockTurned;
     }
 }
 

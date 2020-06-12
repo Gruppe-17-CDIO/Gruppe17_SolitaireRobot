@@ -31,20 +31,24 @@ public class Move {
 
     public String toString() {
         if (moveType == MoveType.DRAW) {
-            return "Draw a card from the stock.";
+            return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
         } else if (moveType == MoveType.FACEUP) {
             return "Turn " + position[0] + " " + position[1] + " face up.";
+        } else if (moveType == MoveType.USEDRAWN) {
+            return "Move card from drawn cards to " + destinationType + " " + destPosition + ".";
+        } else if (moveType == MoveType.MOVE) {
+            return "Move from piles " + position[0] + ", card " + position[1] +
+                    " to " + destinationType + " " + destPosition + ".";
         } else {
-            return "Move" + position[0] + " " + position[1] + " to " + destinationType + " " + destPosition;
+            return "No Movetype";
         }
     }
 
-    // TODO: Add an option to return no move if game won / lost?
-
     public enum MoveType {
+        DRAW,
         FACEUP,
-        MOVE,
-        DRAW
+        USEDRAWN,
+        MOVE
     }
 
     public enum DestinationType {
