@@ -7,7 +7,9 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.Random;
 
-
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class Darknet_Stub implements I_Connection {
 
     Classification classes = new Classification();

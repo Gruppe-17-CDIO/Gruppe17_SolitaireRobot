@@ -8,9 +8,10 @@ import java.io.File;
 import java.io.IOException;
 
 
-/*
-This is a test class.
 
+/**
+ * @author Andreas B.G. Jensen
+ * This is a test class.
  */
 public class stubImageCoordinates {
 

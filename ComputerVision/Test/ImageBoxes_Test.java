@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.*;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class ImageBoxes_Test {
 
     @Test

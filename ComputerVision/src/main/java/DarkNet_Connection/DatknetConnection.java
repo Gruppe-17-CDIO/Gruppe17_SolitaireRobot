@@ -11,10 +11,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class DatknetConnection implements I_Connection {
 
     /*
-    Author: Andreas
     Sending a post request to python server and return the coordinates of the image recognition.
      */
     @Override

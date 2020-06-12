@@ -2,6 +2,9 @@ package Data;
 
 import java.awt.*;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class PreCard {
     private Point upperCoordinate;
     private Point lowerCoordinate;

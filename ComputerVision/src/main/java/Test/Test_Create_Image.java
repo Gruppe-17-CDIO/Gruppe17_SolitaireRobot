@@ -11,6 +11,9 @@ import javafx.scene.image.WritableImage;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class Test_Create_Image {
 
     public Image Test_calibrateImgBoxes(){

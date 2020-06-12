@@ -13,6 +13,9 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class Convertion implements I_ComputerVisionController {
     Util utility = new Util();
     I_Connection connection = new DatknetConnection();

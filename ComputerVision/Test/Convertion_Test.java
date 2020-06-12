@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class Convertion_Test {
     Convertion converter = new Convertion();
 

@@ -11,6 +11,9 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class DarknetStup_Test {
     static Util utility = new Util();
     static I_Connection connection = new Darknet_Stub();

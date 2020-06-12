@@ -16,6 +16,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class DarknetConnection_Test {
     Test_Create_Image imageCreator = new Test_Create_Image();
     DatknetConnection connection = new DatknetConnection();

@@ -8,6 +8,9 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * * @author Andreas B.G. Jensen
+ */
 public class ImageBoxes {
     double upperHeight;
     double lowerHeight;

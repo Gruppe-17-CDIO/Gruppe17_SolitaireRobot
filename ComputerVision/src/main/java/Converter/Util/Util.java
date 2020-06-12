@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
+ * @author Andreas B.G. Jensen
 Class used for mapping a JsonObject to PreCard objects.
  */
 public class Util {
