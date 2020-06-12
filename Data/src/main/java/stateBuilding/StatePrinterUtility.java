@@ -50,11 +50,11 @@ public class StatePrinterUtility {
         printRow(line);
 
         // Drawn cards
-        Card drawn = state.getDrawnCards().get(0);
-        if (drawn == null) {
-            line[0] = empty;
+        List<Card> drawnCards = state.getDrawnCards();
+        if (drawnCards != null && drawnCards.size() > 0) {
+            line[0] = drawnCards.get(drawnCards.size() - 1).toString();
         } else {
-            line[0] = drawn.toString();
+            line[0] = empty;
         }
 
         // Two empty spaces after drawn card
@@ -79,7 +79,7 @@ public class StatePrinterUtility {
         printEmptyRow();
 
         for (int i = 0; i < 7; i++) {
-            line[i] = "   Pile " + i;
+            line[i] = "# " + (i);
         }
         printRow(line);
 
