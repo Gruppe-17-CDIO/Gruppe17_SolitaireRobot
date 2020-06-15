@@ -1,3 +1,5 @@
+package logic;
+
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import java.util.List;

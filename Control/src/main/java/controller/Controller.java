@@ -1,8 +1,12 @@
-import Converter.I_ComputerVisionController;
+package controller;
+
+import computerVision.I_ComputerVisionController;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
+import logic.I_Logic;
+import logic.Logic;
 import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
