@@ -7,7 +7,6 @@ import dataObjects.SolitaireState;
 import java.util.List;
 
 public class StatePrinterUtility {
-    final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
     final String empty = "                ";
     private final StringBuilder result = new StringBuilder();
 
