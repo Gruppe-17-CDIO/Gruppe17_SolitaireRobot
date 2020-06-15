@@ -236,6 +236,8 @@ public class CardCalculator {
             }
         }
 
+        // Control of foundations is removed. The user is responsible for keeping track of foundations.
+        /*
         // Check the foundations
         for (int i = 0; i < 4; i++) {
             if (foundations.get(i) == null) {
@@ -254,6 +256,8 @@ public class CardCalculator {
                 }
             }
         }
+        */
+
 
         // Check the piles
         for (int i = 0; i < 7; i++) {
