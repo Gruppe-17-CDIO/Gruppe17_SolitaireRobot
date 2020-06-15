@@ -1,3 +1,5 @@
+package controller;
+
 import cardCalculator.CardCalculator;
 import dataObjects.Move;
 import dataObjects.SolitaireState;

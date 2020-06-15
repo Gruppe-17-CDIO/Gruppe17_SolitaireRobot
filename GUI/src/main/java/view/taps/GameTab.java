@@ -1,5 +1,11 @@
 package view.taps;
 
+import controller.CompletionCallBack;
+import controller.Controller;
+import controller.I_Controller;
+import controller.NextMoveCallBack;
+import dataObjects.Move;
+import dataObjects.SolitaireState;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -18,8 +24,10 @@ import view.components.webCamImageView.WebCamStateCallback;
 import view.components.webCamManipulationButton.ManipulationStateCallback;
 import view.components.webCamManipulationButton.WebCamManiButton;
 import view.components.BoardGenerator;
-import view.components.TabStd;
 import javafx.scene.control.ToggleButton;
+
+import java.util.List;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,10 +46,14 @@ public class GameTab extends TabStd {
     private WebCamManiButton webCamManiBtn;
     private WebCamImageView webCamImageView ;
 
-    HBox bottomButtonBox;
-    private Button btnNextMove;
-    private Button btnMoveDone;
+    private SolitaireGridPane solitaireGridPane;
 
+    HBox bottomButtonBox;
+    private Button btnNextMove = new Button();
+    private Button btnMoveCompleted = new Button();
+
+    private I_Controller controller = new Controller();
+    private boolean isGameStarted= false;
 
     //----------------------- Constructor -------------------------
 
@@ -50,7 +62,8 @@ public class GameTab extends TabStd {
                 " Get ready to play!");
 
         webCamImageView = new WebCamImageView();
-        // If Testing is active adds the options to manipulate the view and find the image to insert.
+
+        // region If Testing is active adds the options to manipulate the view and find the image to insert.
         webCamManiBtn = new WebCamManiButton(new ManipulationStateCallback() {
             @Override
             public void startManipulateAction() {
@@ -66,6 +79,8 @@ public class GameTab extends TabStd {
         if (MainGUI.isTesting) {
             addToContent(webCamManiBtn);
         }
+
+        // endregion
 
         webCamImageView.setStateCallback(new WebCamStateCallback() {
             @Override
@@ -87,9 +102,9 @@ public class GameTab extends TabStd {
         webCamPane.setStyle("-fx-border-color: black; -fx-padding :5 ; -fx-border-width: 2");
         webCamPane.getChildren().add(webCamImageView);
 
-        addToContent( new Group(webCamPane));
+        addToContent(new Group(webCamPane));
 
-        SolitaireGridPane solitaireGridPane = new SolitaireGridPane();
+        solitaireGridPane = new SolitaireGridPane();
 
         solitaireGridPane.createFullRow(1, 1, new CardUI("4", SuitEnum.Diamond));
         solitaireGridPane.createFullRow(2, 2, new CardUI("5", SuitEnum.Spade));
@@ -101,38 +116,18 @@ public class GameTab extends TabStd {
 
         //addToContent(solitaireGridPane);
 
-        btnNextMove = new Button("Get Next Move");
-        btnNextMove.setDisable(false);
-        btnNextMove.setPrefWidth(150);
-        btnNextMove.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                //TODO: Her skal vores Controller interface indsættes.
-                MainGUI.printToOutputAreaNewline("Controller Interface .getNextMove()");
-                btnNextMove.setDisable(true);
-                btnMoveDone.setDisable(false);
-            }
-        });
-
-        btnMoveDone = new Button("Move is completed");
-        btnMoveDone.setDisable(true);
-        btnMoveDone.setPrefWidth(150);
-        btnMoveDone.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                //TODO: Her skal vores Controller interface indsættes.
-                MainGUI.printToOutputAreaNewline("Controller Interface \".etEllerAndet()\"");
-                btnMoveDone.setDisable(true);
-                btnNextMove.setDisable(false);
-            }
-        });
+        addNextMoveButton();
+        addMoveCompletedButton();
 
         bottomButtonBox = FxUtil.hBox(true);
-        bottomButtonBox.getChildren().addAll(btnNextMove,btnMoveDone);
+        bottomButtonBox.getChildren().addAll(btnNextMove, btnMoveCompleted);
 
         addAllToContent(bottomButtonBox);
 
         setUserData();
+
+        // Runs test mode is active.
+        testMode();
     }
 
     //------------------------ Properties -------------------------
@@ -146,6 +141,144 @@ public class GameTab extends TabStd {
 
 
     //---------------------- Support Methods ----------------------
+
+    private void addNextMoveButton() {
+        btnNextMove.setText("Get Next Move");
+        btnNextMove.setDisable(false);
+        btnNextMove.setPrefWidth(150);
+        btnNextMove.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO: Her skal vores controller.Controller interface indsættes.
+                // Game is running.
+                if (isGameStarted) {
+                    controller.getNextMove(webCamImageView.getImage(), new NextMoveCallBack() {
+                        @Override
+                        public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+                            try {
+                                MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            playTurn(moves, history);
+                        }
+
+                        @Override
+                        public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
+                            MainGUI.printToOutputAreaNewline(message);
+                        }
+
+                        @Override
+                        public void OnError(Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                // Runs the initializing of the game.
+                else {
+                    controller.startNewGame(webCamImageView.getImage(), new NextMoveCallBack() {
+
+                        @Override
+                        public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+                            try {
+                                MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            playTurn(moves, history);
+                        }
+
+                        @Override
+                        public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
+                            MainGUI.printToOutputAreaNewline(message);
+                        }
+
+                        @Override
+                        public void OnError(Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    isGameStarted = true;
+                }
+
+                MainGUI.printToOutputAreaNewline("controller.Controller Interface .getNextMove()");
+                btnNextMove.setDisable(true);
+                btnMoveCompleted.setDisable(false);
+            }
+        });
+    }
+
+    // Playing turn.
+    private void playTurn(List<Move> moves, Stack<SolitaireState> history) {
+        MainGUI.printToOutputAreaNewline("Options 0 is used.");
+        controller.performMove(moves.get(0), new CompletionCallBack() {
+            @Override
+            public void OnSuccess(String status) {
+                MainGUI.printToOutputAreaNewline("PlayTurn.OnSuccess - Status: " + status);
+                seeResults();
+            }
+
+            @Override
+            public void OnFailure(String message) {
+                MainGUI.printToOutputAreaNewline(message);
+            }
+
+            @Override
+            public void OnError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    // Print result
+    private void seeResults() {
+        controller.getNextMove(webCamImageView.getImage(), new NextMoveCallBack() {
+            @Override
+            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+                try {
+                    MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //playTurn(moves, history);
+            }
+
+            @Override
+            public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
+                System.out.println(message);
+            }
+
+            @Override
+            public void OnError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private void addMoveCompletedButton() {
+        btnMoveCompleted.setText("Move is completed");
+        btnMoveCompleted.setDisable(true);
+        btnMoveCompleted.setPrefWidth(150);
+        btnMoveCompleted.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO: Her skal vores controller.Controller interface indsættes.
+                MainGUI.printToOutputAreaNewline("controller.Controller Interface \".etEllerAndet()\"");
+                btnMoveCompleted.setDisable(true);
+                btnNextMove.setDisable(false);
+            }
+        });
+    }
 
     private void setUserData () {
         TabUserData tabUserData = new TabUserData.Builder()
@@ -181,6 +314,30 @@ public class GameTab extends TabStd {
     protected void testMode() {
 
         if (MainGUI.isTesting) {
+            // Controller TESTING mode.
+            controller.setTestModeOn(true, new CompletionCallBack() {
+                @Override
+                public void OnSuccess(String status) {
+                    MainGUI.printToOutputAreaNewline(status);
+                    //setupGame();
+                }
+
+                @Override
+                public void OnFailure(String message) {
+                    MainGUI.printToOutputAreaNewline(message);
+                }
+
+                @Override
+                public void OnError(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+
+
+            /*
+
+
             toggleButton.setVisible(true);
 
             String[] testValues = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "test"};
@@ -220,6 +377,7 @@ public class GameTab extends TabStd {
                 }
             });
 
+             */
         }
     }
 }

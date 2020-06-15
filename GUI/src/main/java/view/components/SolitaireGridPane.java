@@ -51,6 +51,22 @@ public class SolitaireGridPane extends GridPane {
 
     //---------------------- Public Methods -----------------------
 
+    public void clearAllHighlights() {
+        // Clears all row highlights
+        for (int rowIndex = 0; rowIndex < 7; rowIndex++) {
+            rowHighlight(rowIndex,false);
+        }
+
+        // Clears all collection highlights
+        for (SuitEnum suitEnum : SuitEnum.values()) {
+            collectionHighlight(suitEnum, false);
+        }
+
+        // Clears all deck highlights
+        deckDrawableHighlight(false);
+        deckHighlight(false);
+    }
+
     // region Deck Methods
 
     public void deckShowCard(boolean showCardOnDeck) {
@@ -67,6 +83,14 @@ public class SolitaireGridPane extends GridPane {
 
     public void deckDrawableHideCards () {
         drawableDeck_SP.showCards(false);
+    }
+
+    public void deckHighlight (boolean isHighlighted) {
+        deck_SP.highlight(isHighlighted);
+    }
+
+    public void deckDrawableHighlight(boolean isHighlighted) {
+       drawableDeck_SP.highlight(isHighlighted);
     }
 
     // endregion
@@ -157,6 +181,34 @@ public class SolitaireGridPane extends GridPane {
         }
     }
 
+    public void rowHighlight(int rowNumber, boolean isHighlighted) {
+        switch (rowNumber) {
+            case 1:
+                row1_SP.highlight(isHighlighted);
+                break;
+            case 2:
+                row2_SP.highlight(isHighlighted);
+                break;
+            case 3:
+                row3_SP.highlight(isHighlighted);
+                break;
+            case 4:
+                row4_SP.highlight(isHighlighted);
+                break;
+            case 5:
+                row5_SP.highlight(isHighlighted);
+                break;
+            case 6:
+                row6_SP.highlight(isHighlighted);
+                break;
+            case 7:
+                row7_SP.highlight(isHighlighted);
+                break;
+            default:
+                break;
+        }
+    }
+
     // endregion
 
     // region Collection Methods
@@ -174,6 +226,25 @@ public class SolitaireGridPane extends GridPane {
                 break;
             case Spade:
                 spadeCollection_SP.setAndShowCard(cardUI);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void collectionHighlight (SuitEnum suitEnum, boolean isHighlighted) {
+        switch (suitEnum) {
+            case Heart:
+                heartCollection_SP.highlight(isHighlighted);
+                break;
+            case Diamond:
+                diamondCollection_SP.highlight(isHighlighted);
+                break;
+            case Club:
+                clubCollection_SP.highlight(isHighlighted);
+                break;
+            case Spade:
+                spadeCollection_SP.highlight(isHighlighted);
                 break;
             default:
                 break;

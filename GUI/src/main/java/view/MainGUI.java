@@ -28,7 +28,7 @@ public class MainGUI extends Application {
 
     private static OutputTextArea outputTextArea;
 
-    public static boolean isTesting = false;
+    public static boolean isTesting = true;
 
     // ----------------------- Constructor -------------------------
 

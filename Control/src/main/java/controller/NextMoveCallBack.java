@@ -1,3 +1,5 @@
+package controller;
+
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 
