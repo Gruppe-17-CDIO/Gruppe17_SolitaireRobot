@@ -33,6 +33,10 @@ public class DeckStackPane extends CardStackPane {
 
     //---------------------- Public Methods -----------------------
 
+    public void hideCards () {
+        showCards(false);
+    }
+
     public void showBackSide () {
         if (topCard.isFrontShowing()){
             topCard.showBackside();
@@ -43,9 +47,9 @@ public class DeckStackPane extends CardStackPane {
     public void showFrontSide (CardUI cardUI) {
         if (!topCard.isFrontShowing()) {
             topCard.showFrontSide();
-            showCards(true);
         }
-        topCard.setValueAndApply(cardUI.getValue());
+        showCards(true);
+        topCard.setValueAndApply(cardUI.getRank());
         topCard.setSuitAndApply(cardUI.getSuit());
     }
 

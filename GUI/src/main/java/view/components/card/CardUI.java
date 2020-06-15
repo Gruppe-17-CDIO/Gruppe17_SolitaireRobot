@@ -1,5 +1,6 @@
 package view.components.card;
 
+import dataObjects.Card;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.*;
@@ -30,6 +31,7 @@ public class CardUI extends VBox {
     private final SuitEnum.ImageSize DEFAULT_SUIT_IMAGE_SIZE = SuitEnum.ImageSize.px24;
 
     private String value;
+    private int rank;
     private SuitEnum suit;
 
     public int pressCounterBoolean = 0;
@@ -69,6 +71,10 @@ public class CardUI extends VBox {
         return value;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
     public boolean isFrontShowing() {
         return isFrontShowing;
     }
@@ -89,9 +95,68 @@ public class CardUI extends VBox {
 
     //---------------------- Public Methods -----------------------
 
+    public String toString () {
+        return "Rank:" + rank + ", Suit: " + suit;
+    }
+
+    public static CardUI ofCard(Card card) {
+        CardUI cardUI = new CardUI();
+        cardUI.setValueAndApply(card.getRank());
+        cardUI.setSuitAndApply(SuitEnum.ofSuit(card.getSuit()));
+        return cardUI;
+    }
+
     public void setValueAndApply(String value) {
         this.value = value;
         valueText.setText(value);
+    }
+
+    public void setValueAndApply(int rank) {
+        this.rank = rank;
+        switch (rank) {
+            case 1:
+                setValueAndApply("A");
+                break;
+            case 2:
+                setValueAndApply("2");
+                break;
+            case 3:
+                setValueAndApply("3");
+                break;
+            case 4:
+                setValueAndApply("4");
+                break;
+            case 5:
+                setValueAndApply("5");
+                break;
+            case 6:
+                setValueAndApply("6");
+                break;
+            case 7:
+                setValueAndApply("7");
+                break;
+            case 8:
+                setValueAndApply("8");
+                break;
+            case 9:
+                setValueAndApply("9");
+                break;
+            case 10:
+                setValueAndApply("10");
+                break;
+            case 11:
+                setValueAndApply("J");
+                break;
+            case 12:
+                setValueAndApply("Q");
+                break;
+            case 13:
+                setValueAndApply("K");
+                break;
+            default:
+                break;
+
+        }
     }
 
     public void setSuitAndApply(SuitEnum suit) {

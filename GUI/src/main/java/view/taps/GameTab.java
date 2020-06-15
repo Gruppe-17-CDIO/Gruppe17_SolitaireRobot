@@ -102,10 +102,11 @@ public class GameTab extends TabStd {
         webCamPane.setStyle("-fx-border-color: black; -fx-padding :5 ; -fx-border-width: 2");
         webCamPane.getChildren().add(webCamImageView);
 
-        addToContent(new Group(webCamPane));
+        //addToContent(new Group(webCamPane));
 
         solitaireGridPane = new SolitaireGridPane();
 
+        /*
         solitaireGridPane.createFullRow(1, 1, new CardUI("4", SuitEnum.Diamond));
         solitaireGridPane.createFullRow(2, 2, new CardUI("5", SuitEnum.Spade));
         solitaireGridPane.createFullRow(3, 3, new CardUI("10", SuitEnum.Diamond));
@@ -113,8 +114,9 @@ public class GameTab extends TabStd {
         solitaireGridPane.createFullRow(5, 5, new CardUI("J", SuitEnum.Diamond));
         solitaireGridPane.createFullRow(6, 6, new CardUI("D", SuitEnum.Club));
         solitaireGridPane.createFullRow(7, 7, new CardUI("8", SuitEnum.Spade));
+         */
 
-        //addToContent(solitaireGridPane);
+        addToContent(solitaireGridPane);
 
         addNextMoveButton();
         addMoveCompletedButton();
@@ -157,6 +159,8 @@ public class GameTab extends TabStd {
                         public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                             try {
                                 MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                                solitaireGridPane.ofSolitaireState(history.peek());
+                                MainGUI.printToOutputAreaNewline("piles:" +history.peek().getPiles().get(2).toString());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -165,7 +169,8 @@ public class GameTab extends TabStd {
 
                         @Override
                         public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
-                            MainGUI.printToOutputAreaNewline(message);
+                            MainGUI.printToOutputAreaNewline("Failure: " +message);
+                            solitaireGridPane.ofSolitaireState(history.peek());
                         }
 
                         @Override
@@ -182,6 +187,7 @@ public class GameTab extends TabStd {
                         public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                             try {
                                 MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                                solitaireGridPane.ofSolitaireState(history.peek());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -191,6 +197,7 @@ public class GameTab extends TabStd {
                         @Override
                         public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
                             MainGUI.printToOutputAreaNewline(message);
+                            solitaireGridPane.ofSolitaireState(history.peek());
                         }
 
                         @Override
@@ -215,6 +222,7 @@ public class GameTab extends TabStd {
             @Override
             public void OnSuccess(String status) {
                 MainGUI.printToOutputAreaNewline("PlayTurn.OnSuccess - Status: " + status);
+                solitaireGridPane.ofSolitaireState(history.peek());
                 seeResults();
             }
 
@@ -237,6 +245,7 @@ public class GameTab extends TabStd {
             public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
                 try {
                     MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                    solitaireGridPane.ofSolitaireState(history.peek());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
