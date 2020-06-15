@@ -19,6 +19,7 @@ public class Controller implements I_Controller {
     private boolean testmode = false;
     private Move currentMove;
     private TopCardsSimulator topCardsSimulator;
+    private boolean gameStarted = false;
 
     @Override
     // Note that this method returns the first move suggestion and saves state
@@ -75,29 +76,35 @@ public class Controller implements I_Controller {
      */
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
-        try {
-            TopCards topCards;
-            SolitaireState state;
-            if (!testmode) {
-                topCards = CV_Controller.getSolitaireCards(img);
-                state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
-                stateManager.checkStateAgainstImage(topCards, state);
+        // Make sure game is started!
+        if (!gameStarted) {
+            gameStarted = true;
+            startNewGame(img, callBack);
+        } else {
+            try {
+                TopCards topCards;
+                SolitaireState state;
+                if (!testmode) {
+                    topCards = CV_Controller.getSolitaireCards(img);
+                    state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
+                    stateManager.checkStateAgainstImage(topCards, state);
 
-            } else {
-                state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
+                } else {
+                    state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
+                }
+                List<Move> moves = logic.getMoves(state);
+
+                // Save the new state and it's move list
+                stateManager.saveState(state);
+                stateManager.addMovesToState(moves);
+
+                // Reset move
+                currentMove = null;
+
+                callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
+            } catch (Exception e) {
+                callBack.OnError(e);
             }
-            List<Move> moves = logic.getMoves(state);
-
-            // Save the new state and it's move list
-            stateManager.saveState(state);
-            stateManager.addMovesToState(moves);
-
-            // Reset move
-            currentMove = null;
-
-            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
-        } catch (Exception e) {
-            callBack.OnError(e);
         }
     }
 
