@@ -235,12 +235,12 @@ public class CameraSourceTabNew extends TabStd {
     private void addGetImageButton () {
         btnGetImage = new Button("Get image");
         btnGetImage.setOnAction(event -> {
+            MainGUI.printToOutputAreaNewline("Getted image // w:"+imgWebCamCapturedImage.getImage().getWidth()+" h: " + imgWebCamCapturedImage.getImage().getHeight());
             BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imgWebCamCapturedImage.getImage(), null);
             try {
                 ImageIO.write(bufferedImage,"PNG", new File("export.png"));
             } catch (IOException e) {
-                e.printStackTrace();
-            }
+                e.printStackTrace();            }
         });
         addToContent(btnGetImage);
     }

@@ -1,6 +1,9 @@
+package logic;
+
 import dataObjects.Card;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
+import logic.I_Logic;
 
 import java.util.ArrayList;
 import java.util.List;
