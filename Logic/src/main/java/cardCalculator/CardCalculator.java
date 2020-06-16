@@ -11,6 +11,8 @@ import stateBuilding.TopCardsSimulator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dataObjects.GlobalEnums.GameProgress.WON;
+
 public class CardCalculator {
     /**
      * This class performs these tasks:
@@ -98,6 +100,9 @@ public class CardCalculator {
             } else if (stock == 0 && drawnCards.size() > 0) {
                 // Drawn cards become new stock ("turn draw pile").
                 stock = drawnCards.size();
+                if (test) {
+                    topCardsSimulator.setUsedCards(drawnCards);
+                }
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
                 state.setStockTurned(flipped + 1); // 3 means you can't draw
@@ -108,8 +113,13 @@ public class CardCalculator {
 
             state.setStock(stock - 1);
             if (test) {
-                drawnCards.add(topCardsSimulator.getCard());
-                System.out.println("BOMBIBOFF");
+                List<Card> cards = topCardsSimulator.getUsedCards();
+                if (state.getStockTurned() > 0 && cards.size() > 0) {
+                    drawnCards.add(cards.get(0));
+                    topCardsSimulator.getUsedCards().remove(0);
+                } else {
+                    drawnCards.add(topCardsSimulator.getCard());
+                }
             } else {
                 drawnCards.add(topCards.getDrawnCard());
             }
@@ -128,7 +138,6 @@ public class CardCalculator {
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
@@ -154,7 +163,6 @@ public class CardCalculator {
                 Card card = cards.get(0);
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
@@ -177,11 +185,10 @@ public class CardCalculator {
                 state.setPiles(piles);
             }
         }
-
         return state;
     }
 
-    private boolean checkWin(SolitaireState state) {
+    public boolean checkWin(SolitaireState state) {
         boolean won = true;
         for (int i = 0; i < 4; i++) {
             Card foundation = state.getFoundations().get(i);
@@ -189,7 +196,7 @@ public class CardCalculator {
                 won = false;
             }
         }
-        state.setWon(won);
+        state.setGameProgress(WON);
         return won;
     }
 
@@ -228,6 +235,8 @@ public class CardCalculator {
             }
         }
 
+        // Control of foundations is removed. The user is responsible for keeping track of foundations.
+        /*
         // Check the foundations
         for (int i = 0; i < 4; i++) {
             if (foundations.get(i) == null) {
@@ -246,6 +255,8 @@ public class CardCalculator {
                 }
             }
         }
+        */
+
 
         // Check the piles
         for (int i = 0; i < 7; i++) {

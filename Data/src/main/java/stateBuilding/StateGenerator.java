@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 public class StateGenerator {
     final String PATH = SinglePropertyLoader.getInstance().getProperty("project.root");
+    String filepath = PATH + "/Data/src/main/resources/builderFiles/build-a-state_";
 
     public SolitaireState getState(int id) throws Exception {
         String[][] data = readBuilderFile(id);
@@ -52,11 +53,8 @@ public class StateGenerator {
 
         // Set piles
         for (int i = 3; i < 10; i++) {
-
-            //System.out.println("This is pile " + (i - 2));
             List<Card> pile = new ArrayList<>();
             for (String s : data[i]) {
-                //System.out.println(s);
                 Card card = buildCard(s);
                 if (card != null) {
                     pile.add(card);
@@ -111,7 +109,7 @@ public class StateGenerator {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    PATH + "/Data/src/main/resources/builderFiles/build-a-state_" + id));
+                    filepath + id));
             String line = reader.readLine();
             while (line != null) {
                 //System.out.println(line);
@@ -135,7 +133,8 @@ public class StateGenerator {
             }
             reader.close();
         } catch (IOException e) {
-            System.out.println("Could not parse " + PATH + id + ". \nMake sure the file exists and is formatted like " + PATH + 0 + ".");
+            System.out.println("Could not parse " + filepath + +id +
+                    ". \nMake sure the file exists and is formatted like " + filepath + 0 + ".");
             e.printStackTrace();
         }
         return data;

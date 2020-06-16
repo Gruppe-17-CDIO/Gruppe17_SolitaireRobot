@@ -19,14 +19,6 @@ import java.util.List;
 
 public class StateLogger implements I_StateLogger {
     // Filepath for current session with timestamp
-
-    /*
-    static final String FILE_PATH = "src/main/resources/SolitaireData_" +
-            new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) +
-            ".json";
-*/
-
-    //Better, but does not work in test:
     static final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
             new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) +
             ".json";
@@ -39,7 +31,6 @@ public class StateLogger implements I_StateLogger {
 
         historyCards.add(currentGameCards);
         try {
-            System.out.println(System.getProperty("user.dir"));
             Writer writer = new FileWriter(FILE_PATH);
             new Gson().toJson(historyCards, writer);
             writer.close();

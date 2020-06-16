@@ -1,5 +1,6 @@
 package controller;
 
+import dataObjects.GlobalEnums;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import javafx.scene.image.Image;
@@ -7,7 +8,6 @@ import javafx.scene.image.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -17,6 +17,7 @@ import java.util.Stack;
  */
 public class ControllerTestTUI {
     private Controller controller;
+    int gameType;
 
     public static void main(String[] args) {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -57,13 +58,13 @@ public class ControllerTestTUI {
         }), new NextMoveCallBack() {
             @Override
 
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+            public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress progress) {
                 try {
-                    System.out.println(history.peek().getPrintFormat());
+                    System.out.println(state.getPrintFormat());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                playTurn(moves, history);
+                playTurn(move, state);
             }
 
             @Override
@@ -78,23 +79,18 @@ public class ControllerTestTUI {
         });
     }
 
-    private void playTurn(List<Move> moves, Stack<SolitaireState> history) {
-        int accept = 0, choice = 0;
-        while (accept == 0) {
-            System.out.println("Choose your move from the list. Integer, then enter.");
-            Scanner scanner = new Scanner(System.in);
-            if (scanner.hasNextInt()) {
-                choice = scanner.nextInt();
-                accept = 1;
-                if (choice > moves.size() - 1 || choice < 0) {
-                    System.out.println("Invalid move index.");
-                    accept = 0;
-                }
-            } else {
-                System.out.println("Not an int.");
-            }
+    private void playTurn(Move move, SolitaireState state) {
+        int choice = 0;
+
+        if (state.getGameProgress() == GlobalEnums.GameProgress.WON) {
+            System.out.println("YOU WON!");
+            System.exit(0);
+        } else if (state.getGameProgress() == GlobalEnums.GameProgress.LOST) {
+            System.out.println("YOU LOST.");
+            System.exit(0);
         }
-        controller.performMove(moves.get(choice), new CompletionCallBack() {
+
+        controller.performMove(move, new CompletionCallBack() {
             @Override
             public void OnSuccess(String status) {
                 System.out.println(status);
@@ -121,13 +117,13 @@ public class ControllerTestTUI {
             }
         }), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+            public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress progress) {
                 try {
-                    System.out.println(history.peek().getPrintFormat());
+                    System.out.println(state.getPrintFormat());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                playTurn(moves, history);
+                playTurn(move, state);
             }
 
             @Override

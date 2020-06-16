@@ -1,6 +1,7 @@
 package controller;
 
 import cardCalculator.CardCalculator;
+import dataObjects.GlobalEnums.GameProgress;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
@@ -9,6 +10,9 @@ import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
 import java.util.Stack;
+
+import static dataObjects.GlobalEnums.GameProgress.LOST;
+import static dataObjects.GlobalEnums.GameProgress.WON;
 
 /**
  * Responsibility:
@@ -19,9 +23,9 @@ import java.util.Stack;
  */
 
 public class StateManager {
+    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
     private Stack<SolitaireState> history; // This is the main history
     private StateLogger logger; // Making logfiles
-    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
 
     public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
@@ -116,6 +120,27 @@ public class StateManager {
             throw new Exception("getState: State has no moves.");
         }
         return history.peek().getSuggestedMoves();
+    }
+
+    public Move getBestMove() {
+        SolitaireState state = history.peek();
+        if (state.getSuggestedMoves().size() == 0) {
+            return null;
+        } else {
+            return state.getSuggestedMoves().get(0);
+        }
+    }
+
+    public GameProgress checkGameProgress(List<Move> moves) {
+        SolitaireState state = history.peek();
+        if (moves.size() < 1) {
+            if (cardCalculator.checkWin(state)) {
+                state.setGameProgress(WON);
+            } else {
+                state.setGameProgress(LOST);
+            }
+        }
+        return state.getGameProgress();
     }
 
     public void undo() throws Exception {
