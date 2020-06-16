@@ -19,7 +19,7 @@ import static dataObjects.Move.MoveType.MOVE;
  */
 
 public class Logic implements I_Logic {
-    private List<Move> pastMoves = new ArrayList<>();
+    private final List<Move> pastMoves = new ArrayList<>();
     private List<Move> moves;
     private SolitaireState state;
     private Card card;
@@ -134,11 +134,6 @@ public class Logic implements I_Logic {
         // Same move can only be suggested five times in total (or game never ends)
         moves = removeRepeatMoves(moves);
 
-        // Add best move to pastMoves (Remove after test)
-        if (moves.size() > 0) {
-            pastMoves.add(moves.get(0));
-        }
-
         return moves;
     }
 
@@ -207,13 +202,11 @@ public class Logic implements I_Logic {
         }
     }
 
+    // Don't allow same move to be executed six times in end game
     private List<Move> removeRepeatMoves(List<Move> moves) {
-        // Don't allow same move to be executed six times
+
         if (moves.size() < 1) {
             return moves;
-        }
-        if (pastMoves.size() > 100) {
-            pastMoves = pastMoves.subList(pastMoves.size() - 50, pastMoves.size() - 1);
         }
         List<Move> filteredMoves = new ArrayList<>();
         for (int i = 0; i < moves.size(); i++) {
@@ -230,10 +223,14 @@ public class Logic implements I_Logic {
                         }
                     }
                 }
-                if (repeat < 6) {
+                if (repeat < 4) {
                     filteredMoves.add(move);
                 }
             }
+        }
+        // Add best move to pastMoves (Remove after test)
+        if (filteredMoves.size() > 0) {
+            pastMoves.add(filteredMoves.get(0));
         }
         return filteredMoves;
     }
