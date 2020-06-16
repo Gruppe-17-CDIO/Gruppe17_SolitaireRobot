@@ -19,7 +19,7 @@ import static dataObjects.Move.MoveType.MOVE;
  */
 
 public class Logic implements I_Logic {
-    private final List<Move> pastMoves = new ArrayList<>();
+    private List<Move> pastMoves = new ArrayList<>();
     private List<Move> moves;
     private SolitaireState state;
     private Card card;
@@ -208,6 +208,10 @@ public class Logic implements I_Logic {
         if (moves.size() < 1) {
             return moves;
         }
+        if (pastMoves.size() > 80) {
+            pastMoves = pastMoves.subList(pastMoves.size() - 50, pastMoves.size() - 1);
+        }
+
         List<Move> filteredMoves = new ArrayList<>();
         for (int i = 0; i < moves.size(); i++) {
             int repeat = 0;
