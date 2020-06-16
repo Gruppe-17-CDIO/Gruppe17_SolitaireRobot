@@ -41,7 +41,8 @@ public class Controller implements I_Controller {
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
-            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
+            stateManager.checkGameProgress(moves);
+            callBack.OnSuccess(stateManager.getBestMove(), stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -104,8 +105,8 @@ public class Controller implements I_Controller {
 
                 // Reset move
                 currentMove = null;
-
-                callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
+                stateManager.checkGameProgress(moves);
+                callBack.OnSuccess(stateManager.getBestMove(), stateManager.getHistory().peek(), state.getGameProgress());
             } catch (Exception e) {
                 callBack.OnError(e);
             }

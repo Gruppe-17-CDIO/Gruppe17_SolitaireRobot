@@ -11,6 +11,8 @@ import stateBuilding.TopCardsSimulator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dataObjects.GlobalEnums.GameProgress.WON;
+
 public class CardCalculator {
     /**
      * This class performs these tasks:
@@ -136,7 +138,6 @@ public class CardCalculator {
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
@@ -162,7 +163,6 @@ public class CardCalculator {
                 Card card = cards.get(0);
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
@@ -185,11 +185,10 @@ public class CardCalculator {
                 state.setPiles(piles);
             }
         }
-
         return state;
     }
 
-    private boolean checkWin(SolitaireState state) {
+    public boolean checkWin(SolitaireState state) {
         boolean won = true;
         for (int i = 0; i < 4; i++) {
             Card foundation = state.getFoundations().get(i);
@@ -197,7 +196,7 @@ public class CardCalculator {
                 won = false;
             }
         }
-        state.setWon(won);
+        state.setGameProgress(WON);
         return won;
     }
 
