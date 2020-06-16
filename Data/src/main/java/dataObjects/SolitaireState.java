@@ -1,11 +1,14 @@
 package dataObjects;
 
+import dataObjects.GlobalEnums.GameProgress;
 import org.jetbrains.annotations.NotNull;
 import utilities.StatePrinterUtility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static dataObjects.GlobalEnums.GameProgress.PLAYING;
 
 /**
  * @author Andreas, Erlend
@@ -30,7 +33,7 @@ public class SolitaireState {
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
     private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
     private Move performedMove; // The move perfomed right before this state.
-    private boolean won = false;
+    private GameProgress gameProgress = PLAYING;
     private int stockTurned = 0; // How many times is the stock pile turned?
 
     public SolitaireState() {
@@ -119,20 +122,20 @@ public class SolitaireState {
         this.performedMove = performedMove;
     }
 
-    public boolean isWon() {
-        return won;
-    }
-
-    public void setWon(boolean won) {
-        this.won = won;
-    }
-
     public int getStockTurned() {
         return stockTurned;
     }
 
     public void setStockTurned(int stockTurned) {
         this.stockTurned = stockTurned;
+    }
+
+    public GameProgress getGameProgress() {
+        return gameProgress;
+    }
+
+    public void setGameProgress(GameProgress gameProgress) {
+        this.gameProgress = gameProgress;
     }
 }
 

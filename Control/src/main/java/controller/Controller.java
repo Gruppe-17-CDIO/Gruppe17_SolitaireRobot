@@ -17,9 +17,9 @@ import java.util.List;
  */
 
 public class Controller implements I_Controller {
-    private final I_Logic logic = new Logic();
-    private final StateManager stateManager = new StateManager();
-    private I_ComputerVisionController CV_Controller; // Instantiate here
+    private I_Logic logic;
+    private StateManager stateManager;
+    private I_ComputerVisionController CV_Controller;
     private boolean testmode = false;
     private Move currentMove;
     private TopCardsSimulator topCardsSimulator;
@@ -28,6 +28,9 @@ public class Controller implements I_Controller {
     @Override
     // Note that this method returns the first move suggestion and saves state
     public void startNewGame(Image img, NextMoveCallBack callBack) {
+        logic = new Logic();
+        stateManager = new StateManager();
+        gameStarted = true;
         try {
             TopCards topCards;
             SolitaireState state;
@@ -41,7 +44,9 @@ public class Controller implements I_Controller {
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
-            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
+            currentMove = stateManager.getBestMove();
+            stateManager.updateGameProcess(moves);
+            callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -57,12 +62,7 @@ public class Controller implements I_Controller {
     @Override
     public void performMove(Move move, CompletionCallBack callBack) {
         try {
-            if (move == null) {
-                callBack.OnFailure("Move was null. Please supply a move.");
-            } else {
-                currentMove = move;
-                callBack.OnSuccess("OK: Move registered.");
-            }
+            callBack.OnSuccess("OK: Move registered.");
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -82,7 +82,6 @@ public class Controller implements I_Controller {
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         // Make sure game is started!
         if (!gameStarted) {
-            gameStarted = true;
             startNewGame(img, callBack);
         } else {
             try {
@@ -103,9 +102,9 @@ public class Controller implements I_Controller {
                 stateManager.addMovesToState(moves);
 
                 // Reset move
-                currentMove = null;
-
-                callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
+                currentMove = stateManager.getBestMove();
+                stateManager.updateGameProcess(moves);
+                callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
             } catch (Exception e) {
                 callBack.OnError(e);
             }
