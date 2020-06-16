@@ -4,6 +4,7 @@ import Converter.Util.SortingHelperClass;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class BufferElement {
@@ -12,6 +13,7 @@ public class BufferElement {
     List<JsonDTO> upperRow = new ArrayList<>();
     List<JsonDTO> lowerRow = new ArrayList<>();
     double separationLine = 0;
+    HashMap<Integer, Double> rowFixedGridLines;
 
     public BufferElement(List<JsonDTO> calubrationList, SortingHelperClass sortingObject) {
         this.calubrationList = calubrationList;
@@ -57,6 +59,41 @@ public class BufferElement {
         return listToRemoveFrom;
     }
 
+
+    public void calculateVerticalGrid(){
+        rowFixedGridLines = new HashMap<>();
+        lowerRow = sortingObject.sortingTheListOfPrecardsAccordingToX(lowerRow);
+
+        int rowCounter = 0;
+        while(rowCounter<7) {
+            for (int i = 0; i < lowerRow.size(); i++) {
+                double lowX = lowerRow.get(i).getX();
+                double highX = lowerRow.get(i).getX();
+                for (int j = i; j < lowerRow.size(); j++) {
+
+                    //Finding the highest X value of the same type of card
+                    if(lowerRow.get(i).getCat().equals(lowerRow.get(j).getCat())){
+                        if(lowerRow.get(j).getX()>=highX){
+                            highX = lowerRow.get(j).getX();
+                        }
+                    }else{
+                        i=j;
+                        break;
+                    }
+
+                }rowFixedGridLines.put(rowCounter,calculateAverageGrid(lowX,highX).doubleValue());
+                rowCounter++;
+            }
+        }
+        System.out.println();
+    }
+
+
+    public Double calculateAverageGrid(double lowX,double highX){
+        Double average = lowX+((highX-lowX)/2);
+        return average;
+    }
+
     public List<JsonDTO> getUpperRow(){
         return upperRow;
     }
@@ -68,5 +105,12 @@ public class BufferElement {
     public double getSeparationLine(){
         return separationLine;
     }
+
+    public HashMap<Integer, Double> getRowFixedGridLines(){
+        return rowFixedGridLines;
+    }
+
+
+
 
 }

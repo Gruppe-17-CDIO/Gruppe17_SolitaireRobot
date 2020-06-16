@@ -7,7 +7,9 @@ import com.sun.rowset.internal.Row;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -100,6 +102,28 @@ public class BufferElement_Test {
                 assert (false);
             }
         }
+    }
+
+    @Test
+    public void calculateVerticalGrid_Test(){
+        SortingHelperClass sorting = new SortingHelperClass();
+        Darknet_Stub darknetReturnList = new Darknet_Stub();
+        List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
+
+
+        BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
+
+        HashMap<Integer, Double> verticalGrid = bufferElement.getRowFixedGridLines();
+
+
+
+        for (Map.Entry<Integer,Double> entry : verticalGrid.entrySet())
+            System.out.println("Key = " + entry.getKey() +
+                    ", Value = " + entry.getValue());
+
+        assert (true);
     }
 
 }

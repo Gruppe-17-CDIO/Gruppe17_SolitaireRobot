@@ -20,7 +20,7 @@ import java.util.*;
 public class Convertion implements I_ComputerVisionController {
     SortingHelperClass sorting = new SortingHelperClass();
     Util utility = new Util();
-    BoxMapping mapping = new BoxMapping();
+    //BoxMapping mapping = new BoxMapping();
     I_Connection connection = new Darknet_Stub();
     ImageBoxes boxCreator = new ImageBoxes();
     Image img;
@@ -34,7 +34,7 @@ public class Convertion implements I_ComputerVisionController {
     try {
         List<JsonDTO> returnImages = ConvertImage(img);
         //List<double[]> boxesArea = boxCreator.returnImgBoxes(img, returnImages);
-        mapping.makeBoxMapping(returnImages, new TopCards());
+       // mapping.makeBoxMapping(returnImages, new TopCards());
         System.out.println("Test");
         //return boxCreator.boxMapping(returnImages,boxesArea,img);
         return null;
