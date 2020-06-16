@@ -6,6 +6,7 @@ public class Move {
     private final int[] position;
     private final int destPosition;
     private final MoveBenefit benefit;
+
     private final Card card;
 
     public Move(MoveType moveType, Card card, int[] position, DestinationType destinationType, int destPosition, MoveBenefit benefit) {
@@ -33,6 +34,14 @@ public class Move {
         return destPosition;
     }
 
+    public Card getCard() {
+        return card;
+    }
+
+    public MoveBenefit getBenefit() {
+        return benefit;
+    }
+
     public String toString() {
         if (moveType == MoveType.DRAW) {
             return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
@@ -46,10 +55,6 @@ public class Move {
         } else {
             return "No Movetype";
         }
-    }
-
-    public MoveBenefit getBenefit() {
-        return benefit;
     }
 
     public enum MoveType {
