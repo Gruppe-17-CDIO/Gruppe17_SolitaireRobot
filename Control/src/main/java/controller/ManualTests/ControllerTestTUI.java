@@ -1,5 +1,8 @@
-package controller;
+package controller.ManualTests;
 
+import controller.CompletionCallBack;
+import controller.Controller;
+import controller.NextMoveCallBack;
 import dataObjects.GlobalEnums;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
@@ -26,6 +29,7 @@ public class ControllerTestTUI {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         new ControllerTestTUI().runGame();
     }
+
 
     public void runGame() {
         controller = new Controller();

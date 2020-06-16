@@ -78,7 +78,7 @@ public class StatePrinterUtility {
         printEmptyRow();
 
         for (int i = 0; i < 7; i++) {
-            line[i] = "# " + (i);
+            line[i] = "# " + (i + 1);
         }
         printRow(line);
 
@@ -91,7 +91,7 @@ public class StatePrinterUtility {
                 } else if (piles.get(j).size() - 1 < i || piles.get(j).get(i) == null) {
                     line[j] = empty;
                 } else if (piles.get(j).get(i).getStatus() == Card.Status.FACEDOWN) {
-                    line[j] = "|''''''''" + i + "|";
+                    line[j] = "|''''''''" + (i + 1) + "|";
                 } else if (piles.get(j).get(i) != null) {
                     line[j] = piles.get(j).get(i).toString();
                 } else {

@@ -196,7 +196,6 @@ public class CardCalculator {
                 won = false;
             }
         }
-        state.setGameProgress(WON);
         return won;
     }
 
