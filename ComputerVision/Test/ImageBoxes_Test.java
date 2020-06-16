@@ -1,6 +1,5 @@
 import Converter.Convertion;
 import Converter.ImageBoxes;
-import Converter.Util.Util;
 import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.I_Connection;
 import Data.PreCard;
@@ -14,7 +13,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +70,7 @@ public class ImageBoxes_Test {
         double[] drawPile = new double[1];
         drawPile[0] = totalWidth/5*1;
 
-        List<double[]> boxs = boxes.calibrateImgBoxes(image);
+        List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         for(int i = 0;i<1;i++){
             assertEquals(drawPile[i],boxs.get(0)[i],1);
@@ -108,7 +106,7 @@ public class ImageBoxes_Test {
         //Converting BufferedImage to javaFX Image
         Image image = SwingFXUtils.toFXImage(img, null);
         //Creating boxes
-        List<double[]> boxs = boxes.calibrateImgBoxes(image);
+        List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         //Creating a return from
         List<PreCard> returnFromDarknet = convert.ConvertImage(image);
@@ -182,7 +180,7 @@ public class ImageBoxes_Test {
         //Converting BufferedImage to javaFX Image
         Image image = SwingFXUtils.toFXImage(img, null);
         //Creating boxes
-        List<double[]> boxs = boxes.calibrateImgBoxes(image);
+        List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         //Creating a return from
         List<PreCard> returnFromDarknet = convert.ConvertImage(image);

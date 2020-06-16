@@ -1,18 +1,15 @@
 package Converter;
 
 import Converter.Util.Util;
-import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.I_Connection;
 import Data.PreCard;
 import com.google.gson.JsonArray;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import dataObjects.Card;
-import dataObjects.ConvertState;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * * @author Andreas B.G. Jensen
@@ -30,7 +27,7 @@ public class Convertion implements I_ComputerVisionController {
     public TopCards getSolitaireCards(Image img) {
 
         List<PreCard> returnImages = ConvertImage(img);
-        List<double[]> boxesArea = boxCreator.calibrateImgBoxes(img);
+        List<double[]> boxesArea = boxCreator.returnImgBoxes(img, returnImages);
 
 
         //return boxCreator.boxMapping(returnImages,boxesArea,img);
@@ -51,4 +48,10 @@ public class Convertion implements I_ComputerVisionController {
         return utility.getPreCard(returnArray);
 
     }
+
+
+
+
+
+
 }
