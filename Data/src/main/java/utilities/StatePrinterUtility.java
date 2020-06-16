@@ -1,4 +1,4 @@
-package stateBuilding;
+package utilities;
 
 import dataObjects.Card;
 import dataObjects.Move;
@@ -7,7 +7,6 @@ import dataObjects.SolitaireState;
 import java.util.List;
 
 public class StatePrinterUtility {
-    final String faceDown = "|‾‾‾‾‾‾‾‾‾‾|";
     final String empty = "                ";
     private final StringBuilder result = new StringBuilder();
 
@@ -79,7 +78,7 @@ public class StatePrinterUtility {
         printEmptyRow();
 
         for (int i = 0; i < 7; i++) {
-            line[i] = "# " + (i);
+            line[i] = "# " + (i + 1);
         }
         printRow(line);
 
@@ -92,7 +91,7 @@ public class StatePrinterUtility {
                 } else if (piles.get(j).size() - 1 < i || piles.get(j).get(i) == null) {
                     line[j] = empty;
                 } else if (piles.get(j).get(i).getStatus() == Card.Status.FACEDOWN) {
-                    line[j] = "|''''''''''" + i + "|";
+                    line[j] = "|''''''''" + (i + 1) + "|";
                 } else if (piles.get(j).get(i) != null) {
                     line[j] = piles.get(j).get(i).toString();
                 } else {
@@ -115,7 +114,7 @@ public class StatePrinterUtility {
         printEmptyRow();
 
         for (int i = 0; i < 7; i++) {
-            line[i] = "----------------";
+            line[i] = "------------";
         }
         printRow(line);
 
@@ -136,8 +135,8 @@ public class StatePrinterUtility {
     private void printRow(String[] s) {
         String line = "";
         for (int i = 0; i < 7; i++) {
-            String temp = String.format("%-16s", s[i]);
-            line += temp.substring(0, 16);
+            String temp = String.format("%-12s", s[i]);
+            line += temp.substring(0, 12);
         }
         result.append(line + "\n");
     }

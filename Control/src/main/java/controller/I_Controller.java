@@ -1,3 +1,6 @@
+package controller;
+
+import controller.CompletionCallBack;
 import dataObjects.Move;
 import javafx.scene.image.Image;
 

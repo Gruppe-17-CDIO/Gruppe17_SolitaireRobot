@@ -24,11 +24,7 @@ public class Deck {
                 }
             }
         }
-
-        //print();
         Collections.shuffle(cards);
-        System.out.println("\nShuffle shuffle...\n");
-        //print();
     }
 
     public Card getCard() throws Exception {

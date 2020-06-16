@@ -1,7 +1,12 @@
+package controller;
+
+import computerVision.I_ComputerVisionController;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
+import logic.I_Logic;
+import logic.Logic;
 import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
@@ -12,16 +17,20 @@ import java.util.List;
  */
 
 public class Controller implements I_Controller {
-    private final I_Logic logic = new Logic();
-    private final StateManager stateManager = new StateManager();
-    private I_ComputerVisionController CV_Controller; // Instantiate here
+    private I_Logic logic;
+    private StateManager stateManager;
+    private I_ComputerVisionController CV_Controller;
     private boolean testmode = false;
     private Move currentMove;
     private TopCardsSimulator topCardsSimulator;
+    private boolean gameStarted = false;
 
     @Override
     // Note that this method returns the first move suggestion and saves state
     public void startNewGame(Image img, NextMoveCallBack callBack) {
+        logic = new Logic();
+        stateManager = new StateManager();
+        gameStarted = true;
         try {
             TopCards topCards;
             SolitaireState state;
@@ -35,7 +44,9 @@ public class Controller implements I_Controller {
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
-            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
+            currentMove = stateManager.getBestMove();
+            stateManager.updateGameProcess(moves);
+            callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -51,12 +62,7 @@ public class Controller implements I_Controller {
     @Override
     public void performMove(Move move, CompletionCallBack callBack) {
         try {
-            if (move == null) {
-                callBack.OnFailure("Move was null. Please supply a move.");
-            } else {
-                currentMove = move;
-                callBack.OnSuccess("OK: Move registered.");
-            }
+            callBack.OnSuccess("OK: Move registered.");
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -74,29 +80,34 @@ public class Controller implements I_Controller {
      */
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
-        try {
-            TopCards topCards;
-            SolitaireState state;
-            if (!testmode) {
-                topCards = CV_Controller.getSolitaireCards(img);
-                state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
-                stateManager.checkStateAgainstImage(topCards, state);
+        // Make sure game is started!
+        if (!gameStarted) {
+            startNewGame(img, callBack);
+        } else {
+            try {
+                TopCards topCards;
+                SolitaireState state;
+                if (!testmode) {
+                    topCards = CV_Controller.getSolitaireCards(img);
+                    state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
+                    stateManager.checkStateAgainstImage(topCards, state);
 
-            } else {
-                state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
+                } else {
+                    state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
+                }
+                List<Move> moves = logic.getMoves(state);
+
+                // Save the new state and it's move list
+                stateManager.saveState(state);
+                stateManager.addMovesToState(moves);
+
+                // Reset move
+                currentMove = stateManager.getBestMove();
+                stateManager.updateGameProcess(moves);
+                callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
+            } catch (Exception e) {
+                callBack.OnError(e);
             }
-            List<Move> moves = logic.getMoves(state);
-
-            // Save the new state and it's move list
-            stateManager.saveState(state);
-            stateManager.addMovesToState(moves);
-
-            // Reset move
-            currentMove = null;
-
-            callBack.OnSuccess(stateManager.getMoves(), stateManager.getHistory(), state.isWon());
-        } catch (Exception e) {
-            callBack.OnError(e);
         }
     }
 

@@ -136,7 +136,6 @@ public class CardCalculator {
             if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
@@ -162,7 +161,6 @@ public class CardCalculator {
                 Card card = cards.get(0);
                 foundations.set(move.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
             } else if (move.getDestinationType() == Move.DestinationType.PILE) {
                 piles.get(move.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
@@ -185,11 +183,10 @@ public class CardCalculator {
                 state.setPiles(piles);
             }
         }
-
         return state;
     }
 
-    private boolean checkWin(SolitaireState state) {
+    public boolean checkWin(SolitaireState state) {
         boolean won = true;
         for (int i = 0; i < 4; i++) {
             Card foundation = state.getFoundations().get(i);
@@ -197,7 +194,6 @@ public class CardCalculator {
                 won = false;
             }
         }
-        state.setWon(won);
         return won;
     }
 
@@ -236,6 +232,8 @@ public class CardCalculator {
             }
         }
 
+        // Control of foundations is removed. The user is responsible for keeping track of foundations.
+        /*
         // Check the foundations
         for (int i = 0; i < 4; i++) {
             if (foundations.get(i) == null) {
@@ -254,6 +252,8 @@ public class CardCalculator {
                 }
             }
         }
+        */
+
 
         // Check the piles
         for (int i = 0; i < 7; i++) {

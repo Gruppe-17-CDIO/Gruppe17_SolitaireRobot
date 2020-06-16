@@ -49,6 +49,12 @@
             <artifactId>unirest-java</artifactId>
             <version>1.4.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>11</version>
+            <scope>compile</scope>
+        </dependency>
 
 <!--for json mapping-->
         <dependency>

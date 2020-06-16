@@ -1,3 +1,5 @@
+package controller;
+
 import cardCalculator.CardCalculator;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
@@ -8,6 +10,9 @@ import stateBuilding.TopCardsSimulator;
 import java.util.List;
 import java.util.Stack;
 
+import static dataObjects.GlobalEnums.GameProgress.LOST;
+import static dataObjects.GlobalEnums.GameProgress.WON;
+
 /**
  * Responsibility:
  * 1. Communicate with cardcalculator
@@ -17,9 +22,9 @@ import java.util.Stack;
  */
 
 public class StateManager {
+    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
     private Stack<SolitaireState> history; // This is the main history
     private StateLogger logger; // Making logfiles
-    private final CardCalculator cardCalculator = new CardCalculator(); // Updating the state
 
     public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
@@ -27,7 +32,7 @@ public class StateManager {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
         } else {
             System.out.println("New session started. Creating new state, blank history and logfile. " +
-                    "Ignore missing logfile for read!");
+                    "\nIgnore missing logfile for read!");
             history = new Stack<>();
             logger = new StateLogger();
             state = cardCalculator.initiateState(cardData);
@@ -114,6 +119,24 @@ public class StateManager {
             throw new Exception("getState: State has no moves.");
         }
         return history.peek().getSuggestedMoves();
+    }
+
+    public Move getBestMove() {
+        SolitaireState state = history.peek();
+        if (state.getSuggestedMoves().size() == 0) {
+            return null;
+        } else {
+            return state.getSuggestedMoves().get(0);
+        }
+    }
+
+    public void updateGameProcess(List<Move> moves) {
+        SolitaireState state = history.peek();
+        if (cardCalculator.checkWin(state)) {
+            state.setGameProgress(WON);
+        } else if (moves.size() < 1) {
+            state.setGameProgress(LOST);
+        }
     }
 
     public void undo() throws Exception {

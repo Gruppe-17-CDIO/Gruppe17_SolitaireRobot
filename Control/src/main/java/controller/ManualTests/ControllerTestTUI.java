@@ -1,3 +1,9 @@
+package controller.ManualTests;
+
+import controller.CompletionCallBack;
+import controller.Controller;
+import controller.NextMoveCallBack;
+import dataObjects.GlobalEnums;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import javafx.scene.image.Image;
@@ -5,8 +11,6 @@ import javafx.scene.image.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -28,24 +32,6 @@ public class ControllerTestTUI {
 
 
     public void runGame() {
-        int accept = 0;
-        gameType = 1;
-        while (accept == 0) {
-            System.out.println("Manual: 1, Auto First alt: 2, Random Auto: 3");
-            Scanner scanner = new Scanner(System.in);
-            if (scanner.hasNextInt()) {
-                gameType = scanner.nextInt();
-                accept = 1;
-                if (gameType > 3 || gameType < 1) {
-                    System.out.println("Invalid game type.");
-                    accept = 0;
-                }
-            } else {
-                System.out.println("Not an int.");
-            }
-        }
-        accept = 0;
-
         controller = new Controller();
 
         controller.setTestModeOn(true, new CompletionCallBack() {
@@ -76,13 +62,13 @@ public class ControllerTestTUI {
         }), new NextMoveCallBack() {
             @Override
 
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+            public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress progress) {
                 try {
-                    System.out.println(history.peek().getPrintFormat());
+                    System.out.println(state.getPrintFormat());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                playTurn(moves, history);
+                playTurn(move, state);
             }
 
             @Override
@@ -97,43 +83,18 @@ public class ControllerTestTUI {
         });
     }
 
-    private void playTurn(List<Move> moves, Stack<SolitaireState> history) {
+    private void playTurn(Move move, SolitaireState state) {
         int choice = 0;
-        if (gameType == 1) {
-            int accept = 0;
-            while (accept == 0) {
-                System.out.println("Choose your move from the list. Integer, then enter.");
-                Scanner scanner = new Scanner(System.in);
-                if (scanner.hasNextInt()) {
-                    choice = scanner.nextInt();
-                    accept = 1;
-                    if (choice > moves.size() - 1 || choice < 0) {
-                        System.out.println("Invalid move index.");
-                        accept = 0;
-                    }
-                } else {
-                    System.out.println("Not an int.");
-                }
-            }
-        } else if (gameType == 2) {
-            choice = 0;
-        } else if (gameType == 3) {
-            int bound = moves.size() - 1;
-            if (bound < 1) {
-                bound = 1;
-            }
-            choice = new Random().nextInt(bound);
-        }
 
-        if (history.peek().isWon()) {
+        if (state.getGameProgress() == GlobalEnums.GameProgress.WON) {
             System.out.println("YOU WON!");
             System.exit(0);
-        } else if (moves.size() < 1) {
+        } else if (state.getGameProgress() == GlobalEnums.GameProgress.LOST) {
             System.out.println("YOU LOST.");
             System.exit(0);
         }
 
-        controller.performMove(moves.get(choice), new CompletionCallBack() {
+        controller.performMove(move, new CompletionCallBack() {
             @Override
             public void OnSuccess(String status) {
                 System.out.println(status);
@@ -160,13 +121,13 @@ public class ControllerTestTUI {
             }
         }), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+            public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress progress) {
                 try {
-                    System.out.println(history.peek().getPrintFormat());
+                    System.out.println(state.getPrintFormat());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                playTurn(moves, history);
+                playTurn(move, state);
             }
 
             @Override

@@ -5,12 +5,17 @@ public class Move {
     private final DestinationType destinationType;
     private final int[] position;
     private final int destPosition;
+    private final MoveBenefit benefit;
 
-    public Move(MoveType moveType, int[] position, DestinationType destinationType, int destPosition) {
+    private final Card card;
+
+    public Move(MoveType moveType, Card card, int[] position, DestinationType destinationType, int destPosition, MoveBenefit benefit) {
         this.moveType = moveType;
+        this.card = card;
         this.destinationType = destinationType;
         this.position = position;
         this.destPosition = destPosition;
+        this.benefit = benefit;
     }
 
     public MoveType getMoveType() {
@@ -29,15 +34,23 @@ public class Move {
         return destPosition;
     }
 
+    public Card getCard() {
+        return card;
+    }
+
+    public MoveBenefit getBenefit() {
+        return benefit;
+    }
+
     public String toString() {
         if (moveType == MoveType.DRAW) {
             return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
         } else if (moveType == MoveType.FACEUP) {
-            return "Turn " + position[0] + " " + position[1] + " face up.";
+            return "Turn pile " + (position[0] + 1) + ", card " + (position[1] + 1) + " face up.";
         } else if (moveType == MoveType.USEDRAWN) {
-            return "Move card from drawn cards to " + destinationType + " " + destPosition + ".";
+            return "Move the " + card + " from drawn cards to " + destinationType + " " + (destPosition + 1) + ".";
         } else if (moveType == MoveType.MOVE) {
-            return "Move from piles " + position[0] + ", card " + position[1] +
+            return "Move the " + card + " from pile " + (position[0] + 1) + ", card " + (position[1] + 1) +
                     " to " + destinationType + " " + destPosition + ".";
         } else {
             return "No Movetype";
@@ -45,15 +58,22 @@ public class Move {
     }
 
     public enum MoveType {
-        DRAW,
         FACEUP,
+        MOVE,
         USEDRAWN,
-        MOVE
+        DRAW,
     }
 
     public enum DestinationType {
-        PILE,
+        SELF,
         FOUNDATION,
-        SELF
+        PILE
+    }
+
+    public enum MoveBenefit {
+        CLEAN_PILE,
+        PLACE_KING,
+        REVEAL_CARD,
+        NO_BENEFIT,
     }
 }
