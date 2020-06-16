@@ -1,5 +1,8 @@
-package controller;
+package controller.ManualTests;
 
+import controller.CompletionCallBack;
+import controller.Controller;
+import controller.NextMoveCallBack;
 import dataObjects.GlobalEnums;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
