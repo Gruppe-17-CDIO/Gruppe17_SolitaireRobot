@@ -1,7 +1,6 @@
 package controller;
 
 import cardCalculator.CardCalculator;
-import dataObjects.GlobalEnums.GameProgress;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
@@ -33,7 +32,7 @@ public class StateManager {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
         } else {
             System.out.println("New session started. Creating new state, blank history and logfile. " +
-                    "Ignore missing logfile for read!");
+                    "\nIgnore missing logfile for read!");
             history = new Stack<>();
             logger = new StateLogger();
             state = cardCalculator.initiateState(cardData);
@@ -131,16 +130,13 @@ public class StateManager {
         }
     }
 
-    public GameProgress checkGameProgress(List<Move> moves) {
+    public void updateGameProcess(List<Move> moves) {
         SolitaireState state = history.peek();
-        if (moves.size() < 1) {
-            if (cardCalculator.checkWin(state)) {
-                state.setGameProgress(WON);
-            } else {
-                state.setGameProgress(LOST);
-            }
+        if (cardCalculator.checkWin(state)) {
+            state.setGameProgress(WON);
+        } else if (moves.size() < 1) {
+            state.setGameProgress(LOST);
         }
-        return state.getGameProgress();
     }
 
     public void undo() throws Exception {

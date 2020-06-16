@@ -51,7 +51,7 @@ public class Logic implements I_Logic {
 
             // Turn top card face up
             if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == FACEDOWN) {
-                moves.add(0, new Move(FACEUP, new int[]{i, pile.size() - 1}, SELF, 0, REVEAL_CARD));
+                moves.add(new Move(FACEUP, pile.get(pile.size() - 1), new int[]{i, pile.size() - 1}, SELF, 0, REVEAL_CARD));
                 break; // No other move possible to this pile
             }
 
@@ -79,7 +79,7 @@ public class Logic implements I_Logic {
             Card drawnCard = drawnCards.get(drawnCards.size() - 1);
 
             if (drawnCard.getStatus() == FACEDOWN) {
-                moves.add(0, new Move(Move.MoveType.USEDRAWN, null, SELF, 0, REVEAL_CARD));
+                moves.add(new Move(Move.MoveType.USEDRAWN, card, null, SELF, 0, REVEAL_CARD));
             } else {
                 for (int f = 0; f < state.getFoundations().size(); f++) {
                     // If foundation pile is empty and card rank is 1 add move
@@ -90,7 +90,7 @@ public class Logic implements I_Logic {
                                     state.getFoundations().get(f).getSuit() == drawnCard.getSuit() &&
                                     drawnCard.getRank() - 1 == state.getFoundations().get(f).getRank()
                     ) {
-                        moves.add(0, new Move(Move.MoveType.USEDRAWN, null, FOUNDATION, f, NO_BENEFIT));
+                        moves.add(new Move(Move.MoveType.USEDRAWN, drawnCard, null, FOUNDATION, f, NO_BENEFIT));
                         break;
                     }
                 }
@@ -113,7 +113,7 @@ public class Logic implements I_Logic {
                                 )) {
                     moves.add(
                             // From position not needed.
-                            new Move(Move.MoveType.USEDRAWN, null, PILE, i, NO_BENEFIT)
+                            new Move(Move.MoveType.USEDRAWN, drawnCard, null, PILE, i, NO_BENEFIT)
                     );
                 }
             }
@@ -125,7 +125,7 @@ public class Logic implements I_Logic {
         if (state.getStock() > 0 ||
                 state.getDrawnCards().size() > 0 && state.getStockTurned() < 3) {
             // Values are null: there is only one place to put the card: drawn cards
-            moves.add(new Move(Move.MoveType.DRAW, null, null, 0, NO_BENEFIT));
+            moves.add(new Move(Move.MoveType.DRAW, null, null, null, 0, NO_BENEFIT));
         }
 
         // Compare moves and sort
@@ -143,12 +143,12 @@ public class Logic implements I_Logic {
             // Else if foundation pile is same suit and rank fits add move
             if (state.getFoundations().get(f) == null) {
                 if (card.getRank() == 1) {
-                    moves.add(0, new Move(MOVE, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
+                    moves.add(0, new Move(MOVE, card, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
                     break;
                 }
             } else if (state.getFoundations().get(f).getSuit() == card.getSuit()) {
                 if (card.getRank() - 1 == state.getFoundations().get(f).getRank()) {
-                    moves.add(0, new Move(MOVE, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
+                    moves.add(0, new Move(MOVE, card, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
                     break;
                 }
             }
@@ -171,7 +171,7 @@ public class Logic implements I_Logic {
             if (destPile.size() < 1) {
                 if (card.getRank() == 13 && cardNumber != 0) {
                     moves.add(
-                            new Move(MOVE, new int[]{pileNumber, cardNumber}, PILE, p, PLACE_KING)
+                            new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, PLACE_KING)
                     );
                 }
                 continue; // Ignore rest of iteration if empty pile
@@ -187,14 +187,15 @@ public class Logic implements I_Logic {
                 if (card.getRank() == destCard.getRank() - 1 && card.getColor() != destCard.getColor()) {
                     if (cardNumber == 0) {
                         moves.add(
-                                new Move(MOVE, new int[]{pileNumber, cardNumber}, PILE, p, CLEAN_PILE)
+                                new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, CLEAN_PILE)
                         );
                     } else if (fromPile.get(cardNumber - 1).getStatus() == Card.Status.FACEDOWN) {
                         moves.add(
-                                new Move(MOVE, new int[]{pileNumber, cardNumber}, PILE, p, REVEAL_CARD));
+                                new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, REVEAL_CARD));
                     } else {
+                        // These might be wasted moves
                         moves.add(
-                                new Move(MOVE, new int[]{pileNumber, cardNumber}, PILE, p, NO_BENEFIT)
+                                new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, NO_BENEFIT)
                         );
                     }
                 }
@@ -208,7 +209,7 @@ public class Logic implements I_Logic {
         if (moves.size() < 1) {
             return moves;
         }
-        if (pastMoves.size() > 80) {
+        if (pastMoves.size() > 60) {
             pastMoves = pastMoves.subList(pastMoves.size() - 50, pastMoves.size() - 1);
         }
 
@@ -220,9 +221,9 @@ public class Logic implements I_Logic {
                 filteredMoves.add(move);
             } else {
                 for (int j = 0; j < pastMoves.size(); j++) {
-                    if (move.toString().equals(pastMoves.get(j).toString()) && move.getBenefit() == NO_BENEFIT) {
+                    if (move.toString().equals(pastMoves.get(j).toString())) {
                         repeat++;
-                        if (repeat > 5) {
+                        if (repeat > 3) {
                             break;
                         }
                     }
