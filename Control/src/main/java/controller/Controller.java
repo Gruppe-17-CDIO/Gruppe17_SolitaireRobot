@@ -41,8 +41,9 @@ public class Controller implements I_Controller {
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
+            currentMove = stateManager.getBestMove();
             stateManager.checkGameProgress(moves);
-            callBack.OnSuccess(stateManager.getBestMove(), stateManager.getHistory().peek(), state.getGameProgress());
+            callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -58,12 +59,7 @@ public class Controller implements I_Controller {
     @Override
     public void performMove(Move move, CompletionCallBack callBack) {
         try {
-            if (move == null) {
-                callBack.OnFailure("Move was null. Please supply a move.");
-            } else {
-                currentMove = move;
-                callBack.OnSuccess("OK: Move registered.");
-            }
+            callBack.OnSuccess("OK: Move registered.");
         } catch (Exception e) {
             callBack.OnError(e);
         }
@@ -104,9 +100,9 @@ public class Controller implements I_Controller {
                 stateManager.addMovesToState(moves);
 
                 // Reset move
-                currentMove = null;
+                currentMove = stateManager.getBestMove();
                 stateManager.checkGameProgress(moves);
-                callBack.OnSuccess(stateManager.getBestMove(), stateManager.getHistory().peek(), state.getGameProgress());
+                callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
             } catch (Exception e) {
                 callBack.OnError(e);
             }
