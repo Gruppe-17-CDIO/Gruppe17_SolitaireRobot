@@ -1,17 +1,18 @@
 package Converter.Util;
 
+import Data.JsonDTO;
 import Data.PreCard;
 
 import java.util.*;
 
 public class SortingHelperClass {
 
-    public List<PreCard> sortingTheListOfPrecardsAccordingToX(List<PreCard> preCardList) {
+    public List<JsonDTO> sortingTheListOfPrecardsAccordingToX(List<JsonDTO> preCardList) {
 
-        Comparator<PreCard> sortingPreCardList = new Comparator<PreCard>() {
+        Comparator<JsonDTO> sortingPreCardList = new Comparator<JsonDTO>() {
             @Override
-            public int compare(PreCard o1, PreCard o2) {
-                if (o1.getLowerCoordinate().getX() <= o2.getLowerCoordinate().getX()) {
+            public int compare(JsonDTO o1, JsonDTO o2) {
+                if (o1.getX() <= o2.getX()) {
                     return -1;
                 } else {
                     return 1;
@@ -27,12 +28,12 @@ public class SortingHelperClass {
     }
 
 
-    public List<PreCard> sortingTheListOfPrecardsAccordingToY(List<PreCard> preCardList) {
+    public List<JsonDTO> sortingTheListOfPrecardsAccordingToY(List<JsonDTO> preCardList) {
 
-        Comparator<PreCard> sortingPreCardList = new Comparator<PreCard>() {
+        Comparator<JsonDTO> sortingPreCardList = new Comparator<JsonDTO>() {
             @Override
-            public int compare(PreCard o1, PreCard o2) {
-                if (o1.getLowerCoordinate().getY() <= o2.getLowerCoordinate().getY()) {
+            public int compare(JsonDTO o1, JsonDTO o2) {
+                if (o1.getY() <= o2.getY()) {
                     return -1;
                 } else {
                     return 1;
@@ -48,9 +49,9 @@ public class SortingHelperClass {
     }
 
 
-    public List<PreCard> removeNonDublicatesFromList(List<PreCard> preCardList) {
-        Map<String, PreCard> charMap = new HashMap<String, PreCard>();
-        List<PreCard> sortedPreCard = new ArrayList<>();
+    public List<JsonDTO> removeNonDublicatesFromList(List<JsonDTO> preCardList) {
+        Map<String, JsonDTO> charMap = new HashMap<String, JsonDTO>();
+        List<JsonDTO> sortedPreCard = new ArrayList<>();
 
         for (int i = 0; i < preCardList.size(); i++) {
             System.out.println(preCardList.get(i));
@@ -64,7 +65,7 @@ public class SortingHelperClass {
     }
 
 
-    public List<PreCard> acceptOnlyDublicate(List<PreCard> preCardList){
+    public List<JsonDTO> acceptOnlyDublicate(List<JsonDTO> preCardList){
 
         Map<String, Integer> charMap = new HashMap<String, Integer>();
         for (int i = 0; i < preCardList.size(); i++) {
@@ -76,11 +77,11 @@ public class SortingHelperClass {
         } // Iterate through HashMap to print all duplicate characters of String
         Set<Map.Entry<String, Integer>> entrySet = charMap.entrySet();
         for (Map.Entry<String, Integer> entry : entrySet) {
-            if (entry.getValue() > 2) {
+            if (entry.getValue() > 2 ) {
                 System.out.printf("%s : %d %n", entry.getKey(), entry.getValue());
                 removeSecondInstance(preCardList,entry.getKey(),"more");
 
-            }else{
+            }else if(entry.getValue() < 2){
                 removeSecondInstance(preCardList,entry.getKey(),"single");
             }
 
@@ -91,7 +92,7 @@ public class SortingHelperClass {
 
 
     //TODO: Fix this method so that it will check for which elements are removed. We want the diagonal box coordinates if possible.
-    private void removeSecondInstance(List<PreCard> preCardList, String entryKey, String com){
+    private void removeSecondInstance(List<JsonDTO> preCardList, String entryKey, String com){
         int counter = 0;
         String command = com;
         switch (command){
@@ -116,4 +117,7 @@ public class SortingHelperClass {
                 break;
         }
     }
+
+
+
 }

@@ -1,6 +1,8 @@
 package Converter;
 
 import Converter.Util.SortingHelperClass;
+import Converter.Util.Util;
+import Data.JsonDTO;
 import Data.PreCard;
 import dataObjects.Card;
 import dataObjects.TopCards;
@@ -9,24 +11,26 @@ import java.util.List;
 
 public class BoxMapping {
     private SortingHelperClass sorting = new SortingHelperClass();
-    private static List<PreCard> currentPreCardList;
+    private static List<JsonDTO> currentPreCardList;
     private static int getNumberOfAnalysedImage = 0;
 
 
-    public TopCards makeBoxMapping(List<PreCard> preCardList, TopCards topCards) throws Exception {
+    public TopCards makeBoxMapping(List<JsonDTO> preCardList, TopCards topCards) throws Exception {
 
         getNumberOfAnalysedImage++;
         currentPreCardList = sorting.acceptOnlyDublicate(preCardList);
 
         //Sorting for smalles y to get the cards in the first row
-        List<PreCard> smallestY = sorting.sortingTheListOfPrecardsAccordingToY(currentPreCardList);
+        List<JsonDTO> smallestY = sorting.sortingTheListOfPrecardsAccordingToY(currentPreCardList);
 
         if(getNumberOfAnalysedImage==1){
-            Card draw = new Card(createSuit(smallestY.get(0)),smallestY.get(0).getRank());
+            Card draw = Util.convertToCard(smallestY.get(0));
+
+            //Card draw = new Card(createSuit(smallestY.get(0)),smallestY.get(0).getRank());
             topCards.setDrawnCard(draw);
             smallestY.remove(0);
 
-            List<PreCard> smallestX = sorting.sortingTheListOfPrecardsAccordingToY(smallestY);
+            List<JsonDTO> smallestX = sorting.sortingTheListOfPrecardsAccordingToY(smallestY);
 
         }
         //TODO: Make a lower boundary of the upper row
@@ -34,7 +38,7 @@ public class BoxMapping {
 
 
 
-
+return null;
     }
 
     private Card.Suit createSuit(PreCard preCard){

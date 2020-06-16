@@ -1,8 +1,11 @@
 package Converter;
 
+import Converter.Util.SortingHelperClass;
 import Converter.Util.Util;
+import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.I_Connection;
+import Data.JsonDTO;
 import Data.PreCard;
 import com.google.gson.JsonArray;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -15,8 +18,10 @@ import java.util.*;
  * * @author Andreas B.G. Jensen
  */
 public class Convertion implements I_ComputerVisionController {
+    SortingHelperClass sorting = new SortingHelperClass();
     Util utility = new Util();
-    I_Connection connection = new DatknetConnection();
+    BoxMapping mapping = new BoxMapping();
+    I_Connection connection = new Darknet_Stub();
     ImageBoxes boxCreator = new ImageBoxes();
     Image img;
 
@@ -26,26 +31,33 @@ public class Convertion implements I_ComputerVisionController {
     @Override
     public TopCards getSolitaireCards(Image img) {
 
-        List<PreCard> returnImages = ConvertImage(img);
-        List<double[]> boxesArea = boxCreator.returnImgBoxes(img, returnImages);
-
-
+    try {
+        List<JsonDTO> returnImages = ConvertImage(img);
+        //List<double[]> boxesArea = boxCreator.returnImgBoxes(img, returnImages);
+        mapping.makeBoxMapping(returnImages, new TopCards());
+        System.out.println("Test");
         //return boxCreator.boxMapping(returnImages,boxesArea,img);
         return null;
+
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+    return null;
     }
 
 
 
 
 
-    public List<PreCard> ConvertImage(Image img){
+    public List<JsonDTO> ConvertImage(Image img){
         JsonArray returnArray = null;
         try {
-            returnArray = connection.Get_Image_Information(img);
+            return connection.Get_Image_Information(img);
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-        return utility.getPreCard(returnArray);
+       // return utility.getPreCard(returnArray);
+        return null;
 
     }
 

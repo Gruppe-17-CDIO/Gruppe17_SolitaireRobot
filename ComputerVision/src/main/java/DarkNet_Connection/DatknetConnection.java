@@ -1,5 +1,8 @@
 package DarkNet_Connection;
 
+import Data.JsonDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
@@ -7,9 +10,12 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import org.json.JSONArray;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.List;
 
 
 /**
@@ -21,7 +27,7 @@ public class DatknetConnection implements I_Connection {
     Sending a post request to python server and return the coordinates of the image recognition.
      */
     @Override
-    public JsonArray Get_Image_Information(Image img) throws UnirestException {
+    public List<JsonDTO> Get_Image_Information(Image img) throws UnirestException {
         try {
             byte[] imageByteArray = convertImageToByteArray(img);
             HttpResponse<String> res = Unirest.post("http://127.0.0.1:5000/detect/hello.jpg")
@@ -32,9 +38,19 @@ public class DatknetConnection implements I_Connection {
 
             System.out.println(res.getBody());
 
-            JsonArray jsonArray = new JsonParser().parse(res.getBody()).getAsJsonArray();
-        return jsonArray;
-        } catch (Exception e) {
+
+            JSONArray jsonArray = new JSONArray(res.getBody());
+            System.out.println(jsonArray.toString());
+
+                // JSON array
+
+                // convert JSON array to Java List
+                List<JsonDTO> jsonDTOList = new ObjectMapper().readValue(jsonArray.toString(), new TypeReference<List<JsonDTO>>() {
+                });
+
+                return jsonDTOList;
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
