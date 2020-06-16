@@ -75,6 +75,14 @@ public class SolitaireGridPane extends GridPane {
     public void ofSolitaireState(SolitaireState solitaireState) {
         clearAllHighlights();
 
+        if (solitaireState.getStock() == 0) {
+            MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
+            deckShowCard(false);
+        } else {
+            MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
+            deckShowCard(true);
+        }
+
         if (solitaireState.getDrawnCards().size() != 0) {
             MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: " +CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)).toString());
             deckDrawableSetAndShowCard(CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)));
@@ -91,14 +99,13 @@ public class SolitaireGridPane extends GridPane {
         }
 
         for (int rowIndex = 0; rowIndex < solitaireState.getPiles().size(); rowIndex++)  {
-            MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~\nCards in Row " + (rowIndex+1) + ":");
+            //MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~\nCards in Row " + (rowIndex+1) + ":");
             for (Card card : solitaireState.getPiles().get(rowIndex)) {
-                MainGUI.printToOutputAreaNewline(card.toString());
+               // MainGUI.printToOutputAreaNewline(card.toString());
             }
             createFullRowOfCardList((rowIndex+1),solitaireState.getPiles().get(rowIndex));
         }
-        MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~~~");
-
+        //MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~~~");
 
     }
 

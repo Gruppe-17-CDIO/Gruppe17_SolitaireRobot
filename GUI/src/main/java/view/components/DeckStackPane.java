@@ -40,8 +40,8 @@ public class DeckStackPane extends CardStackPane {
     public void showBackSide () {
         if (topCard.isFrontShowing()){
             topCard.showBackside();
-            showCards(true);
         }
+        showCards(true);
     }
 
     public void showFrontSide (CardUI cardUI) {

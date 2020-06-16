@@ -211,6 +211,7 @@ public class GameTab extends TabStd {
                 MainGUI.printToOutputAreaNewline("controller.Controller Interface .getNextMove()");
                 btnNextMove.setDisable(true);
                 btnMoveCompleted.setDisable(false);
+                btnMoveCompleted.requestFocus();
             }
         });
     }
@@ -265,15 +266,6 @@ public class GameTab extends TabStd {
     }
 
 
-
-
-
-
-
-
-
-
-
     private void addMoveCompletedButton() {
         btnMoveCompleted.setText("Move is completed");
         btnMoveCompleted.setDisable(true);
@@ -285,6 +277,7 @@ public class GameTab extends TabStd {
                 MainGUI.printToOutputAreaNewline("controller.Controller Interface \".etEllerAndet()\"");
                 btnMoveCompleted.setDisable(true);
                 btnNextMove.setDisable(false);
+                btnNextMove.requestFocus();
             }
         });
     }
