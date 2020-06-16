@@ -131,7 +131,7 @@ public class Logic implements I_Logic {
         // Compare moves and sort
         Collections.sort(moves, new MoveComparator());
 
-        // Same move can only be made five times in total (or game never ends)
+        // Same move can only be suggested five times in total (or game never ends)
         moves = removeRepeatMoves(moves);
 
         // Add best move to pastMoves (Remove after test)
@@ -212,7 +212,7 @@ public class Logic implements I_Logic {
         if (moves.size() < 1) {
             return moves;
         }
-        if (pastMoves.size() > 50) {
+        if (pastMoves.size() > 100) {
             pastMoves = pastMoves.subList(pastMoves.size() - 50, pastMoves.size() - 1);
         }
         List<Move> filteredMoves = new ArrayList<>();

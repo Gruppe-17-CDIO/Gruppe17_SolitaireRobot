@@ -1,7 +1,7 @@
 package dataObjects;
 
 import org.jetbrains.annotations.NotNull;
-import stateBuilding.StatePrinterUtility;
+import utilities.StatePrinterUtility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
