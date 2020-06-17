@@ -92,7 +92,9 @@ public class BufferElement {
 
                 }
                 rowFixedGridLines.put(rowCounter, calculateAverageX(lowX,highX).doubleValue());
+                if(rowCounter==6) break;
                 rowCounter++;
+
             }
 
         //}
