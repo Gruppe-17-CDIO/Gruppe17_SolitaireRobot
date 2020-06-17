@@ -32,7 +32,6 @@ public class SolitaireState {
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
     private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
-    private Move performedMove; // The move perfomed right before this state.
     private GameProgress gameProgress = PLAYING;
     private int stockTurned = 0; // How many times is the stock pile turned?
 
@@ -112,14 +111,6 @@ public class SolitaireState {
 
     public void setSuggestedMoves(List<Move> suggestedMoves) {
         this.suggestedMoves = suggestedMoves;
-    }
-
-    public Move getPerformedMove() {
-        return performedMove;
-    }
-
-    public void setPerformedMove(Move performedMove) {
-        this.performedMove = performedMove;
     }
 
     public int getStockTurned() {

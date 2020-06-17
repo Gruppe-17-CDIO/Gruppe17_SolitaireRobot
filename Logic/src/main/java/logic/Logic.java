@@ -11,8 +11,8 @@ import java.util.List;
 import static dataObjects.Card.Status.FACEDOWN;
 import static dataObjects.Move.DestinationType.*;
 import static dataObjects.Move.MoveBenefit.*;
-import static dataObjects.Move.MoveType.FACEUP;
-import static dataObjects.Move.MoveType.MOVE;
+import static dataObjects.Move.MoveType.FACE_UP_IN_PILE;
+import static dataObjects.Move.MoveType.MOVE_FROM_PILE;
 
 /**
  * @author Anders Frandsen
@@ -51,7 +51,7 @@ public class Logic implements I_Logic {
 
             // Turn top card face up
             if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == FACEDOWN) {
-                moves.add(new Move(FACEUP, pile.get(pile.size() - 1), new int[]{i, pile.size() - 1}, SELF, 0, REVEAL_CARD));
+                moves.add(new Move(FACE_UP_IN_PILE, pile.get(pile.size() - 1), new int[]{i, pile.size() - 1}, SELF, 0, REVEAL_CARD));
                 break; // No other move possible to this pile
             }
 
@@ -79,7 +79,7 @@ public class Logic implements I_Logic {
             Card drawnCard = drawnCards.get(drawnCards.size() - 1);
 
             if (drawnCard.getStatus() == FACEDOWN) {
-                moves.add(new Move(Move.MoveType.USEDRAWN, card, null, SELF, 0, REVEAL_CARD));
+                moves.add(new Move(Move.MoveType.USE_DRAWN, card, null, SELF, 0, REVEAL_CARD));
             } else {
                 for (int f = 0; f < state.getFoundations().size(); f++) {
                     // If foundation pile is empty and card rank is 1 add move
@@ -90,7 +90,7 @@ public class Logic implements I_Logic {
                                     state.getFoundations().get(f).getSuit() == drawnCard.getSuit() &&
                                     drawnCard.getRank() - 1 == state.getFoundations().get(f).getRank()
                     ) {
-                        moves.add(new Move(Move.MoveType.USEDRAWN, drawnCard, null, FOUNDATION, f, NO_BENEFIT));
+                        moves.add(new Move(Move.MoveType.USE_DRAWN, drawnCard, null, FOUNDATION, f, NO_BENEFIT));
                         break;
                     }
                 }
@@ -113,7 +113,7 @@ public class Logic implements I_Logic {
                                 )) {
                     moves.add(
                             // From position not needed.
-                            new Move(Move.MoveType.USEDRAWN, drawnCard, null, PILE, i, NO_BENEFIT)
+                            new Move(Move.MoveType.USE_DRAWN, drawnCard, null, PILE, i, NO_BENEFIT)
                     );
                 }
             }
@@ -132,7 +132,7 @@ public class Logic implements I_Logic {
         Collections.sort(moves, new MoveComparator());
 
         // Same move can only be suggested five times in total (or game never ends)
-        moves = removeRepeatMoves(moves);
+        //moves = removeRepeatMoves(moves);
 
         return moves;
     }
@@ -143,12 +143,12 @@ public class Logic implements I_Logic {
             // Else if foundation pile is same suit and rank fits add move
             if (state.getFoundations().get(f) == null) {
                 if (card.getRank() == 1) {
-                    moves.add(0, new Move(MOVE, card, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
+                    moves.add(0, new Move(MOVE_FROM_PILE, card, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
                     break;
                 }
             } else if (state.getFoundations().get(f).getSuit() == card.getSuit()) {
                 if (card.getRank() - 1 == state.getFoundations().get(f).getRank()) {
-                    moves.add(0, new Move(MOVE, card, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
+                    moves.add(0, new Move(MOVE_FROM_PILE, card, new int[]{pileNumber, cardNumber}, FOUNDATION, f, NO_BENEFIT));
                     break;
                 }
             }
@@ -171,7 +171,7 @@ public class Logic implements I_Logic {
             if (destPile.size() < 1) {
                 if (card.getRank() == 13 && cardNumber != 0) {
                     moves.add(
-                            new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, PLACE_KING)
+                            new Move(MOVE_FROM_PILE, card, new int[]{pileNumber, cardNumber}, PILE, p, PLACE_KING)
                     );
                 }
                 continue; // Ignore rest of iteration if empty pile
@@ -187,16 +187,16 @@ public class Logic implements I_Logic {
                 if (card.getRank() == destCard.getRank() - 1 && card.getColor() != destCard.getColor()) {
                     if (cardNumber == 0) {
                         moves.add(
-                                new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, CLEAN_PILE)
+                                new Move(MOVE_FROM_PILE, card, new int[]{pileNumber, cardNumber}, PILE, p, CLEAN_PILE)
                         );
                     } else if (fromPile.get(cardNumber - 1).getStatus() == Card.Status.FACEDOWN) {
                         moves.add(
-                                new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, REVEAL_CARD));
+                                new Move(MOVE_FROM_PILE, card, new int[]{pileNumber, cardNumber}, PILE, p, REVEAL_CARD));
                     } else {
                         // These might be wasted moves
-                        moves.add(
-                                new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, NO_BENEFIT)
-                        );
+                        //moves.add(
+                        //        new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, NO_BENEFIT)
+                        //);
                     }
                 }
             }
@@ -217,7 +217,7 @@ public class Logic implements I_Logic {
         for (int i = 0; i < moves.size(); i++) {
             int repeat = 0;
             Move move = moves.get(i);
-            if (move.getMoveType() != MOVE) {
+            if (move.getMoveType() != MOVE_FROM_PILE) {
                 filteredMoves.add(move);
             } else {
                 for (int j = 0; j < pastMoves.size(); j++) {
