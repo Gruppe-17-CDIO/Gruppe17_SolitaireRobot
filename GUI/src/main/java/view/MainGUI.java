@@ -26,6 +26,9 @@ public class MainGUI extends Application {
     private final String WINDOW_TITLE = "7 Solitaire";
     private final String WINDOW_ICON_PATH = "/game_icon.png";
 
+    public final static int sceneWidth = 1000;
+    public final static int sceneHeight = 600;
+
     private static OutputTextArea outputTextArea;
 
     public static boolean isTesting = true;

@@ -1,11 +1,11 @@
 package view.components;
 
 import dataObjects.Card;
+import dataObjects.Move;
 import dataObjects.SolitaireState;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.*;
-import view.MainGUI;
 import view.components.card.CardUI;
 import view.components.card.SuitEnum;
 
@@ -46,7 +46,6 @@ public class SolitaireGridPane extends GridPane {
         setupLayout();
     }
 
-
     //------------------------ Properties -------------------------
 
     // region Properties
@@ -58,7 +57,7 @@ public class SolitaireGridPane extends GridPane {
 
     public void clearAllHighlights() {
         // Clears all row highlights
-        for (int rowIndex = 0; rowIndex < 7; rowIndex++) {
+        for (int rowIndex = 1; rowIndex <= 7; rowIndex++) {
             rowHighlight(rowIndex,false);
         }
 
@@ -73,31 +72,37 @@ public class SolitaireGridPane extends GridPane {
     }
 
     public void ofSolitaireState(SolitaireState solitaireState) {
+        // Clears all Highlights
         clearAllHighlights();
 
+        // Shows/hides the Deck depending on if there is any cards left in it.
         if (solitaireState.getStock() == 0) {
-            MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
+            //MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
             deckShowCard(false);
         } else {
-            MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
+            //MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
             deckShowCard(true);
         }
 
+        // Sets and shows the top card in the deck of drawn cards.
         if (solitaireState.getDrawnCards().size() != 0) {
-            MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: " +CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)).toString());
+            //MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: " +CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)).toString());
             deckDrawableSetAndShowCard(CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)));
         } else {
-            MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: Null");
+            //MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: Null");
             deckDrawableHideCards();
         }
 
+        // Sets the cards visible in each of the Foundations/Collections.
         for (Card card : solitaireState.getFoundations()){
+            // Only adds cards to the Foundations/Collections where there is cards.
             if (card != null) {
-                MainGUI.printToOutputAreaNewline("Collection card: " + card);
+                //MainGUI.printToOutputAreaNewline("Collection card: " + card);
                 collectionSetAndShowCard(CardUI.ofCard(card));
             }
         }
 
+        // Generates all 7 Piles.
         for (int rowIndex = 0; rowIndex < solitaireState.getPiles().size(); rowIndex++)  {
             //MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~\nCards in Row " + (rowIndex+1) + ":");
             for (Card card : solitaireState.getPiles().get(rowIndex)) {
@@ -107,6 +112,51 @@ public class SolitaireGridPane extends GridPane {
         }
         //MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~~~");
 
+    }
+
+    public void highlightOfMove(Move move) {
+        switch (move.getMoveType()){
+            case MOVE_FROM_PILE:
+                switch (move.getDestinationType()) {
+                    case FOUNDATION:
+                        collectionHighlight(SuitEnum.ofSuit(move.getCard().getSuit()),true);
+                        rowHighlight(move.getPosition()[0]+1,true);
+                        break;
+
+                    case PILE:
+                        rowHighlight(move.getDestPosition()+1,true);
+                        rowHighlight(move.getPosition()[0]+1,true);
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+
+            case DRAW:
+                deckHighlight(true);
+                deckDrawableHighlight(true);
+                break;
+
+            case USE_DRAWN:
+                deckDrawableHighlight(true);
+                switch (move.getDestinationType()) {
+                    case FOUNDATION:
+                        collectionHighlight(SuitEnum.ofSuit(move.getCard().getSuit()),true);
+                        break;
+
+                    case PILE:
+                        rowHighlight(move.getDestPosition()+1,true);
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     // region Deck Methods

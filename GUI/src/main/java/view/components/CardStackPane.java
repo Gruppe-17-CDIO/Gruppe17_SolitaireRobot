@@ -33,7 +33,7 @@ public class CardStackPane extends StackPane {
     public CardStackPane() {
         defaultSettings();
 
-        applyOnClickAction();
+        // applyOnClickAction();
     }
 
     //------------------------ Properties -------------------------
