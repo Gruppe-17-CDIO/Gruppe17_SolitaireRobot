@@ -4,21 +4,18 @@ import controller.CompletionCallBack;
 import controller.Controller;
 import controller.I_Controller;
 import controller.NextMoveCallBack;
+import dataObjects.GlobalEnums;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import model.WebCamSettings;
 import view.MainGUI;
-import view.components.FxUtil;
 import view.components.SolitaireGridPane;
 import view.components.TabStd;
-import view.components.card.CardUI;
-import view.components.card.SuitEnum;
 import view.components.webCamImageView.WebCamImageView;
 import view.components.webCamImageView.WebCamStateCallback;
 import view.components.webCamManipulationButton.ManipulationStateCallback;
@@ -29,7 +26,6 @@ import javafx.scene.control.ToggleButton;
 import java.util.List;
 import java.util.Stack;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author Rasmus Sander Larsen
@@ -48,12 +44,9 @@ public class GameTab extends TabStd {
 
     private SolitaireGridPane solitaireGridPane;
 
-    HBox bottomButtonBox;
     private Button btnNextMove = new Button();
-    private Button btnMoveCompleted = new Button();
 
     private I_Controller controller = new Controller();
-    private boolean isGameStarted= false;
 
     //----------------------- Constructor -------------------------
 
@@ -102,27 +95,12 @@ public class GameTab extends TabStd {
         webCamPane.setStyle("-fx-border-color: black; -fx-padding :5 ; -fx-border-width: 2");
         webCamPane.getChildren().add(webCamImageView);
 
-        addToContent(new Group(webCamPane));
+        //addToContent(new Group(webCamPane));
 
         solitaireGridPane = new SolitaireGridPane();
-
-        solitaireGridPane.createFullRow(1, 1, new CardUI("4", SuitEnum.Diamond));
-        solitaireGridPane.createFullRow(2, 2, new CardUI("5", SuitEnum.Spade));
-        solitaireGridPane.createFullRow(3, 3, new CardUI("10", SuitEnum.Diamond));
-        solitaireGridPane.createFullRow(4, 4, new CardUI("K", SuitEnum.Heart));
-        solitaireGridPane.createFullRow(5, 5, new CardUI("J", SuitEnum.Diamond));
-        solitaireGridPane.createFullRow(6, 6, new CardUI("D", SuitEnum.Club));
-        solitaireGridPane.createFullRow(7, 7, new CardUI("8", SuitEnum.Spade));
-
-        //addToContent(solitaireGridPane);
+        addToContent(solitaireGridPane);
 
         addNextMoveButton();
-        addMoveCompletedButton();
-
-        bottomButtonBox = FxUtil.hBox(true);
-        bottomButtonBox.getChildren().addAll(btnNextMove, btnMoveCompleted);
-
-        addAllToContent(bottomButtonBox);
 
         setUserData();
 
@@ -149,94 +127,55 @@ public class GameTab extends TabStd {
         btnNextMove.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //TODO: Her skal vores controller.Controller interface indsættes.
-                // Game is running.
-                if (isGameStarted) {
-                    controller.getNextMove(webCamImageView.getImage(), new NextMoveCallBack() {
-                        @Override
-                        public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
-                            try {
-                                MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            playTurn(moves, history);
+                controller.getNextMove(webCamImageView.getImage(), new NextMoveCallBack() {
+                    @Override
+                    public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress gameProgress) {
+                        solitaireGridPane.ofSolitaireState(state);
+                        switch (gameProgress) {
+                            case PLAYING:
+                                MainGUI.printToOutputAreaNewline(move.toString());
+                                solitaireGridPane.highlightOfMove(move);
+                                break;
+                            case WON:
+                                MainGUI.printToOutputAreaNewline("YOU HAVE WON");
+                                btnNextMove.setDisable(true);
+                                onShotOfGifConfetti();
+                                break;
+                            case LOST:
+                                MainGUI.printToOutputAreaNewline("YOU HAVE LOST");
+                                btnNextMove.setDisable(true);
+                                break;
+                            default:
+                                break;
                         }
+                    }
 
-                        @Override
-                        public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
-                            MainGUI.printToOutputAreaNewline(message);
-                        }
+                    @Override
+                    public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
+                        MainGUI.printToOutputAreaNewline("Failure: " +message);
+                        solitaireGridPane.ofSolitaireState(history.peek());
+                    }
 
-                        @Override
-                        public void OnError(Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                // Runs the initializing of the game.
-                else {
-                    controller.startNewGame(webCamImageView.getImage(), new NextMoveCallBack() {
+                    @Override
+                    public void OnError(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
-                        @Override
-                        public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
-                            try {
-                                MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            playTurn(moves, history);
-                        }
-
-                        @Override
-                        public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
-                            MainGUI.printToOutputAreaNewline(message);
-                        }
-
-                        @Override
-                        public void OnError(Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    isGameStarted = true;
-                }
-
-                MainGUI.printToOutputAreaNewline("controller.Controller Interface .getNextMove()");
-                btnNextMove.setDisable(true);
-                btnMoveCompleted.setDisable(false);
+                btnNextMove.requestFocus();
             }
         });
-    }
-
-    // Playing turn.
-    private void playTurn(List<Move> moves, Stack<SolitaireState> history) {
-        MainGUI.printToOutputAreaNewline("Options 0 is used.");
-        controller.performMove(moves.get(0), new CompletionCallBack() {
-            @Override
-            public void OnSuccess(String status) {
-                MainGUI.printToOutputAreaNewline("PlayTurn.OnSuccess - Status: " + status);
-                seeResults();
-            }
-
-            @Override
-            public void OnFailure(String message) {
-                MainGUI.printToOutputAreaNewline(message);
-            }
-
-            @Override
-            public void OnError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+        addToContent(btnNextMove);
     }
 
     // Print result
     private void seeResults() {
         controller.getNextMove(webCamImageView.getImage(), new NextMoveCallBack() {
             @Override
-            public void OnSuccess(List<Move> moves, Stack<SolitaireState> history, boolean won) {
+            public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress gameProgress) {
                 try {
-                    MainGUI.printToOutputAreaNewline(history.peek().getPrintFormat());
+                    MainGUI.printToOutputAreaNewline(state.getPrintFormat());
+                    solitaireGridPane.ofSolitaireState(state);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -255,31 +194,6 @@ public class GameTab extends TabStd {
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-    private void addMoveCompletedButton() {
-        btnMoveCompleted.setText("Move is completed");
-        btnMoveCompleted.setDisable(true);
-        btnMoveCompleted.setPrefWidth(150);
-        btnMoveCompleted.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                //TODO: Her skal vores controller.Controller interface indsættes.
-                MainGUI.printToOutputAreaNewline("controller.Controller Interface \".etEllerAndet()\"");
-                btnMoveCompleted.setDisable(true);
-                btnNextMove.setDisable(false);
-            }
-        });
-    }
-
     private void setUserData () {
         TabUserData tabUserData = new TabUserData.Builder()
                 .usedInClassName(TAG)
@@ -288,14 +202,14 @@ public class GameTab extends TabStd {
                     public void run() {
                         if (WebCamSettings.getInstance().setWebCamImageViewWithSetting(TAG,webCamImageView)){
                             webCamImageView.startRunning();
-                            bottomButtonBox.setDisable(false);
+                            btnNextMove.setDisable(false);
                         } else {
                             if (webCamManiBtn.isWebCamManipulated()) {
                                 webCamImageView.startAndSetManipulationImage(webCamManiBtn.imageOfFile());
                             } else {
                                 webCamManiBtn.setManipulationState(false);
                             }
-                            bottomButtonBox.setDisable(true);
+                            btnNextMove.setDisable(true);
                         }
                     }
                 })

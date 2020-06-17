@@ -1,6 +1,8 @@
 package view.components.card;
 
+import dataObjects.Card;
 import javafx.scene.image.Image;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Rasmus Sander Larsen
@@ -36,6 +38,21 @@ public enum SuitEnum {
 
         protected int getSizePx() {
             return sizePx;
+        }
+    }
+
+    public static SuitEnum ofSuit(Card.Suit suit) {
+        switch (suit) {
+            case CLUB:
+                return Club;
+            case SPADE:
+                return Spade;
+            case HEART:
+                return Heart;
+            case DIAMOND:
+                return Diamond;
+            default:
+                return null;
         }
     }
 

@@ -11,6 +11,8 @@ import stateBuilding.TopCardsSimulator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dataObjects.GlobalEnums.GameProgress.WON;
+
 public class CardCalculator {
     /**
      * This class performs these tasks:

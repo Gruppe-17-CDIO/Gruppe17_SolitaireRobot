@@ -1,8 +1,8 @@
-# Logic
+# logic.Logic
 
 ## Summary
 
-Logic implements interface I_Logic 
+logic.Logic implements interface logic.I_Logic 
 
 ### Implementation
 ```

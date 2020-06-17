@@ -1,7 +1,10 @@
 package view.components;
 
+import dataObjects.Card;
 import javafx.scene.Node;
 import view.components.card.CardUI;
+
+import java.util.List;
 
 /**
  * @author Rasmus Sander Larsen
@@ -64,6 +67,19 @@ public class RowStackPane extends CardStackPane {
         }
         // Adds the top and visible cardUI.
         addCardToStackPane(visibleCardUI);
+    }
+
+    public void createFullRowOfCardList (List<Card> cardList) {
+        // Clears the stackPane holding the CardUI's
+        clearCardStackPane();
+        // Adds cardUI's into row.
+        for (Card card : cardList) {
+            if (card.getStatus() == Card.Status.FACEDOWN) {
+                addBacksideCardToStack();
+            } else {
+                addCardToStackPane(CardUI.ofCard(card));
+            }
+        }
     }
 
     //---------------------- Support Methods ----------------------    
