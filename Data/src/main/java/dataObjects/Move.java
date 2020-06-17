@@ -50,7 +50,7 @@ public class Move {
         } else if (moveType == MoveType.USE_DRAWN) {
             return "Move the " + card + " from drawn cards to " + destinationType + " " + (destPosition + 1) + ".";
         } else if (moveType == MoveType.MOVE_FROM_PILE) {
-            return "Move the " + card + " from pile " + (position[0] + 1) + ", card " + (position[1] + 1) +
+            return "Move the " + card + " from pile " + (position[0] + 1) +
                     " to " + destinationType + " " + (destPosition + 1) + ".";
         } else {
             return "No Movetype";
