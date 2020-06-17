@@ -26,6 +26,7 @@ public class ControllerStatsTest {
     final int iterations = 30; // Number of whole games played.
     int wins = 0;
     boolean roundFinished = false;
+    I_Controller controller;
 
     public static void main(String[] args) {
         ControllerStatsTest test = ControllerStatsTest.getInstance();
@@ -91,7 +92,20 @@ public class ControllerStatsTest {
     }
 
     private void playGame(ControllerStatsTest test) {
-        I_Controller controller = new Controller();
+        controller = null;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.gc();
+            }
+        }).start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        controller = new Controller();
         controller.setTestModeOn(true, new CompletionCallBack() {
             @Override
             public void OnSuccess(String status) {
