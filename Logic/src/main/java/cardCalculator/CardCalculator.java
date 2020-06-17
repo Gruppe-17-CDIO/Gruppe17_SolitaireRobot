@@ -124,7 +124,7 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
         }
 
-        if (move.getMoveType() == Move.MoveType.USEDRAWN) {
+        if (move.getMoveType() == Move.MoveType.USE_DRAWN) {
             if (drawnCards.size() < 1) {
                 throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
             }
@@ -144,7 +144,7 @@ public class CardCalculator {
             }
         }
 
-        if (move.getMoveType() == Move.MoveType.MOVE) {
+        if (move.getMoveType() == Move.MoveType.MOVE_FROM_PILE) {
             int pileIndex = move.getPosition()[0];
             int cardIndex = move.getPosition()[1];
 

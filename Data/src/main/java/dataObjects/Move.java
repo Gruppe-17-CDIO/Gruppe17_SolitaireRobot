@@ -47,11 +47,11 @@ public class Move {
             return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
         } else if (moveType == MoveType.FACEUP) {
             return "Turn pile " + (position[0] + 1) + ", card " + (position[1] + 1) + " face up.";
-        } else if (moveType == MoveType.USEDRAWN) {
+        } else if (moveType == MoveType.USE_DRAWN) {
             return "Move the " + card + " from drawn cards to " + destinationType + " " + (destPosition + 1) + ".";
-        } else if (moveType == MoveType.MOVE) {
+        } else if (moveType == MoveType.MOVE_FROM_PILE) {
             return "Move the " + card + " from pile " + (position[0] + 1) + ", card " + (position[1] + 1) +
-                    " to " + destinationType + " " + destPosition + ".";
+                    " to " + destinationType + " " + (destPosition + 1) + ".";
         } else {
             return "No Movetype";
         }
@@ -59,8 +59,8 @@ public class Move {
 
     public enum MoveType {
         FACEUP,
-        MOVE,
-        USEDRAWN,
+        MOVE_FROM_PILE,
+        USE_DRAWN,
         DRAW,
     }
 

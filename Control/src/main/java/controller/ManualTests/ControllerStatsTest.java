@@ -14,10 +14,16 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Stack;
 
-// RAM and CPU heavy, may take several minutes. (Game completion time varies a lot!)
+/**
+ * This test runs a number of simulated game and prints the ratio of wins / total.
+ * The test will also print any Exceptions thrown in the logic.
+ * <p>
+ * RAM and CPU heavy, may take several minutes. (Game completion time varies a lot!)
+ */
+
 public class ControllerStatsTest {
     private static ControllerStatsTest test;
-    final int iterations = 10; // Number of whole games played.
+    final int iterations = 40; // Number of whole games played.
     int wins = 0;
     boolean roundFinished = false;
 
