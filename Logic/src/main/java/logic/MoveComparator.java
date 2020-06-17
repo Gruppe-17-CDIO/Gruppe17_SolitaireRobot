@@ -17,7 +17,7 @@ public class MoveComparator implements Comparator<Move> {
 
     int moveTypeToInt(Move move) {
         switch (move.getMoveType()) {
-            case FACEUP:
+            case FACE_UP_IN_PILE:
                 return 0;
             case MOVE_FROM_PILE:
                 return 1;

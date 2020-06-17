@@ -11,7 +11,7 @@ import java.util.List;
 import static dataObjects.Card.Status.FACEDOWN;
 import static dataObjects.Move.DestinationType.*;
 import static dataObjects.Move.MoveBenefit.*;
-import static dataObjects.Move.MoveType.FACEUP;
+import static dataObjects.Move.MoveType.FACE_UP_IN_PILE;
 import static dataObjects.Move.MoveType.MOVE_FROM_PILE;
 
 /**
@@ -51,7 +51,7 @@ public class Logic implements I_Logic {
 
             // Turn top card face up
             if (pile.size() > 0 && pile.get(pile.size() - 1).getStatus() == FACEDOWN) {
-                moves.add(new Move(FACEUP, pile.get(pile.size() - 1), new int[]{i, pile.size() - 1}, SELF, 0, REVEAL_CARD));
+                moves.add(new Move(FACE_UP_IN_PILE, pile.get(pile.size() - 1), new int[]{i, pile.size() - 1}, SELF, 0, REVEAL_CARD));
                 break; // No other move possible to this pile
             }
 

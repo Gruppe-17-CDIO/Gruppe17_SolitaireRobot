@@ -45,7 +45,7 @@ public class Move {
     public String toString() {
         if (moveType == MoveType.DRAW) {
             return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
-        } else if (moveType == MoveType.FACEUP) {
+        } else if (moveType == MoveType.FACE_UP_IN_PILE) {
             return "Turn pile " + (position[0] + 1) + ", card " + (position[1] + 1) + " face up.";
         } else if (moveType == MoveType.USE_DRAWN) {
             return "Move the " + card + " from drawn cards to " + destinationType + " " + (destPosition + 1) + ".";
@@ -58,7 +58,7 @@ public class Move {
     }
 
     public enum MoveType {
-        FACEUP,
+        FACE_UP_IN_PILE,
         MOVE_FROM_PILE,
         USE_DRAWN,
         DRAW,
