@@ -1,6 +1,7 @@
 package Converter;
 
 import Converter.Util.SortingHelperClass;
+import Converter.Util.Util;
 import Data.BufferElement;
 import Data.JsonDTO;
 import Data.PreCard;
@@ -65,16 +66,18 @@ return null;
 
 
     public JsonDTO[] mappingLowerRow(){
-        List<JsonDTO> lowerRowList = bufferElement.getLowerRow();
+        List<JsonDTO> lowerRowList = sorting.sortingTheListOfPrecardsAccordingToX(bufferElement.getLowerRow());
         HashMap<Integer, Double> rowGrow = bufferElement.getRowFixedGridLines();
-        lowerRowList = sorting.sortingTheListOfPrecardsAccordingToX(averageXCoordinates(lowerRowList));
+        lowerRowList = averageXCoordinates(lowerRowList);
         JsonDTO[] cardList = new JsonDTO[7];
         int closestMatchRow =0;
-        double newCloser = calculateHit(lowerRowList.get(0).getX(),rowGrow.get(closestMatchRow));;
+        //double newCloser = calculateHit(lowerRowList.get(0).getX(),rowGrow.get(closestMatchRow));
 
-        double closer = newCloser;
+        //Value is just a largenumper
+        double closer = 200000000.0;
 
         for(int i = 0; i<lowerRowList.size();i++){
+            closer = 200000000.0;
             for (Map.Entry<Integer,Double> entry : rowGrow.entrySet())
                 if(calculateHit(lowerRowList.get(i).getX(),entry.getValue())<=closer){
                         closestMatchRow = entry.getKey().intValue();
@@ -121,13 +124,15 @@ return null;
                         }
                     }
 
+                }else{
+                    break;
                 }
             }JsonDTO obj = new JsonDTO();
             obj.setX(bufferElement.calculateAverageX(lowX,highX));
             obj.setY(lowY);
             obj.setCat(color);
             actualNumberOfElementsList.add(obj);
-            i = j;
+            i = j-1;
 
 
 
@@ -141,7 +146,7 @@ return null;
 
     public JsonDTO[] mappingUpperRow(){
         List<JsonDTO> singleElementRow = averageXCoordinates(bufferElement.getUpperRow());
-        singleElementRow = sorting.sortingTheListOfPrecardsAccordingToX(singleElementRow);
+        //singleElementRow = sorting.sortingTheListOfPrecardsAccordingToX(singleElementRow);
 
         JsonDTO[] upperRow = new JsonDTO[singleElementRow.size()];
 
@@ -152,5 +157,57 @@ return null;
         return upperRow;
     }
 
+    public TopCards mappingToTopCard(TopCards topcards) throws Exception {
+        JsonDTO[] upperRow = mappingUpperRow();
+        JsonDTO[] lowerRow = mappingLowerRow();
+        ArrayList<Card> foundation = new ArrayList<>();
+        //Finding drawCard
+        for(int i = 0; i<upperRow.length;i++){
+            if(upperRow[i].getX()<=bufferElement.getDrawCardSeparationLine()){
+                Card drawCard = Util.convertToCard(upperRow[i]);
+                topcards.setDrawnCard(drawCard);
+            }else{
+                foundation.add(Util.convertToCard(upperRow[i]));
+
+
+            }
+        }
+        Card[] foundationArray = new Card[4];
+        for(int i = 0; i<foundationArray.length;i++){
+            try {
+                foundationArray[i] = foundation.get(i);
+            }catch (IndexOutOfBoundsException e){
+                foundationArray[i] = null;
+            }finally{
+                topcards.setFoundations(foundationArray);
+            }
+        }
+
+        Card[] piles = new Card[lowerRow.length];
+        //Mapping lower row
+        for (int i = 0; i< lowerRow.length;i++){
+            if(lowerRow[i]==null){
+                piles[i]=null;
+            }else{
+                piles[i]=Util.convertToCard(lowerRow[i]);
+            }
+        }
+
+        topcards.setPiles(piles);
+
+        return topcards;
+
+    }
+
+
+    private Card[] convertListToArray(ArrayList<Card> cardList){
+       Card[] cardArray = new Card[cardList.size()];
+        for(int i = 0; i<cardList.size();i++){
+            cardArray[i]=cardList.get(i);
+        }
+        return cardArray;
+
+
+    }
 
 }

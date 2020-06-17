@@ -132,10 +132,16 @@ public class Util {
 
 
     public static Card convertToCard(JsonDTO json){
-      int rank = Integer.parseInt(json.getCat().substring(0,1));
+      String rank = json.getCat().substring(0,1);
+      switch (rank){
+          case "J":{ rank = "11"; break;}
+          case "Q":{ rank = "12"; break;}
+          case "K":{ rank = "13"; break;}
+
+      }
       String suite = json.getCat().substring(1,2);
         try {
-            Card newCard = new Card(createSuit(suite),rank);
+            Card newCard = new Card(createSuit(suite),Integer.parseInt(rank));
 
         return newCard;
         } catch (Exception e) {

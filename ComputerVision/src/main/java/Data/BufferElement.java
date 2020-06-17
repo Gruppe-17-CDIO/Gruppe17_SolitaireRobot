@@ -12,6 +12,7 @@ public class BufferElement {
     List<JsonDTO> upperRow = new ArrayList<>();
     List<JsonDTO> lowerRow = new ArrayList<>();
     static double separationLine = 0;
+    static double drawCardSeparationLineX = 0;
     static HashMap<Integer, Double> rowFixedGridLines;
 
     public BufferElement(List<JsonDTO> calubrationList, SortingHelperClass sortingObject) {
@@ -29,6 +30,8 @@ public class BufferElement {
            }
        }
         lowerRow = removeSameElementsInList(calubrationList,upperRow);
+        setDrawCardSeparationLineX();
+        calculateBufferY();
     }
 
 
@@ -49,6 +52,13 @@ public class BufferElement {
         separationLine = highesYFromUppeRow+buffer;
     }
 
+
+    private void setDrawCardSeparationLineX(){
+        List<JsonDTO> rowUpperRow = sortingObject.sortingTheListOfPrecardsAccordingToX(upperRow);
+        drawCardSeparationLineX = rowUpperRow.get(rowUpperRow.size()-1).getX();
+    }
+
+
     private List<JsonDTO> removeSameElementsInList(List<JsonDTO> listToRemoveFrom, List<JsonDTO> listToCompare){
         for(int i = 0; i<listToCompare.size();i++){
             if(listToRemoveFrom.contains(listToCompare.get(i))){
@@ -60,11 +70,11 @@ public class BufferElement {
 
 
     public void calculateVerticalGrid(){
-        rowFixedGridLines = new HashMap<>();
+         rowFixedGridLines = new HashMap<>();
         lowerRow = sortingObject.sortingTheListOfPrecardsAccordingToX(lowerRow);
 
         int rowCounter = 0;
-        while(rowCounter<7) {
+        //while(rowCounter<7) {
             for (int i = 0; i < lowerRow.size(); i++) {
                 double lowX = lowerRow.get(i).getX();
                 double highX = lowerRow.get(i).getX();
@@ -76,14 +86,16 @@ public class BufferElement {
                             highX = lowerRow.get(j).getX();
                         }
                     }else{
-                        i=j;
+                        i=j-1;
                         break;
                     }
 
-                }rowFixedGridLines.put(rowCounter, calculateAverageX(lowX,highX).doubleValue());
+                }
+                rowFixedGridLines.put(rowCounter, calculateAverageX(lowX,highX).doubleValue());
                 rowCounter++;
             }
-        }
+
+        //}
         System.out.println();
     }
 
@@ -109,6 +121,10 @@ public class BufferElement {
         return rowFixedGridLines;
     }
 
+    public double getDrawCardSeparationLine(){
+        return drawCardSeparationLineX;
+    }
+
     public void setNewUpperAndLowerRow(List<JsonDTO> preCardList){
         preCardList = sortingObject.sortingTheListOfPrecardsAccordingToY(preCardList);
         List<JsonDTO> upperElements = preCardList;
@@ -117,7 +133,7 @@ public class BufferElement {
                 upperRow.add(upperElements.get(i));
             }
         }
-        lowerRow = removeSameElementsInList(calubrationList,upperRow);
+        lowerRow = removeSameElementsInList(preCardList,upperRow);
     }
 
 }
