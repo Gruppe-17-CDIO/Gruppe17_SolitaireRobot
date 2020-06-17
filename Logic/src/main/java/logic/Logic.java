@@ -12,8 +12,7 @@ import static dataObjects.Card.Status.FACEDOWN;
 import static dataObjects.GlobalEnums.GameProgress.LOST;
 import static dataObjects.Move.DestinationType.*;
 import static dataObjects.Move.MoveBenefit.*;
-import static dataObjects.Move.MoveType.FACE_UP_IN_PILE;
-import static dataObjects.Move.MoveType.MOVE_FROM_PILE;
+import static dataObjects.Move.MoveType.*;
 
 /**
  * @author Anders Frandsen
@@ -134,7 +133,7 @@ public class Logic implements I_Logic {
         //moves = removeRepeatMoves(moves);
 
         // End game if all cards viewed since last meaningful move
-        if (drawsInRow > state.getStock() + state.getDrawnCards().size()) {
+        if (drawsInRow > state.getStock() + state.getDrawnCards().size() + 1) {
             state.setGameProgress(LOST);
             moves = new ArrayList<>();
         }
