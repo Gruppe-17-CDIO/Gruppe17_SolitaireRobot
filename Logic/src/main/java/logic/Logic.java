@@ -12,7 +12,8 @@ import static dataObjects.Card.Status.FACEDOWN;
 import static dataObjects.GlobalEnums.GameProgress.LOST;
 import static dataObjects.Move.DestinationType.*;
 import static dataObjects.Move.MoveBenefit.*;
-import static dataObjects.Move.MoveType.*;
+import static dataObjects.Move.MoveType.FACE_UP_IN_PILE;
+import static dataObjects.Move.MoveType.MOVE_FROM_PILE;
 
 /**
  * @author Anders Frandsen
@@ -145,7 +146,6 @@ public class Logic implements I_Logic {
         } else {
             drawsInRow = 0;
         }
-
         return moves;
     }
 
