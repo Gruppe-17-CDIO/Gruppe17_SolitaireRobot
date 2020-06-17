@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static dataObjects.Card.Status.FACEDOWN;
+import static dataObjects.GlobalEnums.GameProgress.LOST;
 import static dataObjects.Move.DestinationType.*;
 import static dataObjects.Move.MoveBenefit.*;
 import static dataObjects.Move.MoveType.FACE_UP_IN_PILE;
@@ -19,10 +20,11 @@ import static dataObjects.Move.MoveType.MOVE_FROM_PILE;
  */
 
 public class Logic implements I_Logic {
-    private List<Move> pastMoves = new ArrayList<>();
+    //private List<Move> pastMoves = new ArrayList<>();
     private List<Move> moves;
     private SolitaireState state;
     private Card card;
+    private int drawsInRow = 0;
 
     // Priority
     // 1: Turn discovered cards face up
@@ -122,18 +124,28 @@ public class Logic implements I_Logic {
         // "Draw new card from stock" is added at the end of each list if one of the conditions are true:
         // 1 There are more cards in the stock
         // 2 here are cards in drawncards AND you are allowed to turn the pile again
-        if (state.getStock() > 0 ||
-                state.getDrawnCards().size() > 0 && state.getStockTurned() < 3) {
-            // Values are null: there is only one place to put the card: drawn cards
-            moves.add(new Move(Move.MoveType.DRAW, null, null, null, 0, NO_BENEFIT));
+        if (state.getStock() > 0) {
+            moves.add(new Move(DRAW, null, null, null, 0, NO_BENEFIT));
+        } else if (state.getDrawnCards().size() > 0 && state.getStockTurned() < 3) {
+            moves.add(new Move(DRAW, null, null, null, 0, TURN_STOCK));
         }
-
-        // Compare moves and sort
-        Collections.sort(moves, new MoveComparator());
 
         // Same move can only be suggested five times in total (or game never ends)
         //moves = removeRepeatMoves(moves);
 
+        // End game if all cards viewed since last meaningful move
+        if (drawsInRow > state.getStock() + state.getDrawnCards().size()) {
+            state.setGameProgress(LOST);
+            moves = new ArrayList<>();
+        }
+        Collections.sort(moves, new MoveComparator());
+
+        // Add to draws in a row
+        if (moves.size() > 0 && moves.get(0).getMoveType() == DRAW) {
+            drawsInRow++;
+        } else {
+            drawsInRow = 0;
+        }
         return moves;
     }
 
@@ -203,6 +215,7 @@ public class Logic implements I_Logic {
         }
     }
 
+    /*
     // Don't allow same move to be executed six times in end game
     private List<Move> removeRepeatMoves(List<Move> moves) {
 
@@ -239,4 +252,5 @@ public class Logic implements I_Logic {
         }
         return filteredMoves;
     }
+     */
 }

@@ -42,7 +42,7 @@ public class MoveComparator implements Comparator<Move> {
             case NO_BENEFIT:
                 return 3;
             default:
-                return 0;
+                return 4;
         }
     }
 
