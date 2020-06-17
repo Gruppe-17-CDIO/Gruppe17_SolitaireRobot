@@ -1,7 +1,6 @@
 package Data;
 
 import Converter.Util.SortingHelperClass;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +11,8 @@ public class BufferElement {
     List<JsonDTO> calubrationList;
     List<JsonDTO> upperRow = new ArrayList<>();
     List<JsonDTO> lowerRow = new ArrayList<>();
-    double separationLine = 0;
-    HashMap<Integer, Double> rowFixedGridLines;
+    static double separationLine = 0;
+    static HashMap<Integer, Double> rowFixedGridLines;
 
     public BufferElement(List<JsonDTO> calubrationList, SortingHelperClass sortingObject) {
         this.calubrationList = calubrationList;
@@ -81,7 +80,7 @@ public class BufferElement {
                         break;
                     }
 
-                }rowFixedGridLines.put(rowCounter,calculateAverageGrid(lowX,highX).doubleValue());
+                }rowFixedGridLines.put(rowCounter, calculateAverageX(lowX,highX).doubleValue());
                 rowCounter++;
             }
         }
@@ -89,7 +88,7 @@ public class BufferElement {
     }
 
 
-    public Double calculateAverageGrid(double lowX,double highX){
+    public Double calculateAverageX(double lowX, double highX){
         Double average = lowX+((highX-lowX)/2);
         return average;
     }
@@ -110,7 +109,15 @@ public class BufferElement {
         return rowFixedGridLines;
     }
 
-
-
+    public void setNewUpperAndLowerRow(List<JsonDTO> preCardList){
+        preCardList = sortingObject.sortingTheListOfPrecardsAccordingToY(preCardList);
+        List<JsonDTO> upperElements = preCardList;
+        for(int i = 0; i<upperElements.size();i++){
+            if(upperElements.get(i).getY()<separationLine){
+                upperRow.add(upperElements.get(i));
+            }
+        }
+        lowerRow = removeSameElementsInList(calubrationList,upperRow);
+    }
 
 }
