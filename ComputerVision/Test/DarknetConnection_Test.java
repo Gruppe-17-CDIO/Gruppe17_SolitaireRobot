@@ -1,20 +1,26 @@
 import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.*;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import Data.JsonDTO;
+
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import kong.unirest.UnirestException;
+
 import org.junit.jupiter.api.Test;
 import Test.*;
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * * @author Andreas B.G. Jensen
@@ -90,5 +96,9 @@ public class DarknetConnection_Test {
             //primaryStage.setScene(scene);
             //primaryStage.show();
         }
+
+
+
+
 
 }

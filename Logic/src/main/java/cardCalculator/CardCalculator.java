@@ -254,9 +254,7 @@ public class CardCalculator {
                 throw new Exception("checkState: Image pile " + (i + 1) + " was null, " +
                         "corresponding card in state was NOT null.");
             } else {
-                List<Card> pile = piles.get(i);
-                if (pile.size() > 0 &&
-                        !(topCards.getPiles()[i].toString().equals(pile.get(pile.size() - 1).toString()))) {
+                String pileCard = topCards.getPiles()[i].toString().replace("[","").replace("]","");
                     throw new Exception("checkState: The pile card " + (i + 1) + " doesn't match." +
                             "\n\tState: " + piles.get(i).toString() +
                             "\n\tImage: " + topCards.getPiles()[i].toString());
