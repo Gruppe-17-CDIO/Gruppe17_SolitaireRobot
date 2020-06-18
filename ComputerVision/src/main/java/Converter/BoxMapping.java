@@ -28,7 +28,6 @@ public class BoxMapping {
         getNumberOfAnalysedImage++;
         currentPreCardList = preCardList;
 
-
         TopCards topcard = new TopCards();
         if(getNumberOfAnalysedImage==1) {
             bufferElement = new BufferElement(currentPreCardList, sorting);
@@ -36,7 +35,6 @@ public class BoxMapping {
             bufferElement.calculateBufferY();
             bufferElement.getDrawCardSeparationLine();
             bufferElement.calculateVerticalGrid();
-            //bufferElement.getRowFixedGridLines();
 
             return mappingToTopCard(topcard);
         }else{
@@ -46,18 +44,6 @@ public class BoxMapping {
 
     }
 
-    private Card.Suit createSuit(PreCard preCard){
-
-        switch (preCard.getColor()){
-            case "H": return Card.Suit.HEART;
-            case "D": return Card.Suit.DIAMOND;
-            case "S": return Card.Suit.SPADE;
-            case "K": return Card.Suit.CLUB;
-
-        }
-        return null;
-    }
-
 
     public JsonDTO[] mappingLowerRow(){
         List<JsonDTO> lowerRowList = sorting.sortingTheListOfPrecardsAccordingToX(bufferElement.getLowerRow());
@@ -65,12 +51,12 @@ public class BoxMapping {
         lowerRowList = averageXCoordinates(lowerRowList);
         JsonDTO[] cardList = new JsonDTO[7];
         int closestMatchRow =0;
-        //double newCloser = calculateHit(lowerRowList.get(0).getX(),rowGrow.get(closestMatchRow));
 
-        //Value is just a largenumper
-        double closer = 200000000.0;
+
+        double closer;
 
         for(int i = 0; i<lowerRowList.size();i++){
+            //Value is just a largenumper
             closer = 200000000.0;
             for (Map.Entry<Integer,Double> entry : rowGrow.entrySet())
                 if(calculateHit(lowerRowList.get(i).getX(),entry.getValue())<=closer){
@@ -117,7 +103,6 @@ public class BoxMapping {
                             lowY = rowList.get(j).getY();
                         }
                     }
-
                 }else{
                     break;
                 }
@@ -127,27 +112,18 @@ public class BoxMapping {
             obj.setCat(color);
             actualNumberOfElementsList.add(obj);
             i = j-1;
-
-
-
         }
-
-
-
         return actualNumberOfElementsList;
     }
 
 
     public JsonDTO[] mappingUpperRow(){
         List<JsonDTO> singleElementRow = averageXCoordinates(bufferElement.getUpperRow());
-        //singleElementRow = sorting.sortingTheListOfPrecardsAccordingToX(singleElementRow);
-
         JsonDTO[] upperRow = new JsonDTO[singleElementRow.size()];
 
         for(int i = 0; i<upperRow.length;i++){
             upperRow[i] = singleElementRow.get(i);
         }
-
         return upperRow;
     }
 
@@ -155,6 +131,7 @@ public class BoxMapping {
         JsonDTO[] upperRow = mappingUpperRow();
         JsonDTO[] lowerRow = mappingLowerRow();
         ArrayList<Card> foundation = new ArrayList<>();
+
         //Finding drawCard
         for(int i = 0; i<upperRow.length;i++){
             if(upperRow[i].getX()<=bufferElement.getDrawCardSeparationLine()){
@@ -162,15 +139,15 @@ public class BoxMapping {
                 topcards.setDrawnCard(drawCard);
             }else{
                 foundation.add(Util.convertToCard(upperRow[i]));
-
-
             }
         }
+        //Finding doundation
         Card[] foundationArray = new Card[4];
         for(int i = 0; i<foundationArray.length;i++){
             try {
                 foundationArray[i] = foundation.get(i);
             }catch (IndexOutOfBoundsException e){
+                //The purpus is to get empty index in the foundations, is there is no card.
                 foundationArray[i] = null;
             }finally{
                 topcards.setFoundations(foundationArray);
@@ -178,7 +155,7 @@ public class BoxMapping {
         }
 
         Card[] piles = new Card[lowerRow.length];
-        //Mapping lower row
+        //Mapping pile row
         for (int i = 0; i< lowerRow.length;i++){
             if(lowerRow[i]==null){
                 piles[i]=null;

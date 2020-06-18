@@ -4,7 +4,6 @@ import DarkNet_Connection.I_Connection;
 import Data.PreCard;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.scene.image.Image;
 import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;

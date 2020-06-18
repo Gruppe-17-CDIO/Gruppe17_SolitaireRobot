@@ -5,12 +5,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import org.json.JSONArray;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import kong.unirest.json.JSONArray;
+import org.apache.http.NoHttpResponseException;
+
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,27 +35,20 @@ public class DatknetConnection implements I_Connection {
     public List<JsonDTO> Get_Image_Information(Image img) throws UnirestException {
         try {
             byte[] imageByteArray = convertImageToByteArray(img);
-            HttpResponse<String> res = Unirest.post("http://127.0.0.1:5000/detect/hello.jpg")
-                    .header("accept", "application/json")
-                    .header("Content-Type", "image/jpg")
-                    .body(imageByteArray)
-                    .asString();
-
-            System.out.println(res.getBody());
-
-
+            HttpResponse<String> res = makePOSTRequest(imageByteArray);
             JSONArray jsonArray = new JSONArray(res.getBody());
             System.out.println(jsonArray.toString());
 
                 // JSON array
 
                 // convert JSON array to Java List
-                List<JsonDTO> jsonDTOList = new ObjectMapper().readValue(jsonArray.toString(), new TypeReference<List<JsonDTO>>() {
+                List<JsonDTO> jsonDTOList = new ObjectMapper().readValue(res.getBody(), new TypeReference<List<JsonDTO>>() {
                 });
 
                 return jsonDTOList;
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+
             e.printStackTrace();
         }
         return null;
@@ -78,4 +76,20 @@ public class DatknetConnection implements I_Connection {
         ImageIO.write(imageRGB, "jpg", os);// Passing: ​(RenderedImage im, String formatName, OutputStream output)
         return os.toByteArray();
     }
+
+    private HttpResponse<String> makePOSTRequest(byte[] imageByteArray){
+        try {
+
+            HttpResponse<String> res = Unirest.post("http://192.168.0.2:5000/detect/hello.png")
+                    .header("Content-Type", "image/png")
+                    .body(imageByteArray)
+                    .asString();
+
+            return res;
+        }catch (Exception e){
+           return makePOSTRequest(imageByteArray);
+        }
+
+    }
+
 }

@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.json.JSONArray;
+
+import kong.unirest.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;

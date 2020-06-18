@@ -9,10 +9,11 @@ import Data.BufferElement;
 import Data.JsonDTO;
 import Data.PreCard;
 import com.google.gson.JsonArray;
-import com.mashape.unirest.http.exceptions.UnirestException;
+
 import computerVision.I_ComputerVisionController;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
+import kong.unirest.UnirestException;
 
 import java.io.BufferedReader;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ import java.util.*;
  */
 public class Convertion implements I_ComputerVisionController {
 
-    boolean test = true;
+    boolean test = false;
     SortingHelperClass sorting;
     I_Connection connection;
     BufferElement buffer;
