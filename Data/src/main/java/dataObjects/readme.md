@@ -11,12 +11,14 @@ new Card(Card.Status.FACEDOWN)
 ```
 Of course a card laying face down has no suit and rank.
 
-SolitaireState has five fields with setters and getters:
-1. ```List<Card> stock```
-2. ```Card drawnCard```
+SolitaireState has five fields with getters:
+1. ```int stock```
+2. ```List<Card> drawnCard```
 3. ```List<Card> foundations```
 4. ```List<List<Card>> piles```
 5. ```List<Move> suggestedMoves```
+6. ```Enum GameProgress gameProgress```
+7. ```int stockTurned```
 
 
 ## Content
@@ -35,7 +37,6 @@ This object represents a card in the game.
 
 #### Constructors
 The constructor is overloaded, so two versions exist: One for visible cards, and one for cards that are lying face down. 
-
 
 Visible cards are created like this:
 ```
@@ -62,24 +63,23 @@ Cards have suits. Suits come in two colors, red and black. To get the color of a
 
 ## SolitaireState
 
-### Class diagram
-![](../../resources/class-solitaire-card.png)
-
 This object is used to store the whole deck of cards as displayed on the table. All the following fields must be set:
 
 | Field | Type | Use |
 |---|---|---|
 | stock | int | Keep track of the pile.
-| drawnCards | Card | The card currently drawn. |
-| foundations | List of Cards. Max size: 4.| Goal for the sorted cards. Values can be null|
-| piles | List of Lists of Cards. Size: 7. | The 7 columns. Values can be empty lists.|
+| drawnCards | List of Cards | The cards currently drawn. |
+| foundations | List of Cards, size: 4.| Goal for the sorted cards. Values can be null|
+| piles | List of Lists of Cards, Size: 7. | The 7 columns. Values can be empty lists.|
 | suggestedMoves | List of move objects | List of legal moves|
+| gameProgress | Enum: | WON, PLAYING; LOST |
+| stockTurned | int | Count times the draw pile is flipped | 
 
-There are getters and setters for all fields. Some basic tests for validity are built-in. Some null values will raise exceptions, and the size ranges are enforced. 
+There are setters for all fields. Some basic tests for validity are built-in. Some null values will raise exceptions, and the size ranges are enforced. 
 
 There is an extra setter for individual 'columns' in the pile, ```addColumntToPile()```, in case that is practical.
 
-The moves are added after creating the state object in controller, do document and bugfix.
+The moves are added after creating the state object in controller, so that state contains the moves that are possible FROM this state.
 
 The `toString()` method returns the ID of the SolitaireState. 
 
@@ -92,9 +92,11 @@ The I_Logic interface returns a list containing Move objects that represents val
 
 |Field|Type|Use|
 |---|---|---|
-|moveType|enum MoveType|Type of move: FACEUP, MOVE (from pile), DRAW (from draw/stock)|
+|moveType|enum MoveType|Type of move: FACEUP, MOVE_FROM_PILE, DRAW, USEDRAWN|
 |position|int[]|The position of moveType: E.g. MoveType is MOVE then position[1,0] corresponds to pile row 2, card in front. 
 |destinationType|enum DestinationType|Stack to move to: PILE, FOUNDATION|
 |destPosition|int|Moving position. E.g. Type is FOUNDATION, then destPosition(0) corresponds to foundation-pile 1.|
+
+The Movetype enum describes where the move is from and what type of move it is.
 
 >Author:  Erlend

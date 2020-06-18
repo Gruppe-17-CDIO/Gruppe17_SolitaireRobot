@@ -17,11 +17,11 @@ public class MoveComparator implements Comparator<Move> {
 
     int moveTypeToInt(Move move) {
         switch (move.getMoveType()) {
-            case FACEUP:
+            case FACE_UP_IN_PILE:
                 return 0;
-            case MOVE:
+            case MOVE_FROM_PILE:
                 return 1;
-            case USEDRAWN:
+            case USE_DRAWN:
                 return 2;
             default:
                 return 3;
@@ -42,7 +42,7 @@ public class MoveComparator implements Comparator<Move> {
             case NO_BENEFIT:
                 return 3;
             default:
-                return 0;
+                return 4;
         }
     }
 

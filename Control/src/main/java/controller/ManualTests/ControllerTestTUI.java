@@ -19,8 +19,8 @@ import java.util.Stack;
  * @author erlend
  */
 public class ControllerTestTUI {
-    private Controller controller;
     int gameType;
+    private Controller controller;
 
     public static void main(String[] args) {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -93,24 +93,8 @@ public class ControllerTestTUI {
             System.out.println("YOU LOST.");
             System.exit(0);
         }
+        seeResults();
 
-        controller.performMove(move, new CompletionCallBack() {
-            @Override
-            public void OnSuccess(String status) {
-                System.out.println(status);
-                seeResults();
-            }
-
-            @Override
-            public void OnFailure(String message) {
-                System.out.println(message);
-            }
-
-            @Override
-            public void OnError(Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private void seeResults() {

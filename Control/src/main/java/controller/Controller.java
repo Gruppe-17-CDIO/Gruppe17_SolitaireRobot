@@ -53,22 +53,6 @@ public class Controller implements I_Controller {
     }
 
     /**
-     * precondition: A state exists in history & a list of moves have been generated. This method simply saves
-     * the selected move, to allow the player to set the cards before calculating next move.
-     *
-     * @param move     The chosen move
-     * @param callBack
-     */
-    @Override
-    public void performMove(Move move, CompletionCallBack callBack) {
-        try {
-            callBack.OnSuccess("OK: Move registered.");
-        } catch (Exception e) {
-            callBack.OnError(e);
-        }
-    }
-
-    /**
      * Precondition: A move has been selected, saved as currentMove. The cards are moved in the same way as the
      * selected move. A State exists in history.
      * <p>

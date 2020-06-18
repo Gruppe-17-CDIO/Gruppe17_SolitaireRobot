@@ -11,6 +11,8 @@ import stateBuilding.TopCardsSimulator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dataObjects.GlobalEnums.GameProgress.WON;
+
 public class CardCalculator {
     /**
      * This class performs these tasks:
@@ -42,7 +44,7 @@ public class CardCalculator {
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + i + ". " +
+                throw new Exception("initiateState(): Missing card from pile: " + (i + 1) + ". " +
                         "All piles must have one card at start of new game.");
             }
         }
@@ -124,7 +126,7 @@ public class CardCalculator {
             state.setDrawnCards(drawnCards);
         }
 
-        if (move.getMoveType() == Move.MoveType.USEDRAWN) {
+        if (move.getMoveType() == Move.MoveType.USE_DRAWN) {
             if (drawnCards.size() < 1) {
                 throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
             }
@@ -144,7 +146,7 @@ public class CardCalculator {
             }
         }
 
-        if (move.getMoveType() == Move.MoveType.MOVE) {
+        if (move.getMoveType() == Move.MoveType.MOVE_FROM_PILE) {
             int pileIndex = move.getPosition()[0];
             int cardIndex = move.getPosition()[1];
 
@@ -167,7 +169,7 @@ public class CardCalculator {
             }
         }
 
-        // Lastly: If a face down card is uncovered on top of a pile, replace with card from CV
+        // Last: If a face down card is uncovered on top of a pile, replace with card from CV
         // (Implicitly this is the FACEUP move type.)
         for (int i = 0; i < 7; i++) {
             List<Card> pile = piles.get(i);
@@ -176,9 +178,10 @@ public class CardCalculator {
                     piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
                 } else {
                     // Replace if there is a visible topcard (This assumes that face down cards are null in the array)
-                    if (topCards.getPiles()[i] != null) {
-                        piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
+                    if (topCards.getPiles()[i] == null) {
+                        throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
                     }
+                    piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
                 }
                 state.setPiles(piles);
             }
@@ -259,15 +262,15 @@ public class CardCalculator {
         for (int i = 0; i < 7; i++) {
             if (piles.get(i) == null) {
                 if (topCards.getPiles()[i] != null) {
-                    throw new Exception("checkState: State's pile " + i + " was null, " +
+                    throw new Exception("checkState: State's pile " + (i + 1) + " was null, " +
                             "but corresponding card from image was NOT null.");
                 }
             } else if (topCards.getPiles()[i] == null) {
-                throw new Exception("checkState: Image pile " + i + " was null, " +
+                throw new Exception("checkState: Image pile " + (i + 1) + " was null, " +
                         "corresponding card in state was NOT null.");
             } else {
                 if (!(topCards.getPiles()[i].toString().equals(piles.get(i).toString()))) {
-                    throw new Exception("checkState: The pile card " + i + " doesn't match." +
+                    throw new Exception("checkState: The pile card " + (i + 1) + " doesn't match." +
                             "\n\tState: " + piles.get(i).toString() +
                             "\n\tImage: " + topCards.getPiles()[i].toString());
                 }

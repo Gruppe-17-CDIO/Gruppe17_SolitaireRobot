@@ -1,5 +1,8 @@
 package dataObjects;
 
+import static dataObjects.Move.DestinationType.FOUNDATION;
+import static dataObjects.Move.MoveBenefit.TURN_STOCK;
+
 public class Move {
     private final MoveType moveType;
     private final DestinationType destinationType;
@@ -43,24 +46,41 @@ public class Move {
     }
 
     public String toString() {
+        String s;
         if (moveType == MoveType.DRAW) {
-            return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
-        } else if (moveType == MoveType.FACEUP) {
+            s = "";
+            if (benefit == TURN_STOCK) {
+                s += "Turn the pile. ";
+            }
+            s += "Draw a new card from the stock.";
+
+        } else if (moveType == MoveType.FACE_UP_IN_PILE) {
             return "Turn pile " + (position[0] + 1) + ", card " + (position[1] + 1) + " face up.";
-        } else if (moveType == MoveType.USEDRAWN) {
-            return "Move the " + card + " from drawn cards to " + destinationType + " " + (destPosition + 1) + ".";
-        } else if (moveType == MoveType.MOVE) {
-            return "Move the " + card + " from pile " + (position[0] + 1) + ", card " + (position[1] + 1) +
-                    " to " + destinationType + " " + destPosition + ".";
+        } else if (moveType == MoveType.USE_DRAWN) {
+            s = "Move the " + card + " from drawn cards to ";
+            if (destinationType == FOUNDATION) {
+                s += card.getSuit() + " foundation.";
+            } else {
+                s += destinationType + " " + (destPosition + 1) + ".";
+            }
+        } else if (moveType == MoveType.MOVE_FROM_PILE) {
+
+            s = "Move the " + card + " from pile " + (position[0] + 1) + " to ";
+            if (destinationType == FOUNDATION) {
+                s += card.getSuit() + " foundation.";
+            } else {
+                s += destinationType + " " + (destPosition + 1) + ".";
+            }
         } else {
             return "No Movetype";
         }
+        return s;
     }
 
     public enum MoveType {
-        FACEUP,
-        MOVE,
-        USEDRAWN,
+        FACE_UP_IN_PILE,
+        MOVE_FROM_PILE,
+        USE_DRAWN,
         DRAW,
     }
 
@@ -75,5 +95,6 @@ public class Move {
         PLACE_KING,
         REVEAL_CARD,
         NO_BENEFIT,
+        TURN_STOCK
     }
 }

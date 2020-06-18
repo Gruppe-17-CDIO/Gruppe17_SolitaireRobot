@@ -1,7 +1,5 @@
 package controller;
 
-import controller.CompletionCallBack;
-import dataObjects.Move;
 import javafx.scene.image.Image;
 
 /**
@@ -18,13 +16,6 @@ public interface I_Controller {
      * @param callBack return suggested moves and history
      */
     void startNewGame(Image img, NextMoveCallBack callBack);
-
-    /**
-     * Stores move
-     *
-     * @param move The chosen move
-     */
-    void performMove(Move move, CompletionCallBack callBack);
 
     /**
      * Precondition: A move has been selected, saved as currentMove. The cards are moved in the same way as the
