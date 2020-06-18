@@ -108,7 +108,6 @@ public class CardCalculator {
                 throw new Exception("Draw was suggested, but there are no cards left in stock or drawn cards.");
             }
 
-            state.setStock(stock - 1);
             if (test) {
                 List<Card> cards = topCardsSimulator.getUsedCards();
                 if (state.getStockTurned() > 0 && cards.size() > 0) {
@@ -119,11 +118,14 @@ public class CardCalculator {
                 }
             } else {
                 if (topCards.getDrawnCard() == null) {
+                    // Throw special exception for drawn cards
                     throw new DrawnCardReadException("Expected a new drawn card but found null.");
                 } else {
                     drawnCards.add(topCards.getDrawnCard());
                 }
             }
+            state.setStock(stock - 1);
+
             state.setDrawnCards(drawnCards);
         }
 
@@ -182,7 +184,7 @@ public class CardCalculator {
                     if (topCards.getPiles()[i] == null) {
                         // Exception here is removed: This means that
                         // if there is a card, and CV fails to read it, the program will still ask user to turn
-                        // the card Fface up!
+                        // the card Face up!
                         //throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
                         piles.get(i).set(piles.get(i).size() - 1, new Card(Card.Status.FACEDOWN));
                     } else {
@@ -240,29 +242,6 @@ public class CardCalculator {
                         "\n\tImage: " + topCards.getDrawnCard().toString());
             }
         }
-
-        // Control of foundations is removed. The user is responsible for keeping track of foundations.
-        /*
-        // Check the foundations
-        for (int i = 0; i < 4; i++) {
-            if (foundations.get(i) == null) {
-                if (topCards.getFoundations()[i] != null) {
-                    throw new Exception("checkState: State's foundation " + i + " was null, " +
-                            "but corresponding card from image was NOT null.");
-                }
-            } else if (topCards.getFoundations()[i] == null) {
-                throw new Exception("checkState: Image foundations " + i + " was null, " +
-                        "corresponding card in state was NOT null.");
-            } else {
-                if (!(topCards.getFoundations()[i].toString().equals(foundations.get(i).toString()))) {
-                    throw new Exception("checkState: The foundation card " + i + " doesn't match." +
-                            "\n\tState: " + foundations.get(i).toString() +
-                            "\n\tImage: " + topCards.getFoundations()[i].toString());
-                }
-            }
-        }
-        */
-
 
         // Check the piles
         for (int i = 0; i < 7; i++) {
