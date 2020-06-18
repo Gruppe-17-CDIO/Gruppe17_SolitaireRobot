@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StateGenerator {
-    final String PATH = SinglePropertyLoader.getInstance().getProperty("project.root");
-    String filepath = PATH + "/Data/src/main/resources/builderFiles/build-a-state_";
+    final String ROOT = SinglePropertyLoader.getInstance().getProperty("project.root");
+    final String filepath = ROOT + "/Data/src/main/resources/builderFiles/build-a-state_";
 
     public SolitaireState getState(int id) throws Exception {
         String[][] data = readBuilderFile(id);

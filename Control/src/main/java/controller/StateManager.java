@@ -31,8 +31,7 @@ public class StateManager {
         if (cardData == null) {
             throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
         } else {
-            System.out.println("New session started. Creating new state, blank history and logfile. " +
-                    "\nIgnore missing logfile for read!");
+            System.out.println("New session started. Creating new state, blank history and logfile.");
             history = new Stack<>();
             logger = new StateLogger();
             state = cardCalculator.initiateState(cardData);

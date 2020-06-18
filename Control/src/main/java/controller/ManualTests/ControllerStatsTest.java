@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Stack;
 
@@ -21,10 +22,12 @@ import java.util.Stack;
 
 public class ControllerStatsTest {
     private static ControllerStatsTest test;
-    final int iterations = 1000; // Number of whole games played.
+    final double iterations = 100; // Number of whole games played.
+    static double moves = 0;
     int wins = 0;
     boolean roundFinished = false;
     I_Controller controller;
+    Timestamp startTime;
 
     public static void main(String[] args) {
         ControllerStatsTest test = ControllerStatsTest.getInstance();
@@ -36,6 +39,26 @@ public class ControllerStatsTest {
             test = new ControllerStatsTest();
         }
         return test;
+    }
+
+    public void startTest() {
+
+        startTime = new Timestamp(System.currentTimeMillis());
+        for (int i = 0; i < iterations; i++) {
+            System.out.println("*******************************************************************");
+            System.out.println("ITERATION " + (i + 1));
+            playGame(this);
+        }
+
+        double time = (System.currentTimeMillis() - startTime.getTime());
+
+        System.out.println("Wins: " + wins +
+                "\nIterations: " + (int) iterations +
+                "\nWin ratio: " + (double) wins / (double) iterations +
+                "\nTotal time: " + (int) (time / 1000) + " seconds." +
+                "\nTime per iteration: " + (int) (time / iterations) + " millis." +
+                "\nTime per move: " + (int) (time / moves) + " millis.");
+        ;
     }
 
     private static void playRound(I_Controller controller, ControllerStatsTest test) {
@@ -57,6 +80,8 @@ public class ControllerStatsTest {
                         test.addWin();
                     } else {
                         playRound(controller, test);
+                        // Add to total num. of moves
+                        moves++;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -77,16 +102,6 @@ public class ControllerStatsTest {
 
     public synchronized void addWin() {
         wins++;
-    }
-
-    public void startTest() {
-
-        for (int i = 0; i < iterations; i++) {
-            System.out.println("*******************************************************************");
-            System.out.println("ITERATION " + (i + 1));
-            playGame(this);
-        }
-        System.out.println("Wins: " + wins + "\nIterations: " + iterations + "\nWin ratio: " + (double) wins / (double) iterations);
     }
 
     private void playGame(ControllerStatsTest test) {
