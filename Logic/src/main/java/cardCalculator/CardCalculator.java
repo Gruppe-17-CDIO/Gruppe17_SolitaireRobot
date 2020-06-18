@@ -11,8 +11,6 @@ import stateBuilding.TopCardsSimulator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dataObjects.GlobalEnums.GameProgress.WON;
-
 public class CardCalculator {
     /**
      * This class performs these tasks:
@@ -74,11 +72,11 @@ public class CardCalculator {
      * Makes new state based on previous state and move.
      *
      * @param prevState
-     * @param move
+     * @param prevMove
      * @param topCards
      * @return state
      */
-    public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards,
+    public SolitaireState updateState(SolitaireState prevState, Move prevMove, TopCards topCards,
                                       TopCardsSimulator topCardsSimulator, boolean test) throws Exception {
         // Deep copy
         Gson gson = new Gson();
@@ -92,9 +90,8 @@ public class CardCalculator {
         List<List<Card>> piles = state.getPiles();
 
         // If move is draw, add the newly turned card from CV
-        if (move.getMoveType() == Move.MoveType.DRAW) {
+        if (prevMove.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
-
             if (stock < 0) {
                 throw new Exception("Stock is below zero. Should not be possible.");
             } else if (stock == 0 && drawnCards.size() > 0) {
@@ -105,7 +102,7 @@ public class CardCalculator {
                 }
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
-                state.setStockTurned(flipped + 1); // 3 means you can't draw
+                state.setStockTurned(flipped + 1); // 3 means you can't draw anymore
 
             } else if (stock == 0) { // No cards left to draw
                 throw new Exception("Draw was suggested, but there are no cards left in stock or drawn cards.");
@@ -121,12 +118,16 @@ public class CardCalculator {
                     drawnCards.add(topCardsSimulator.getCard());
                 }
             } else {
-                drawnCards.add(topCards.getDrawnCard());
+                if (topCards.getDrawnCard() == null) {
+                    throw new DrawnCardReadException("Expected a new drawn card but found null.");
+                } else {
+                    drawnCards.add(topCards.getDrawnCard());
+                }
             }
             state.setDrawnCards(drawnCards);
         }
 
-        if (move.getMoveType() == Move.MoveType.USE_DRAWN) {
+        if (prevMove.getMoveType() == Move.MoveType.USE_DRAWN) {
             if (drawnCards.size() < 1) {
                 throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
             }
@@ -135,36 +136,36 @@ public class CardCalculator {
             drawnCards.remove(drawnCards.size() - 1);
             state.setDrawnCards(drawnCards);
 
-            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
-                foundations.set(move.getDestPosition(), card);
+            if (prevMove.getDestinationType() == Move.DestinationType.FOUNDATION) {
+                foundations.set(prevMove.getDestPosition(), card);
                 state.setFoundations(foundations);
-            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
+            } else if (prevMove.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.get(move.getDestPosition()).addAll(cards);
+                piles.get(prevMove.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
 
-        if (move.getMoveType() == Move.MoveType.MOVE_FROM_PILE) {
-            int pileIndex = move.getPosition()[0];
-            int cardIndex = move.getPosition()[1];
+        if (prevMove.getMoveType() == Move.MoveType.MOVE_FROM_PILE) {
+            int pileIndex = prevMove.getPosition()[0];
+            int cardIndex = prevMove.getPosition()[1];
 
             // Pick up the cards and all cards on top of it.
             List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
             piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
             state.setPiles(piles);
 
-            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
+            if (prevMove.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 if (cards.size() != 1) {
                     throw new Exception("Move exactly one card to foundation at a time. Was "
                             + cards.size() + ".");
                 }
                 Card card = cards.get(0);
-                foundations.set(move.getDestPosition(), card);
+                foundations.set(prevMove.getDestPosition(), card);
                 state.setFoundations(foundations);
-            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.get(move.getDestPosition()).addAll(cards);
+            } else if (prevMove.getDestinationType() == Move.DestinationType.PILE) {
+                piles.get(prevMove.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
@@ -179,9 +180,14 @@ public class CardCalculator {
                 } else {
                     // Replace if there is a visible topcard (This assumes that face down cards are null in the array)
                     if (topCards.getPiles()[i] == null) {
-                        throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
+                        // Exception here is removed: This means that
+                        // if there is a card, and CV fails to read it, the program will still ask user to turn
+                        // the card Fface up!
+                        //throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
+                        piles.get(i).set(piles.get(i).size() - 1, new Card(Card.Status.FACEDOWN));
+                    } else {
+                        piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
                     }
-                    piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
                 }
                 state.setPiles(piles);
             }
