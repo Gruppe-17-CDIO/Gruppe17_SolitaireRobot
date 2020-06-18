@@ -7,9 +7,11 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
 /**
@@ -24,7 +26,8 @@ public class DatknetConnection implements I_Connection {
     public JsonArray Get_Image_Information(Image img) throws UnirestException {
         try {
             byte[] imageByteArray = convertImageToByteArray(img);
-            HttpResponse<String> res = Unirest.post("http://127.0.0.1:5000/detect/hello.jpg")
+            //HttpResponse<String> res = Unirest.post("http://127.0.0.1:5000/detect/hello.jpg")
+            HttpResponse<String> res = Unirest.post("http://192.168.0.2:5000/detect/hello.jpg")
                     .header("accept", "application/json")
                     .header("Content-Type", "image/jpg")
                     .body(imageByteArray)
@@ -33,7 +36,7 @@ public class DatknetConnection implements I_Connection {
             System.out.println(res.getBody());
 
             JsonArray jsonArray = new JsonParser().parse(res.getBody()).getAsJsonArray();
-        return jsonArray;
+            return jsonArray;
         } catch (Exception e) {
             e.printStackTrace();
         }
