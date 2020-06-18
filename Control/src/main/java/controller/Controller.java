@@ -74,7 +74,7 @@ public class Controller implements I_Controller {
                 if (!testmode) {
                     topCards = CV_Controller.getSolitaireCards(img);
                     state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
-                    stateManager.checkStateAgainstImage(topCards, state);
+                    // NOPE stateManager.checkStateAgainstImage(topCards, state);
 
                 } else {
                     state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator

@@ -78,9 +78,10 @@ public class Logic implements I_Logic {
         List<Card> drawnCards = state.getDrawnCards();
         if (drawnCards.size() > 0) {
             Card drawnCard = drawnCards.get(drawnCards.size() - 1);
-
-            if (drawnCard.getStatus() == FACEDOWN) {
-                moves.add(new Move(Move.MoveType.USE_DRAWN, card, null, SELF, 0, REVEAL_CARD));
+            if (drawnCard == null) {
+                // Ignore
+            } else if (drawnCard.getStatus() == FACEDOWN) {
+                moves.add(new Move(Move.MoveType.USE_DRAWN, new Card(FACEDOWN), null, SELF, 0, REVEAL_CARD));
             } else {
                 for (int f = 0; f < state.getFoundations().size(); f++) {
                     // If foundation pile is empty and card rank is 1 add move

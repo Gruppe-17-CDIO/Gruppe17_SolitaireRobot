@@ -37,6 +37,7 @@ public class Card implements Serializable {
         this.status = Status.FACEUP;
     }
 
+    // if facedown
     public Card(@NotNull Status status) {
         this.status = status;
     }
