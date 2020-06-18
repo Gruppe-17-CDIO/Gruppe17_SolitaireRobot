@@ -1,0 +1,344 @@
+import Converter.BoxMapping;
+import Converter.Util.SortingHelperClass;
+import DarkNet_Connection.Darknet_Stub;
+import Data.BufferElement;
+import Data.JsonDTO;
+import com.sun.rowset.internal.Row;
+import dataObjects.Card;
+import dataObjects.TopCards;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import static org.junit.Assert.*;
+
+
+public class BoxMapping_Test {
+
+    @Test
+    public void mappingLowerRow_Test(){
+    SortingHelperClass sorting = new SortingHelperClass();
+    Darknet_Stub darknetReturnList = new Darknet_Stub();
+    List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
+
+
+    BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement);
+
+    JsonDTO[] mappedJson = mapping.mappingLowerRow();
+    JsonDTO[] expectedMappingLowerRow = new JsonDTO[7];
+
+    JsonDTO obj = new JsonDTO();
+    obj.setCat("5s");
+        JsonDTO obj2 = new JsonDTO();
+        obj2.setCat("2h");
+        JsonDTO obj3 = new JsonDTO();
+        obj3.setCat("8h");
+        JsonDTO obj4 = new JsonDTO();
+        obj4.setCat("2c");
+        JsonDTO obj5 = new JsonDTO();
+        obj5.setCat("5c");
+        JsonDTO obj6 = new JsonDTO();
+        obj6.setCat("9c");
+        JsonDTO obj7 = new JsonDTO();
+        obj7.setCat("8c");
+
+        expectedMappingLowerRow[0] = obj;
+        expectedMappingLowerRow[1] = obj2;
+        expectedMappingLowerRow[2] = obj3;
+        expectedMappingLowerRow[3] = obj4;
+        expectedMappingLowerRow[4] = obj5;
+        expectedMappingLowerRow[5] = obj6;
+        expectedMappingLowerRow[6] = obj7;
+
+
+    for(int i = 0; i<mappedJson.length;i++) {
+        assertEquals(expectedMappingLowerRow[i].getCat(),mappedJson[i].getCat());
+        System.out.println("Expected value: "+ expectedMappingLowerRow[i].getCat()+", Actual value: " + mappedJson[i].getCat());
+    }
+
+
+    }
+
+    @Test
+    public void mappingUpperRow_Test(){
+
+        SortingHelperClass sorting = new SortingHelperClass();
+        Darknet_Stub darknetReturnList = new Darknet_Stub();
+        List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
+
+
+        BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement);
+
+        JsonDTO[] mappedJson = mapping.mappingUpperRow();
+
+        //Setting the expectet outcome
+        JsonDTO obj = new JsonDTO();
+        obj.setCat("Jc");
+        JsonDTO[] expectedMappingLowerRow = new JsonDTO[1];
+        expectedMappingLowerRow[0] = obj;
+
+        for(int i = 0; i<mappedJson.length;i++) {
+            assertEquals(expectedMappingLowerRow[i].getCat(),mappedJson[i].getCat());
+            System.out.println("Expected value: "+ expectedMappingLowerRow[i].getCat()+", Actual value: " + mappedJson[i].getCat());
+        }
+    }
+
+
+    @Test
+    public void mappingToTopCard_Test_instanciation() throws Exception {
+        SortingHelperClass sorting = new SortingHelperClass();
+        Darknet_Stub darknetReturnList = new Darknet_Stub();
+        List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
+
+
+        BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement);
+
+        TopCards expectedTopCard = new TopCards();
+        //Piles
+        try {
+            Card card = new Card(createSuit("s"),5);
+            Card card1 = new Card(createSuit("h"),2);
+            Card card2 = new Card(createSuit("h"),8);
+            Card card3 = new Card(createSuit("c"),2);
+            Card card4 = new Card(createSuit("c"),5);
+            Card card5 = new Card(createSuit("c"),9);
+            Card card6 = new Card(createSuit("c"),8);
+            Card[] piles = new Card[7];
+            piles[0]= card;
+            piles[1]= card1;
+            piles[2]= card2;
+            piles[3]= card3;
+            piles[4]= card4;
+            piles[5]= card5;
+            piles[6]= card6;
+
+            //Draw
+            Card draw= new Card(createSuit("c"),11);
+
+            //Foundation
+            Card[] foundation = new Card[4];
+            for (int i = 0; i<foundation.length;i++){
+                foundation[i]=null;
+            }
+
+            expectedTopCard.setDrawnCard(draw);
+            expectedTopCard.setPiles(piles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        TopCards actualTopCard = new TopCards();
+        actualTopCard = mapping.mappingToTopCard(actualTopCard);
+
+
+        //Comparing the two topCards
+        assertEquals(expectedTopCard.getDrawnCard().getRank(),actualTopCard.getDrawnCard().getRank());
+        assertEquals(expectedTopCard.getDrawnCard().getColor(),actualTopCard.getDrawnCard().getColor());
+
+
+        for(int i = 0; i<expectedTopCard.getFoundations().length;i++){
+            try {
+                assertEquals(expectedTopCard.getFoundations()[i].getRank(), actualTopCard.getFoundations()[i].getRank());
+                assertEquals(expectedTopCard.getFoundations()[i].getColor(), actualTopCard.getFoundations()[i].getColor());
+            }catch (NullPointerException e){
+                System.out.println("Is foundation a nulpointer? at index : "+i);
+            }
+        }
+
+
+        for(int i = 0; i<expectedTopCard.getPiles().length;i++){
+            assertEquals(expectedTopCard.getPiles()[i].getRank(),actualTopCard.getPiles()[i].getRank());
+            assertEquals(expectedTopCard.getPiles()[i].getColor(),actualTopCard.getPiles()[i].getColor());
+        }
+
+    }
+
+
+    @Test
+    public void mappingToTopCard_Test_missing_first_Second_and_lastPile_pile_in_mitterRow() throws Exception {
+        SortingHelperClass sorting = new SortingHelperClass();
+        Darknet_Stub darknetReturnList = new Darknet_Stub();
+        List<JsonDTO> callibrationImage = darknetReturnList.init_Stup_Cards();
+        List<JsonDTO> expectedPrecardList = darknetReturnList.missing_first_Second_and_lastPile_pile_in_mitterRow();
+
+
+        BufferElement bufferElement = new BufferElement(callibrationImage,sorting);
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement);
+        bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
+
+        TopCards expectedTopCard = new TopCards();
+        //Piles
+        try {
+            //Card card = new Card(createSuit("s"),5);
+            Card card1 = new Card(createSuit("h"),2);
+            Card card2 = new Card(createSuit("h"),8);
+            //Card card3 = new Card(createSuit("c"),2);
+            Card card4 = new Card(createSuit("c"),5);
+            Card card5 = new Card(createSuit("c"),9);
+            //Card card6 = new Card(createSuit("c"),8);
+            Card[] piles = new Card[7];
+            piles[0]= null;
+            piles[1]= card1;
+            piles[2]= card2;
+            piles[3]= null;
+            piles[4]= card4;
+            piles[5]= card5;
+            piles[6]= null;
+
+            //Draw
+            Card draw= new Card(createSuit("c"),11);
+
+            //Foundation
+            Card[] foundation = new Card[4];
+            for (int i = 0; i<foundation.length;i++){
+                foundation[i]=null;
+            }
+
+            expectedTopCard.setDrawnCard(draw);
+            expectedTopCard.setPiles(piles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        TopCards actualTopCard = new TopCards();
+        actualTopCard = mapping.mappingToTopCard(actualTopCard);
+
+
+        //Comparing the two topCards
+        assertEquals(expectedTopCard.getDrawnCard().getRank(),actualTopCard.getDrawnCard().getRank());
+        assertEquals(expectedTopCard.getDrawnCard().getColor(),actualTopCard.getDrawnCard().getColor());
+
+
+        for(int i = 0; i<expectedTopCard.getFoundations().length;i++){
+            try {
+                assertEquals(expectedTopCard.getFoundations()[i].getRank(), actualTopCard.getFoundations()[i].getRank());
+                assertEquals(expectedTopCard.getFoundations()[i].getColor(), actualTopCard.getFoundations()[i].getColor());
+            }catch (NullPointerException e){
+                System.out.println("Is foundation a nulpointer? at index : "+i);
+            }
+        }
+
+        assertEquals(actualTopCard.getPiles()[3],null);
+        System.out.println("Zero first element" );
+        assertEquals(actualTopCard.getPiles()[0],null);
+        System.out.println("Zero therd element" );
+        assertEquals(actualTopCard.getPiles()[6],null);
+        System.out.println("Zero sixth element" );
+        for(int i = 0; i<expectedTopCard.getPiles().length;i++){
+            try {
+            assertEquals(expectedTopCard.getPiles()[i].getRank(),actualTopCard.getPiles()[i].getRank());
+            assertEquals(expectedTopCard.getPiles()[i].getColor(),actualTopCard.getPiles()[i].getColor());
+            }catch (NullPointerException e){
+                System.out.println("Is one of the piles a nulpointer? at index : "+i);
+            }
+        }
+
+    }
+
+
+    @Test
+    public void mappingToTopCard_Test_missing_one_pile_in_mitterRow() throws Exception {
+        SortingHelperClass sorting = new SortingHelperClass();
+        Darknet_Stub darknetReturnList = new Darknet_Stub();
+        List<JsonDTO> callibrationImage = darknetReturnList.init_Stup_Cards();
+        List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards_missing_one_in_mitter_pile_row();
+
+
+        BufferElement bufferElement = new BufferElement(callibrationImage,sorting);
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement);
+        bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
+
+        TopCards expectedTopCard = new TopCards();
+        //Piles
+        try {
+            Card card = new Card(createSuit("s"),5);
+            Card card1 = new Card(createSuit("h"),2);
+            Card card2 = new Card(createSuit("h"),8);
+            //Card card3 = new Card(createSuit("c"),2);
+            Card card4 = new Card(createSuit("c"),5);
+            Card card5 = new Card(createSuit("c"),9);
+            Card card6 = new Card(createSuit("c"),8);
+            Card[] piles = new Card[7];
+            piles[0]= card;
+            piles[1]= card1;
+            piles[2]= card2;
+            piles[3]= null;
+            piles[4]= card4;
+            piles[5]= card5;
+            piles[6]= card6;
+
+            //Draw
+            Card draw= new Card(createSuit("c"),11);
+
+            //Foundation
+            Card[] foundation = new Card[4];
+            for (int i = 0; i<foundation.length;i++){
+                foundation[i]=null;
+            }
+
+            expectedTopCard.setDrawnCard(draw);
+            expectedTopCard.setPiles(piles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        TopCards actualTopCard = new TopCards();
+        actualTopCard = mapping.mappingToTopCard(actualTopCard);
+
+
+        //Comparing the two topCards
+        assertEquals(expectedTopCard.getDrawnCard().getRank(),actualTopCard.getDrawnCard().getRank());
+        assertEquals(expectedTopCard.getDrawnCard().getColor(),actualTopCard.getDrawnCard().getColor());
+
+
+        for(int i = 0; i<expectedTopCard.getFoundations().length;i++){
+            try {
+                assertEquals(expectedTopCard.getFoundations()[i].getRank(), actualTopCard.getFoundations()[i].getRank());
+                assertEquals(expectedTopCard.getFoundations()[i].getColor(), actualTopCard.getFoundations()[i].getColor());
+            }catch (NullPointerException e){
+                System.out.println("Is foundation a nulpointer? at index : "+i);
+            }
+        }
+
+        assertEquals(actualTopCard.getPiles()[3],null);
+        System.out.println("Zero therd element" );
+
+        for(int i = 0; i<expectedTopCard.getPiles().length;i++){
+            try {
+                assertEquals(expectedTopCard.getPiles()[i].getRank(),actualTopCard.getPiles()[i].getRank());
+                assertEquals(expectedTopCard.getPiles()[i].getColor(),actualTopCard.getPiles()[i].getColor());
+            }catch (NullPointerException e){
+                System.out.println("Is one of the piles a nulpointer? at index : "+i);
+            }
+        }
+
+    }
+
+
+    private static Card.Suit createSuit(String suite){
+
+        switch (suite){
+            case "h": return Card.Suit.HEART;
+            case "d": return Card.Suit.DIAMOND;
+            case "s": return Card.Suit.SPADE;
+            case "c": return Card.Suit.CLUB;
+
+        }
+        return null;
+    }
+}

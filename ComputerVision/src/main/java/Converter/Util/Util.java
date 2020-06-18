@@ -1,8 +1,10 @@
 package Converter.Util;
 
+import Data.JsonDTO;
 import Data.PreCard;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dataObjects.Card;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -127,5 +129,43 @@ public class Util {
 
         return new ImageView(wr).getImage();
     }
+
+
+    public static Card convertToCard(JsonDTO json){
+      String rank = json.getCat().substring(0,1);
+      switch (rank){
+          case "J":{ rank = "11"; break;}
+          case "Q":{ rank = "12"; break;}
+          case "K":{ rank = "13"; break;}
+
+      }
+      String suite = json.getCat().substring(1,2);
+        try {
+            Card newCard = new Card(createSuit(suite),Integer.parseInt(rank));
+
+        return newCard;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static Card.Suit createSuit(String suite){
+
+        switch (suite){
+            case "h": return Card.Suit.HEART;
+            case "d": return Card.Suit.DIAMOND;
+            case "s": return Card.Suit.SPADE;
+            case "c": return Card.Suit.CLUB;
+
+        }
+        return null;
+    }
+
+
+
+
+
 
 }
