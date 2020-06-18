@@ -78,18 +78,17 @@ public class Logic implements I_Logic {
         List<Card> drawnCards = state.getDrawnCards();
         if (drawnCards.size() > 0) {
             Card drawnCard = drawnCards.get(drawnCards.size() - 1);
-
-            if (drawnCard.getStatus() == FACEDOWN) {
-                moves.add(new Move(Move.MoveType.USE_DRAWN, card, null, SELF, 0, REVEAL_CARD));
-            } else {
-                for (int f = 0; f < state.getFoundations().size(); f++) {
-                    // If foundation pile is empty and card rank is 1 add move
-                    // Or if foundation pile is same suit and rank fits add move
-                    if ((
-                            state.getFoundations().get(f) == null && drawnCard.getRank() == 1) ||
-                            state.getFoundations().get(f) != null &&
-                                    state.getFoundations().get(f).getSuit() == drawnCard.getSuit() &&
-                                    drawnCard.getRank() - 1 == state.getFoundations().get(f).getRank()
+           if (drawnCard.getStatus() == FACEDOWN) {
+               moves.add(new Move(Move.MoveType.USE_DRAWN, card, null, SELF, 0, REVEAL_CARD));
+           } else {
+               for (int f = 0; f < state.getFoundations().size(); f++) {
+                   // If foundation pile is empty and card rank is 1 add move
+                   // Or if foundation pile is same suit and rank fits add move
+                   if ((
+                           state.getFoundations().get(f) == null && drawnCard.getRank() == 1) ||
+                           state.getFoundations().get(f) != null &&
+                                   state.getFoundations().get(f).getSuit() == drawnCard.getSuit() &&
+                                   drawnCard.getRank() - 1 == state.getFoundations().get(f).getRank()
                     ) {
                         moves.add(new Move(Move.MoveType.USE_DRAWN, drawnCard, null, FOUNDATION, f, NO_BENEFIT));
                         break;

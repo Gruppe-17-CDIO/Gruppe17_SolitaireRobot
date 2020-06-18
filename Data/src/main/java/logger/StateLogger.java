@@ -19,8 +19,8 @@ import java.util.List;
 
 public class StateLogger implements I_StateLogger {
     // Filepath for current session with timestamp
-    static final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
-            new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) +
+    final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
+            new Timestamp(System.currentTimeMillis()).toString() +
             ".json";
 
     @Override

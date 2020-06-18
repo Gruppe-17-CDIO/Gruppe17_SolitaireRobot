@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Stack;
 
@@ -21,6 +22,7 @@ import java.util.Stack;
 public class ControllerTestTUI {
     int gameType;
     private Controller controller;
+    private Timestamp startTime;
 
     public static void main(String[] args) {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -54,6 +56,9 @@ public class ControllerTestTUI {
     }
 
     private void setupGame() {
+
+        startTime = new Timestamp(System.currentTimeMillis());
+
         controller.startNewGame(new Image(new InputStream() { // Dummy InputStream
             @Override
             public int read() throws IOException {
@@ -88,9 +93,13 @@ public class ControllerTestTUI {
 
         if (state.getGameProgress() == GlobalEnums.GameProgress.WON) {
             System.out.println("YOU WON!");
+            System.out.println("It only took " +
+                    ((new Timestamp(System.currentTimeMillis()).getTime() - startTime.getTime()) / 1000) + " seconds!");
             System.exit(0);
         } else if (state.getGameProgress() == GlobalEnums.GameProgress.LOST) {
             System.out.println("YOU LOST.");
+            System.out.println("It took " +
+                    ((new Timestamp(System.currentTimeMillis()).getTime() - startTime.getTime()) / 1000) + " seconds!");
             System.exit(0);
         }
         seeResults();

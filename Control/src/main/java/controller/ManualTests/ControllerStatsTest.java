@@ -17,13 +17,11 @@ import java.util.Stack;
 /**
  * This test runs a number of simulated game and prints the ratio of wins / total.
  * The test will also print any Exceptions thrown in the logic.
- * <p>
- * RAM and CPU heavy, may take several minutes. (Game completion time varies a lot!)
  */
 
 public class ControllerStatsTest {
     private static ControllerStatsTest test;
-    final int iterations = 10; // Number of whole games played.
+    final int iterations = 1000; // Number of whole games played.
     int wins = 0;
     boolean roundFinished = false;
     I_Controller controller;
@@ -92,19 +90,6 @@ public class ControllerStatsTest {
     }
 
     private void playGame(ControllerStatsTest test) {
-        controller = null;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.gc();
-            }
-        }).start();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         controller = new Controller();
         controller.setTestModeOn(true, new CompletionCallBack() {
             @Override

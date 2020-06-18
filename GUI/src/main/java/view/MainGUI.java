@@ -12,10 +12,6 @@ import view.components.OutputTextArea;
 import view.components.TopMenuBar;
 import view.taps.TabPane;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.*;
-
 /**
  * @author Rasmus Sander Larsen
  */
