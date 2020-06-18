@@ -34,6 +34,7 @@ public class BoxMapping {
             bufferElement = new BufferElement(currentPreCardList, sorting);
             bufferElement.devideElementsBetweenUpperAndLowerRow();
             bufferElement.calculateBufferY();
+            bufferElement.getDrawCardSeparationLine();
             bufferElement.calculateVerticalGrid();
             //bufferElement.getRowFixedGridLines();
 
