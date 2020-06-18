@@ -5,6 +5,7 @@ import Converter.Util.Util;
 import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.I_Connection;
+import Data.BufferElement;
 import Data.JsonDTO;
 import Data.PreCard;
 import com.google.gson.JsonArray;
@@ -13,6 +14,7 @@ import computerVision.I_ComputerVisionController;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
 
+import java.io.BufferedReader;
 import java.util.*;
 
 /**
@@ -20,9 +22,11 @@ import java.util.*;
  */
 public class Convertion implements I_ComputerVisionController {
     SortingHelperClass sorting = new SortingHelperClass();
-    Util utility = new Util();
+
     //BoxMapping mapping = new BoxMapping();
     I_Connection connection = new Darknet_Stub();
+    BufferElement buffer;
+    BoxMapping mapper;
     ImageBoxes boxCreator = new ImageBoxes();
     Image img;
 
@@ -34,11 +38,14 @@ public class Convertion implements I_ComputerVisionController {
 
     try {
         List<JsonDTO> returnImages = ConvertImage(img);
+        buffer = new BufferElement(returnImages,sorting);
+        mapper = new BoxMapping(buffer);
+
         //List<double[]> boxesArea = boxCreator.returnImgBoxes(img, returnImages);
        // mapping.makeBoxMapping(returnImages, new TopCards());
         System.out.println("Test");
         //return boxCreator.boxMapping(returnImages,boxesArea,img);
-        return null;
+        return mapper.makeBoxMapping(returnImages);
 
     }catch (Exception e){
         e.printStackTrace();

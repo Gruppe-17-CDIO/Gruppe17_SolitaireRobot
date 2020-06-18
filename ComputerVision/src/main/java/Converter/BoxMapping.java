@@ -23,33 +23,26 @@ public class BoxMapping {
         this.bufferElement = bufferElement;
     }
 
-    public TopCards makeBoxMapping(List<JsonDTO> preCardList, TopCards topCards) throws Exception {
+    public TopCards makeBoxMapping(List<JsonDTO> preCardList) throws Exception {
 
         getNumberOfAnalysedImage++;
         currentPreCardList = preCardList;
 
 
-
-        if(getNumberOfAnalysedImage==1){
-            bufferElement = new BufferElement(currentPreCardList,sorting);
+        TopCards topcard = new TopCards();
+        if(getNumberOfAnalysedImage==1) {
+            bufferElement = new BufferElement(currentPreCardList, sorting);
             bufferElement.devideElementsBetweenUpperAndLowerRow();
             bufferElement.calculateBufferY();
-            bufferElement.getRowFixedGridLines();
+            bufferElement.calculateVerticalGrid();
+            //bufferElement.getRowFixedGridLines();
 
-
-            //Card draw = new Card(createSuit(smallestY.get(0)),smallestY.get(0).getRank());
-
-
-
-
-
+            return mappingToTopCard(topcard);
+        }else{
+            bufferElement.setNewUpperAndLowerRow(preCardList);
+            return mappingToTopCard(topcard);
         }
-        //TODO: Make a lower boundary of the upper row
 
-
-
-
-return null;
     }
 
     private Card.Suit createSuit(PreCard preCard){

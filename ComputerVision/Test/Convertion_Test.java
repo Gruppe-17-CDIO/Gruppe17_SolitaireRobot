@@ -2,6 +2,8 @@ import Converter.Convertion;
 import Converter.Util.SortingHelperClass;
 import Data.JsonDTO;
 import Data.PreCard;
+import dataObjects.Card;
+import dataObjects.TopCards;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -256,7 +258,78 @@ public class Convertion_Test {
 
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         Image im = convertToFxImage(image);
-    converter.getSolitaireCards(im);
+        TopCards actualTopCard = converter.getSolitaireCards(im);
+
+        TopCards expectedTopCard = new TopCards();
+        //Piles
+        try {
+            Card card = new Card(createSuit("s"),5);
+            Card card1 = new Card(createSuit("h"),2);
+            Card card2 = new Card(createSuit("h"),8);
+            Card card3 = new Card(createSuit("c"),2);
+            Card card4 = new Card(createSuit("c"),5);
+            Card card5 = new Card(createSuit("c"),9);
+            Card card6 = new Card(createSuit("c"),8);
+            Card[] piles = new Card[7];
+            piles[0]= card;
+            piles[1]= card1;
+            piles[2]= card2;
+            piles[3]= card3;
+            piles[4]= card4;
+            piles[5]= card5;
+            piles[6]= card6;
+
+            //Draw
+            Card draw= new Card(createSuit("c"),11);
+
+            //Foundation
+            Card[] foundation = new Card[4];
+            for (int i = 0; i<foundation.length;i++){
+                foundation[i]=null;
+            }
+
+            expectedTopCard.setDrawnCard(draw);
+            expectedTopCard.setPiles(piles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        //Comparing the two topCards
+        assertEquals(expectedTopCard.getDrawnCard().getRank(),actualTopCard.getDrawnCard().getRank());
+        assertEquals(expectedTopCard.getDrawnCard().getColor(),actualTopCard.getDrawnCard().getColor());
+
+
+        for(int i = 0; i<expectedTopCard.getFoundations().length;i++){
+            try {
+                assertEquals(expectedTopCard.getFoundations()[i].getRank(), actualTopCard.getFoundations()[i].getRank());
+                assertEquals(expectedTopCard.getFoundations()[i].getColor(), actualTopCard.getFoundations()[i].getColor());
+            }catch (NullPointerException e){
+                System.out.println("Is foundation a nulpointer? at index : "+i);
+            }
+        }
+
+
+        for(int i = 0; i<expectedTopCard.getPiles().length;i++){
+            assertEquals(expectedTopCard.getPiles()[i].getRank(),actualTopCard.getPiles()[i].getRank());
+            assertEquals(expectedTopCard.getPiles()[i].getColor(),actualTopCard.getPiles()[i].getColor());
+        }
+
+
+
+    }
+    private static Card.Suit createSuit(String suite){
+
+        switch (suite){
+            case "h": return Card.Suit.HEART;
+            case "d": return Card.Suit.DIAMOND;
+            case "s": return Card.Suit.SPADE;
+            case "c": return Card.Suit.CLUB;
+
+        }
+        return null;
     }
 
 }

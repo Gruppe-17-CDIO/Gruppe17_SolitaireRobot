@@ -249,7 +249,7 @@ public class BoxMapping_Test {
     }
 
 
-
+    @Test
     public void mappingToTopCard_Test_missing_one_pile_in_mitterRow() throws Exception {
         SortingHelperClass sorting = new SortingHelperClass();
         Darknet_Stub darknetReturnList = new Darknet_Stub();
