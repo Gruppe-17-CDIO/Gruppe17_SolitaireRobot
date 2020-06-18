@@ -94,12 +94,12 @@ public class ControllerTestTUI {
         if (state.getGameProgress() == GlobalEnums.GameProgress.WON) {
             System.out.println("YOU WON!");
             System.out.println("It only took " +
-                    ((new Timestamp(System.currentTimeMillis()).getTime() - startTime.getTime()) / 1000) + " seconds!");
+                    ((new Timestamp(System.currentTimeMillis()).getTime() - startTime.getTime())) + " millis!");
             System.exit(0);
         } else if (state.getGameProgress() == GlobalEnums.GameProgress.LOST) {
             System.out.println("YOU LOST.");
             System.out.println("It took " +
-                    ((new Timestamp(System.currentTimeMillis()).getTime() - startTime.getTime()) / 1000) + " seconds!");
+                    ((new Timestamp(System.currentTimeMillis()).getTime() - startTime.getTime())) + " millis!");
             System.exit(0);
         }
         seeResults();

@@ -81,7 +81,7 @@ public class DatknetConnection implements I_Connection {
     private HttpResponse<String> makePOSTRequest(byte[] imageByteArray){
         try {
 
-            HttpResponse<String> res = Unirest.post("http://192.168.0.2:5000/detect/hello.png")
+            HttpResponse<String> res = Unirest.post("http://192.168.0.20:6969/detect/hello.png")
                     .header("Content-Type", "image/png")
                     .body(imageByteArray)
                     .asString();
