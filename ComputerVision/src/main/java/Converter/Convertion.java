@@ -15,20 +15,29 @@ import dataObjects.TopCards;
 import javafx.scene.image.Image;
 
 import java.io.BufferedReader;
+import java.sql.Connection;
 import java.util.*;
 
 /**
  * * @author Andreas B.G. Jensen
  */
 public class Convertion implements I_ComputerVisionController {
-    SortingHelperClass sorting = new SortingHelperClass();
 
-    //BoxMapping mapping = new BoxMapping();
-    I_Connection connection = new Darknet_Stub();
+    boolean test = true;
+    SortingHelperClass sorting;
+    I_Connection connection;
     BufferElement buffer;
     BoxMapping mapper;
-    ImageBoxes boxCreator = new ImageBoxes();
-    Image img;
+
+    public Convertion(){
+        if(test){
+            connection = new Darknet_Stub();
+        }
+        else{
+            connection = new DatknetConnection();
+        }
+        sorting = new SortingHelperClass();
+    }
 
 
 
