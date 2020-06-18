@@ -26,7 +26,8 @@ public class ImageBoxes {
     // 0 will be the draw image
     // 1 will be the foundation
     // 2 will be the piles.
-    List<double[]> imageBoxesList = new ArrayList<>();
+    static List<double[]> imageBoxesList = new ArrayList<>();
+    private static int imageCounter = 0;
     /*
    Divide the image into sections. Ex height/2  and length/7.
    _____________________________
@@ -38,8 +39,23 @@ public class ImageBoxes {
    -----------------------------
    These boundary boxes will be used to to check if the incoming coordinates (From darknet) are located in one of the boxes.
     */
-    public List<double[]> calibrateImgBoxes(Image img){
+    public List<double[]> returnImgBoxes(Image img, List<PreCard> preCardList) {
 
+        //Counting the number of image to be recognized.
+        //If it is the first image i.e. the imageCounter == 1, the imageboxes will have to be calibrated.
+        imageCounter++;
+
+        if (imageCounter == 1) {
+
+            imageBoxesList = calibratingImageBox(img, preCardList);
+            //Callibrating boxes
+            return imageBoxesList;
+        }
+
+        return imageBoxesList;
+    }
+
+        private List<double[]> calibratingImageBox(Image img, List<PreCard> preCardList){
         lowerHeight = img.getHeight()/2;
         upperHeight = img.getHeight()/2+lowerHeight;
 
@@ -170,4 +186,20 @@ public class ImageBoxes {
         }
         return null;
     }
+
+
+    private double returnDevidingLine(List<PreCard> precards){
+        double diverdingLine = 0;
+        //Finding all the lowes "y" koordinaes and return the largest of them.
+
+
+        return diverdingLine;
+    }
+
+
+
+
+
+
+
 }

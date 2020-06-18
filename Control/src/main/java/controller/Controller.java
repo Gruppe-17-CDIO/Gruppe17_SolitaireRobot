@@ -1,5 +1,6 @@
 package controller;
 
+import Converter.Convertion;
 import computerVision.I_ComputerVisionController;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
@@ -19,7 +20,7 @@ import java.util.List;
 public class Controller implements I_Controller {
     private I_Logic logic;
     private StateManager stateManager;
-    private I_ComputerVisionController CV_Controller;
+    private I_ComputerVisionController CV_Controller = new Convertion();
     private boolean testmode = false;
     private Move currentMove;
     private TopCardsSimulator topCardsSimulator;
@@ -74,7 +75,7 @@ public class Controller implements I_Controller {
                 if (!testmode) {
                     topCards = CV_Controller.getSolitaireCards(img);
                     state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
-                    stateManager.checkStateAgainstImage(topCards, state);
+                    //stateManager.checkStateAgainstImage(topCards, state);
 
                 } else {
                     state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
