@@ -4,6 +4,8 @@ import Converter.Util.Sorting.I_Sorting;
 import Converter.Util.Util;
 import Data.BufferElement;
 import Data.JsonDTO;
+import Exceptions.BoxMappingException;
+import Exceptions.ComputerVisionException;
 import dataObjects.Card;
 import dataObjects.TopCards;
 
@@ -14,35 +16,114 @@ import java.util.Map;
 
 public class BoxMapping {
     private I_Sorting sorting;
-    private static List<JsonDTO> currentPreCardList;
     private static int getNumberOfAnalysedImage = 0;
     private BufferElement bufferElement;
 
+    /**
+     * @Author Andreas B.G. Jensen
+     * Thsi constructor is used for testing
+     * @param bufferElement
+     * @param sortObject
+     */
     public BoxMapping(BufferElement bufferElement, I_Sorting sortObject) {
         this.bufferElement = bufferElement;
         sorting = sortObject;
     }
 
-    public TopCards makeBoxMapping(List<JsonDTO> preCardList) throws Exception {
 
+    public BoxMapping(I_Sorting sortObject) {
+        sorting = sortObject;
+        bufferElement = new BufferElement(sorting);
+    }
+
+
+    /**
+     * @author Andreas B.G. Jensen
+     * Converts at  list of JsonDTO objects to Card elements and returns them in a TopCards object.
+     * If the preCardList is the first inputlist it will be used for callibrating the image to the indput.
+     * @param preCardList
+     * @return
+     * @throws ComputerVisionException
+     */
+    public TopCards makeBoxMapping(List<JsonDTO> preCardList) throws BoxMappingException {
+    try {
         getNumberOfAnalysedImage++;
-        currentPreCardList = preCardList;
 
         TopCards topcard = new TopCards();
-        if(getNumberOfAnalysedImage==1) {
-            bufferElement = new BufferElement(currentPreCardList, sorting);
-            bufferElement.calibrateImageInputDimensions();
-           // bufferElement.calculateBufferY();
-           // bufferElement.getDrawCardSeparationLine();
-            //bufferElement.calculateVerticalGrid();
+        if (getNumberOfAnalysedImage == 1) {
 
+            bufferElement.setCallibrationInputList(preCardList);
+            bufferElement.calibrateImageInputDimensions();
             return mappingToTopCard(topcard);
-        }else{
+
+        } else {
             bufferElement.setNewUpperAndLowerRow(preCardList);
             return mappingToTopCard(topcard);
         }
 
+    }catch (BoxMappingException e){
+        e.getStackTrace();
+        //decrement the
+        getNumberOfAnalysedImage--;
+        throw e;
+    }catch (Exception e){
+        throw new BoxMappingException(e.getMessage());
     }
+
+    }
+
+
+    public TopCards mappingToTopCard(TopCards topcards) throws Exception {
+        JsonDTO[] upperRow = mappingUpperRow();
+        JsonDTO[] lowerRow = mappingLowerRow();
+        ArrayList<Card> foundation = new ArrayList<>();
+
+        //Finding drawCard
+        for(int i = 0; i<upperRow.length;i++){
+            if(upperRow[i].getX()<=bufferElement.getDrawCardSeparationLine()){
+                Card drawCard = Util.convertToCard(upperRow[i]);
+                topcards.setDrawnCard(drawCard);
+            }else{
+                foundation.add(Util.convertToCard(upperRow[i]));
+            }
+        }
+        //Finding doundation
+        Card[] foundationArray = new Card[4];
+        for(int i = 0; i<foundationArray.length;i++){
+            try {
+                foundationArray[i] = foundation.get(i);
+            }catch (IndexOutOfBoundsException e){
+                //The purpus is to get empty index in the foundations, is there is no card.
+                foundationArray[i] = null;
+            }finally{
+                topcards.setFoundations(foundationArray);
+            }
+        }
+
+        Card[] piles = new Card[lowerRow.length];
+        //Mapping pile row
+        for (int i = 0; i< lowerRow.length;i++){
+            if(lowerRow[i]==null){
+                piles[i]=null;
+            }else{
+                piles[i]=Util.convertToCard(lowerRow[i]);
+            }
+        }
+
+        topcards.setPiles(piles);
+
+        if(getNumberOfAnalysedImage==1){
+            if(topcards.getPiles().length!=7 || topcards.getDrawnCard()==null){
+                throw new BoxMappingException("The calibrating could not be identified\n" +
+                        "Please try to adjust the piles.\n " +
+                        "Keep in mind that the Computer Vision will be able to detect on your dect of cards");
+            }
+        }
+
+        return topcards;
+
+    }
+
 
 
     public JsonDTO[] mappingLowerRow(){
@@ -51,7 +132,6 @@ public class BoxMapping {
         lowerRowList = averageXCoordinates(lowerRowList);
         JsonDTO[] cardList = new JsonDTO[7];
         int closestMatchRow =0;
-
 
         double closer;
 
@@ -127,48 +207,7 @@ public class BoxMapping {
         return upperRow;
     }
 
-    public TopCards mappingToTopCard(TopCards topcards) throws Exception {
-        JsonDTO[] upperRow = mappingUpperRow();
-        JsonDTO[] lowerRow = mappingLowerRow();
-        ArrayList<Card> foundation = new ArrayList<>();
 
-        //Finding drawCard
-        for(int i = 0; i<upperRow.length;i++){
-            if(upperRow[i].getX()<=bufferElement.getDrawCardSeparationLine()){
-                Card drawCard = Util.convertToCard(upperRow[i]);
-                topcards.setDrawnCard(drawCard);
-            }else{
-                foundation.add(Util.convertToCard(upperRow[i]));
-            }
-        }
-        //Finding doundation
-        Card[] foundationArray = new Card[4];
-        for(int i = 0; i<foundationArray.length;i++){
-            try {
-                foundationArray[i] = foundation.get(i);
-            }catch (IndexOutOfBoundsException e){
-                //The purpus is to get empty index in the foundations, is there is no card.
-                foundationArray[i] = null;
-            }finally{
-                topcards.setFoundations(foundationArray);
-            }
-        }
-
-        Card[] piles = new Card[lowerRow.length];
-        //Mapping pile row
-        for (int i = 0; i< lowerRow.length;i++){
-            if(lowerRow[i]==null){
-                piles[i]=null;
-            }else{
-                piles[i]=Util.convertToCard(lowerRow[i]);
-            }
-        }
-
-        topcards.setPiles(piles);
-
-        return topcards;
-
-    }
 
 
     private Card[] convertListToArray(ArrayList<Card> cardList){

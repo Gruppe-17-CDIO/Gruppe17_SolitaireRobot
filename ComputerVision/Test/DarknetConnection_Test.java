@@ -2,6 +2,7 @@ import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.*;
 import Data.JsonDTO;
 
+import Exceptions.DarknetConnectionException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -45,7 +46,7 @@ public class DarknetConnection_Test {
 
 
     @Test
-    public void Sending_ImageToServer_Test(){
+    public void Sending_ImageToServer_Test() throws DarknetConnectionException {
         try {
 
               //BufferedImage  img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\TestKabale.PNG"));

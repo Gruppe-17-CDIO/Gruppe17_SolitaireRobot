@@ -15,22 +15,34 @@ import java.util.List;
  *
  * //HashMap rowFixedGridLines holds X coordinates for calibrating of the lower row according to the X koordinate.
  * <List<JsonDTO>upperRow> and <List<JsonDTO>lowerRow>  represents the upper row and can be changed after calibration. Everytime an output from Darknet has to be evaluated, the upperRow and lowerRow will change according to the output.
- *  List<JsonDTO> calubrationList is used for calculating rowFixedGidLines.
+ *  List<JsonDTO> callibrationInputList is used for calculating rowFixedGidLines.
  *  double separationLine represent the Y-koordinate on which the upper and lower row will be separated.
  *  static double drawCardSeparationLineX represents the X-koordinate on which the draw card will be destinguished from the Foundation piles in the upper row.
  */
 public class BufferElement {
     private final double drawCard_HorisontalBuffer = 100.0;
     private I_Sorting sortingObject;
-    private List<JsonDTO> calubrationList;
+    private List<JsonDTO> callibrationInputList;
     private List<JsonDTO> upperRow = new ArrayList<>();
     private List<JsonDTO> lowerRow = new ArrayList<>();
     private static double separationLine = 0;
     private static double drawCardSeparationLineX = 0;
     private static HashMap<Integer, Double> rowFixedGridLines;
 
+
+    /**
+     * @author Andreas B.G. Jensen
+     * This constructor is used for testing.
+     * @param calubrationList
+     * @param sortingObject
+     */
     public BufferElement(List<JsonDTO> calubrationList, I_Sorting sortingObject) {
-        this.calubrationList = calubrationList;
+        this.callibrationInputList = calubrationList;
+        this.sortingObject = sortingObject;
+
+    }
+
+    public BufferElement(I_Sorting sortingObject) {
         this.sortingObject = sortingObject;
     }
 
@@ -39,19 +51,18 @@ public class BufferElement {
      * @author Andreas B.G. Jensen
      * Method is used for calibration of the first image.
      * The method sorts all the elements according to Y-coordinate in increasing order.
-     * The lowes Y-koordinate represent the Card in the drawPile. The rest of the elements represent the
-     *
-     * Deviding Darknet output, between the upper and the lower row.
+     * The lowes Y-koordinate represent the Card in the drawPile. The rest of the elements represent the the piles in the lower row.
+     * The callibration will only pass if a drawCard is detected in the upperRow and 7 elements are detected in the lower row.
      */
     public void calibrateImageInputDimensions(){
-        calubrationList = sortingObject.sortingTheListAccordingToY(calubrationList);
-        List<JsonDTO> upperElements = calubrationList;
+        callibrationInputList = sortingObject.sortingTheListAccordingToY(callibrationInputList);
+        List<JsonDTO> upperElements = callibrationInputList;
         for(int i = 0; i<upperElements.size();i++){
             if(upperElements.get(i).getCat().equals(upperElements.get(0).getCat())){
                 upperRow.add(upperElements.get(i));
             }
         }
-        lowerRow = removeSameElementsInList(calubrationList,upperRow);
+        lowerRow = removeSameElementsInList(callibrationInputList,upperRow);
        //Chect for correct input
         //Else throw an error
         setDrawCardSeparationLineX();
@@ -197,6 +208,10 @@ public class BufferElement {
 
     public double getDrawCardSeparationLine(){
         return drawCardSeparationLineX;
+    }
+
+    public void setCallibrationInputList(List<JsonDTO> callibrationInputList ){
+        this.callibrationInputList = callibrationInputList;
     }
 
 }
