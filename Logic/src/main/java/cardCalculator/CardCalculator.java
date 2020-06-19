@@ -92,12 +92,15 @@ public class CardCalculator {
         // If move is draw, add the newly turned card from CV
         if (prevMove.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
+
             if (stock < 0) {
                 throw new Exception("Stock is below zero. Should not be possible.");
+
             } else if (stock == 0 && drawnCards.size() > 0) {
                 // Drawn cards become new stock ("turn draw pile").
                 stock = drawnCards.size();
                 if (test) {
+                    // Keep track of cards in deck to avoid duplicates, test only
                     topCardsSimulator.setUsedCards(drawnCards);
                 }
                 drawnCards = new ArrayList<>();
@@ -116,7 +119,7 @@ public class CardCalculator {
                 } else {
                     drawnCards.add(topCardsSimulator.getCard());
                 }
-            } else {
+            } else { // if not test
                 if (topCards.getDrawnCard() == null) {
                     // Throw special exception for drawn cards
                     throw new DrawnCardReadException("Expected a new drawn card but found null.");
@@ -124,6 +127,8 @@ public class CardCalculator {
                     drawnCards.add(topCards.getDrawnCard());
                 }
             }
+
+            // Unless exception is raised, decrement stock.
             state.setStock(stock - 1);
 
             state.setDrawnCards(drawnCards);
