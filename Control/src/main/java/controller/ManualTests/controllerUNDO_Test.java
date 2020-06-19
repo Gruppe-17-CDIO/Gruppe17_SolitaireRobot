@@ -23,6 +23,10 @@ public class controllerUNDO_Test {
     public static void main(String[] args) {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Test of the UNDO-method.");
+        System.out.println("This test will show that undo resets\n" +
+                "to previous state. In an actual game,\n" +
+                "cards from computervision must be read\n" +
+                "again. This test does not account for \nthat.");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         new controllerUNDO_Test().runGame();
     }
@@ -82,19 +86,26 @@ public class controllerUNDO_Test {
     }
 
     private void playTurn(Move move, SolitaireState state) {
+        turnCount++;
         if (turnCount == 1) {
             beforeLastState = state;
         }
         if (turnCount > 1) {
-            beforeLastState = state;
             controller.undo(new CompletionCallBack() {
                 @Override
                 public void OnSuccess(String status) {
                     System.out.println("\n**************" +
-                            "\nUNDO LAST MOVE" +
+                            "\n" + status +
                             "\n**************\n");
 
-                    validate(state);
+                    SolitaireState revertedState = null;
+                    try {
+                        revertedState = controller.getHistory().peek();
+                        validate(revertedState);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
                 @Override
@@ -114,6 +125,7 @@ public class controllerUNDO_Test {
     }
 
     private void performMove() {
+        System.out.println("Performing move!");
         controller.getNextMove(new Image(new InputStream() { // Dummy InputStream
             @Override
             public int read() throws IOException {
@@ -127,8 +139,6 @@ public class controllerUNDO_Test {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                turnCount++;
-                System.out.println(turnCount);
                 playTurn(move, state);
             }
 
@@ -175,16 +185,18 @@ public class controllerUNDO_Test {
                 }
             }
         }
+        if (!state.time.equals(beforeLastState.time)) {
+            errorFound = true;
+            System.out.println("ID's don't match.\nOld: " + beforeLastState.time + "\nNew: " + state.time);
+        }
 
 
         if (!errorFound) {
+            System.out.println("\nSUMMARY");
             System.out.println("Test passed: The moves and piles match.");
-
-            System.out.println("Comparing ID's:");
+            System.out.println("Reverted to state with ID:");
             System.out.println(state.time);
-            System.out.println(beforeLastState.time);
         }
-
         System.exit(0);
     }
 }

@@ -25,7 +25,7 @@ import static dataObjects.GlobalEnums.GameProgress.PLAYING;
  */
 
 public class SolitaireState {
-    public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
+    public String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private int stock = 52; // Cards to draw, face not visible
     private List<Card> drawnCards = new ArrayList<>(); // Drawn card, must keep track of these
@@ -127,6 +127,10 @@ public class SolitaireState {
 
     public void setGameProgress(GameProgress gameProgress) {
         this.gameProgress = gameProgress;
+    }
+
+    public void createTimeStamp() {
+        time = new Timestamp(System.currentTimeMillis()).toString();
     }
 }
 

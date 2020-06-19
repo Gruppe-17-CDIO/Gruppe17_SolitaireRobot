@@ -23,7 +23,6 @@ public class Controller implements I_Controller {
     private StateManager stateManager;
     private final I_ComputerVisionController CV_Controller = new Convertion();
     private boolean testmode = false;
-    private Move currentMove;
     private TopCardsSimulator topCardsSimulator;
     private boolean gameStarted = false;
 
@@ -46,7 +45,7 @@ public class Controller implements I_Controller {
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
-            currentMove = stateManager.getBestMove();
+            Move currentMove = stateManager.getBestMove();
             stateManager.updateGameProcess(moves);
             callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
@@ -72,7 +71,7 @@ public class Controller implements I_Controller {
         } else {
             try {
                 // Get move from state before calculating new
-                currentMove = stateManager.getBestMove();
+                Move currentMove = stateManager.getBestMove();
 
                 TopCards topCards;
                 SolitaireState state;

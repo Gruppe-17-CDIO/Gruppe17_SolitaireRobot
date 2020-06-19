@@ -81,6 +81,7 @@ public class CardCalculator {
         // Deep copy
         Gson gson = new Gson();
         SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+        state.createTimeStamp(); // Setting a new timestamp id
 
         // Clear suggestedmoves
         state.setSuggestedMoves(new ArrayList<>());
