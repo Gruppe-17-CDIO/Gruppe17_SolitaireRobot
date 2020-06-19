@@ -29,20 +29,20 @@ public class CardCalculator {
     public SolitaireState initiateState(TopCards topCards) throws Exception {
         // Check input
         if (topCards == null) {
-            throw new Exception("initiateState(): topCards was null.");
+            throw new CardReadException("initiateState(): topCards was null.");
         }
         if (topCards.getDrawnCard() == null) {
-            throw new Exception("initiateState(): Missing a drawn card in the setup. " +
+            throw new CardReadException("initiateState(): Missing a drawn card in the setup. " +
                     "Draw exactly one card from stock before calling initiate.");
         }
         for (int i = 0; i < 4; i++) {
             if (topCards.getFoundations()[i] != null) {
-                throw new Exception("initiateState(): Can't start game with foundations already present.");
+                throw new CardReadException("initiateState(): Can't start game with foundations already present.");
             }
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + (i + 1) + ". " +
+                throw new CardReadException("initiateState(): Missing card from pile: " + (i + 1) + ". " +
                         "All piles must have one card at start of new game.");
             }
         }
@@ -92,12 +92,15 @@ public class CardCalculator {
         // If move is draw, add the newly turned card from CV
         if (prevMove.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
+
             if (stock < 0) {
                 throw new Exception("Stock is below zero. Should not be possible.");
+
             } else if (stock == 0 && drawnCards.size() > 0) {
                 // Drawn cards become new stock ("turn draw pile").
                 stock = drawnCards.size();
                 if (test) {
+                    // Keep track of cards in deck to avoid duplicates, test only
                     topCardsSimulator.setUsedCards(drawnCards);
                 }
                 drawnCards = new ArrayList<>();
@@ -116,14 +119,16 @@ public class CardCalculator {
                 } else {
                     drawnCards.add(topCardsSimulator.getCard());
                 }
-            } else {
+            } else { // if not test
                 if (topCards.getDrawnCard() == null) {
                     // Throw special exception for drawn cards
-                    throw new DrawnCardReadException("Expected a new drawn card but found null.");
+                    throw new CardReadException("Expected a new drawn card but found null.");
                 } else {
                     drawnCards.add(topCards.getDrawnCard());
                 }
             }
+
+            // Unless exception is raised, decrement stock.
             state.setStock(stock - 1);
 
             state.setDrawnCards(drawnCards);
@@ -188,6 +193,9 @@ public class CardCalculator {
                         //throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
                         piles.get(i).set(piles.get(i).size() - 1, new Card(Card.Status.FACEDOWN));
                     } else {
+                        if (topCards.getPiles()[i] == null) {
+                            throw new CardReadException("Could not read discovered card in pile " + (i + 1) + ".");
+                        }
                         piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
                     }
                 }

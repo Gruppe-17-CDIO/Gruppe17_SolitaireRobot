@@ -6,8 +6,10 @@ import dataObjects.Move;
 import java.util.Comparator;
 
 public class MoveComparator implements Comparator<Move> {
+
     @Override
     public int compare(Move m1, Move m2) {
+
         return ComparisonChain.start()
                 .compare(benefitTypeToInt(m1), benefitTypeToInt(m2))
                 .compare(moveTypeToInt(m1), moveTypeToInt(m2))
@@ -24,7 +26,7 @@ public class MoveComparator implements Comparator<Move> {
             case USE_DRAWN:
                 return 2;
             default:
-                return 3;
+                return 4;
         }
     }
 
@@ -39,10 +41,8 @@ public class MoveComparator implements Comparator<Move> {
                 return 1;
             case CLEAN_PILE:
                 return 2;
-            case NO_BENEFIT:
-                return 3;
             default:
-                return 4;
+                return 3;
         }
     }
 
@@ -58,7 +58,7 @@ public class MoveComparator implements Comparator<Move> {
             case PILE:
                 return 2;
             default:
-                return 0;
+                return 3;
         }
     }
 

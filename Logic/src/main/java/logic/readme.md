@@ -24,4 +24,6 @@ Where size() is the array size of a particular pile.
 
 Last the drawn/stock card is checked against the four foundation piles.
 
+![](../../resources/cardTerms.png)
+
 >Author: Anders
