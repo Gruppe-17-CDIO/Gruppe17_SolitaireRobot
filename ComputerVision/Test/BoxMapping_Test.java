@@ -1,17 +1,15 @@
 import Converter.BoxMapping;
-import Converter.Util.SortingHelperClass;
+import Converter.Util.Sorting.I_Sorting;
+import Converter.Util.Sorting.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import Data.BufferElement;
 import Data.JsonDTO;
-import com.sun.rowset.internal.Row;
 import dataObjects.Card;
 import dataObjects.TopCards;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import static org.junit.Assert.*;
 
 
@@ -19,15 +17,15 @@ public class BoxMapping_Test {
 
     @Test
     public void mappingLowerRow_Test(){
-    SortingHelperClass sorting = new SortingHelperClass();
+        I_Sorting sorting = new SortingHelperClass();
     Darknet_Stub darknetReturnList = new Darknet_Stub();
     List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
 
 
     BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
-        bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+    bufferElement.calibrateImageInputDimensions();
+    //bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement,sorting);
 
     JsonDTO[] mappedJson = mapping.mappingLowerRow();
     JsonDTO[] expectedMappingLowerRow = new JsonDTO[7];
@@ -67,15 +65,15 @@ public class BoxMapping_Test {
     @Test
     public void mappingUpperRow_Test(){
 
-        SortingHelperClass sorting = new SortingHelperClass();
+        I_Sorting sorting = new SortingHelperClass();
         Darknet_Stub darknetReturnList = new Darknet_Stub();
         List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
-        bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        bufferElement.calibrateImageInputDimensions();
+       // bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement,sorting);
 
         JsonDTO[] mappedJson = mapping.mappingUpperRow();
 
@@ -100,9 +98,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
-        bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        bufferElement.calibrateImageInputDimensions();
+        //bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement,sorting);
 
         TopCards expectedTopCard = new TopCards();
         //Piles
@@ -174,9 +172,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(callibrationImage,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
-        bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        bufferElement.calibrateImageInputDimensions();
+       // bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement,sorting);
         bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
 
         TopCards expectedTopCard = new TopCards();
@@ -258,9 +256,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(callibrationImage,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
-        bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        bufferElement.calibrateImageInputDimensions();
+        //bufferElement.calculateVerticalGrid();
+        BoxMapping mapping = new BoxMapping(bufferElement,sorting);
         bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
 
         TopCards expectedTopCard = new TopCards();

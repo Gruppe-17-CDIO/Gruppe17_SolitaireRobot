@@ -1,10 +1,9 @@
 package Converter;
 
-import Converter.Util.SortingHelperClass;
+import Converter.Util.Sorting.I_Sorting;
 import Converter.Util.Util;
 import Data.BufferElement;
 import Data.JsonDTO;
-import Data.PreCard;
 import dataObjects.Card;
 import dataObjects.TopCards;
 
@@ -14,13 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 public class BoxMapping {
-    private SortingHelperClass sorting = new SortingHelperClass();
+    private I_Sorting sorting;
     private static List<JsonDTO> currentPreCardList;
     private static int getNumberOfAnalysedImage = 0;
     private BufferElement bufferElement;
 
-    public BoxMapping(BufferElement bufferElement) {
+    public BoxMapping(BufferElement bufferElement, I_Sorting sortObject) {
         this.bufferElement = bufferElement;
+        sorting = sortObject;
     }
 
     public TopCards makeBoxMapping(List<JsonDTO> preCardList) throws Exception {
@@ -31,10 +31,10 @@ public class BoxMapping {
         TopCards topcard = new TopCards();
         if(getNumberOfAnalysedImage==1) {
             bufferElement = new BufferElement(currentPreCardList, sorting);
-            bufferElement.devideElementsBetweenUpperAndLowerRow();
-            bufferElement.calculateBufferY();
-            bufferElement.getDrawCardSeparationLine();
-            bufferElement.calculateVerticalGrid();
+            bufferElement.calibrateImageInputDimensions();
+           // bufferElement.calculateBufferY();
+           // bufferElement.getDrawCardSeparationLine();
+            //bufferElement.calculateVerticalGrid();
 
             return mappingToTopCard(topcard);
         }else{
@@ -46,7 +46,7 @@ public class BoxMapping {
 
 
     public JsonDTO[] mappingLowerRow(){
-        List<JsonDTO> lowerRowList = sorting.sortingTheListOfPrecardsAccordingToX(bufferElement.getLowerRow());
+        List<JsonDTO> lowerRowList = sorting.sortingTheListAccordingToX(bufferElement.getLowerRow());
         HashMap<Integer, Double> rowGrow = bufferElement.getRowFixedGridLines();
         lowerRowList = averageXCoordinates(lowerRowList);
         JsonDTO[] cardList = new JsonDTO[7];

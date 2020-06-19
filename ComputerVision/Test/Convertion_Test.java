@@ -1,7 +1,6 @@
 import Converter.Convertion;
-import Converter.Util.SortingHelperClass;
+import Converter.Util.Sorting.SortingHelperClass;
 import Data.JsonDTO;
-import Data.PreCard;
 import dataObjects.Card;
 import dataObjects.TopCards;
 import javafx.embed.swing.SwingFXUtils;
@@ -13,11 +12,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +78,7 @@ public class Convertion_Test {
 
         Image image = SwingFXUtils.toFXImage(img, null);
 
-        List<JsonDTO> preCardList = converter.ConvertImage(image);
+        List<JsonDTO> preCardList = converter.getOutputDarknet(image);
         System.out.println();
     }
 
@@ -103,7 +100,7 @@ public class Convertion_Test {
             preCardList.add(obj);
         }
 
-        preCardList = sorting.sortingTheListOfPrecardsAccordingToX(preCardList);
+        preCardList = sorting.sortingTheListAccordingToX(preCardList);
 
         List<JsonDTO> expectedPrecardList = new ArrayList<>();
 
@@ -171,7 +168,7 @@ public class Convertion_Test {
             preCardList.add(obj);
         }
 
-       preCardList = sorting.sortingTheListOfPrecardsAccordingToY(preCardList);
+       preCardList = sorting.sortingTheListAccordingToY(preCardList);
 
         List<JsonDTO> expectedPrecardList = new ArrayList<>();
 

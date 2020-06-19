@@ -1,22 +1,17 @@
 package Converter;
 
-import Converter.Util.SortingHelperClass;
-import Converter.Util.Util;
+import Converter.Util.Sorting.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.I_Connection;
 import Data.BufferElement;
 import Data.JsonDTO;
-import Data.PreCard;
-import com.google.gson.JsonArray;
 
 import computerVision.I_ComputerVisionController;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
 import kong.unirest.UnirestException;
 
-import java.io.BufferedReader;
-import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -24,7 +19,7 @@ import java.util.*;
  */
 public class Convertion implements I_ComputerVisionController {
 
-    boolean test = false;
+    boolean test = true;
     SortingHelperClass sorting;
     I_Connection connection;
     BufferElement buffer;
@@ -38,6 +33,7 @@ public class Convertion implements I_ComputerVisionController {
             connection = new DatknetConnection();
         }
         sorting = new SortingHelperClass();
+
     }
 
 
@@ -47,9 +43,9 @@ public class Convertion implements I_ComputerVisionController {
     public TopCards getSolitaireCards(Image img) {
 
     try {
-        List<JsonDTO> returnImages = ConvertImage(img);
+        List<JsonDTO> returnImages = getOutputDarknet(img);
         buffer = new BufferElement(returnImages,sorting);
-        mapper = new BoxMapping(buffer);
+        mapper = new BoxMapping(buffer,sorting);
 
         //List<double[]> boxesArea = boxCreator.returnImgBoxes(img, returnImages);
        // mapping.makeBoxMapping(returnImages, new TopCards());
@@ -67,14 +63,14 @@ public class Convertion implements I_ComputerVisionController {
 
 
 
-    public List<JsonDTO> ConvertImage(Image img){
-        JsonArray returnArray = null;
+    public List<JsonDTO> getOutputDarknet(Image img){
+
         try {
             return connection.Get_Image_Information(img);
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-       // return utility.getPreCard(returnArray);
+        //Throw an exception eif the connection fails
         return null;
 
     }

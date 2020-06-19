@@ -110,7 +110,7 @@ public class ImageBoxes_Test {
         List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         //Creating a return from
-        List<JsonDTO> returnFromDarknet = convert.ConvertImage(image);
+        List<JsonDTO> returnFromDarknet = convert.getOutputDarknet(image);
         //converting all precard to Card object for late use to assertEqual
         List<Card> preCardToCards = preCardToCard(returnFromDarknet);
 
@@ -186,7 +186,7 @@ public class ImageBoxes_Test {
         List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         //Creating a return from
-        List<PreCard> returnFromDarknet = convert.ConvertImage(image);
+        List<PreCard> returnFromDarknet = convert.getOutputDarknet(image);
         Collections.shuffle(returnFromDarknet);
 
         returnFromDarknet = sortingListX(returnFromDarknet,image);
