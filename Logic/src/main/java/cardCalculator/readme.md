@@ -24,5 +24,5 @@ Solitairestate initiateState(List<Card> cardArray)
 ```
 
 ## Flow Chart
-![](../../resources/cardcalculator.png)
+![](../../resources/flow-updatestate.png)
 

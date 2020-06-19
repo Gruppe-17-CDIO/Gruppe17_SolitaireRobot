@@ -29,20 +29,20 @@ public class CardCalculator {
     public SolitaireState initiateState(TopCards topCards) throws Exception {
         // Check input
         if (topCards == null) {
-            throw new Exception("initiateState(): topCards was null.");
+            throw new CardReadException("initiateState(): topCards was null.");
         }
         if (topCards.getDrawnCard() == null) {
-            throw new Exception("initiateState(): Missing a drawn card in the setup. " +
+            throw new CardReadException("initiateState(): Missing a drawn card in the setup. " +
                     "Draw exactly one card from stock before calling initiate.");
         }
         for (int i = 0; i < 4; i++) {
             if (topCards.getFoundations()[i] != null) {
-                throw new Exception("initiateState(): Can't start game with foundations already present.");
+                throw new CardReadException("initiateState(): Can't start game with foundations already present.");
             }
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + (i + 1) + ". " +
+                throw new CardReadException("initiateState(): Missing card from pile: " + (i + 1) + ". " +
                         "All piles must have one card at start of new game.");
             }
         }
@@ -122,7 +122,7 @@ public class CardCalculator {
             } else { // if not test
                 if (topCards.getDrawnCard() == null) {
                     // Throw special exception for drawn cards
-                    throw new DrawnCardReadException("Expected a new drawn card but found null.");
+                    throw new CardReadException("Expected a new drawn card but found null.");
                 } else {
                     drawnCards.add(topCards.getDrawnCard());
                 }
@@ -193,6 +193,9 @@ public class CardCalculator {
                         //throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
                         piles.get(i).set(piles.get(i).size() - 1, new Card(Card.Status.FACEDOWN));
                     } else {
+                        if (topCards.getPiles()[i] == null) {
+                            throw new CardReadException("Could not read discovered card in pile " + (i + 1) + ".");
+                        }
                         piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
                     }
                 }
