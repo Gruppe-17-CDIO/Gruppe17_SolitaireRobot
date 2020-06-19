@@ -20,7 +20,6 @@ import java.util.Stack;
  * @author erlend
  */
 public class ControllerTestTUI {
-    int gameType;
     private Controller controller;
     private Timestamp startTime;
 
