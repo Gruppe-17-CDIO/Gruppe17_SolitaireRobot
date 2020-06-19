@@ -11,6 +11,7 @@ import logic.Logic;
 import stateBuilding.TopCardsSimulator;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author Erlend
@@ -20,7 +21,7 @@ import java.util.List;
 public class Controller implements I_Controller {
     private I_Logic logic;
     private StateManager stateManager;
-    private I_ComputerVisionController CV_Controller = new Convertion();
+    private final I_ComputerVisionController CV_Controller = new Convertion();
     private boolean testmode = false;
     private Move currentMove;
     private TopCardsSimulator topCardsSimulator;
@@ -70,6 +71,9 @@ public class Controller implements I_Controller {
             startNewGame(img, callBack);
         } else {
             try {
+                // Get move from state before calculating new
+                currentMove = stateManager.getBestMove();
+
                 TopCards topCards;
                 SolitaireState state;
                 if (!testmode) {
@@ -86,8 +90,6 @@ public class Controller implements I_Controller {
                 stateManager.saveState(state);
                 stateManager.addMovesToState(moves);
 
-                // Reset move
-                currentMove = stateManager.getBestMove();
                 stateManager.updateGameProcess(moves);
                 callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
             } catch (Exception e) {
@@ -101,10 +103,15 @@ public class Controller implements I_Controller {
         try {
             stateManager.undo();
             callBack.OnSuccess("UNDO registered. Last move and state logged, but deleted from current history. " +
-                    "\nPerform move again to continue");
+                    "\nPerform calculation again to continue");
         } catch (Exception e) {
             callBack.OnError(e);
         }
+    }
+
+    // This method is for testing, not part of interface
+    public Stack<SolitaireState> getHistory() throws Exception {
+        return stateManager.getHistory();
     }
 
     @Override
