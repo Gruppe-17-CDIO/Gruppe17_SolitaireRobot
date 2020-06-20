@@ -1,8 +1,7 @@
 import Converter.Convertion;
-import Converter.Util.Sorting.SortingHelperClass;
+import Converter.Util.SortingHelperClass;
 import Data.JsonDTO;
-import Exceptions.ComputerVisionException;
-import Exceptions.DarknetConnectionException;
+import Data.PreCard;
 import dataObjects.Card;
 import dataObjects.TopCards;
 import javafx.embed.swing.SwingFXUtils;
@@ -14,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,6 @@ public class Convertion_Test {
     /*
     Convertin a BufferedImage to jfx image
     This is used only for testing.
-    Converting a BufferedImage into javaFX image in order to simulate that an javafx imegages which is send from the controller.
      */
     @Test
     private static Image convertToFxImage(BufferedImage image) {
@@ -81,11 +81,7 @@ public class Convertion_Test {
 
         Image image = SwingFXUtils.toFXImage(img, null);
 
-        try {
-            List<JsonDTO> preCardList = converter.getOutputDarknet(image);
-        } catch (DarknetConnectionException e) {
-            e.printStackTrace();
-        }
+        List<JsonDTO> preCardList = converter.ConvertImage(image);
         System.out.println();
     }
 
@@ -107,7 +103,7 @@ public class Convertion_Test {
             preCardList.add(obj);
         }
 
-        preCardList = sorting.sortingTheListAccordingToX(preCardList);
+        preCardList = sorting.sortingTheListOfPrecardsAccordingToX(preCardList);
 
         List<JsonDTO> expectedPrecardList = new ArrayList<>();
 
@@ -175,7 +171,7 @@ public class Convertion_Test {
             preCardList.add(obj);
         }
 
-       preCardList = sorting.sortingTheListAccordingToY(preCardList);
+       preCardList = sorting.sortingTheListOfPrecardsAccordingToY(preCardList);
 
         List<JsonDTO> expectedPrecardList = new ArrayList<>();
 
@@ -258,7 +254,7 @@ public class Convertion_Test {
     }
 
     @Test
-    public void getSolitaireCards_Test() throws ComputerVisionException {
+    public void getSolitaireCards_Test(){
 
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         Image im = convertToFxImage(image);
