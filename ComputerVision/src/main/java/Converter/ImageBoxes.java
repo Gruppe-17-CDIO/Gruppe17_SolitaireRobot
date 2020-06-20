@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * * @author Andreas B.G. Jensen
- * @deprecated
  */
 public class ImageBoxes {
     double upperHeight;

@@ -1,7 +1,6 @@
 package DarkNet_Connection;
 
 import Data.JsonDTO;
-import Exceptions.DarknetConnectionException;
 import com.google.gson.JsonArray;
 
 import javafx.scene.image.Image;
@@ -14,6 +13,6 @@ import java.util.List;
  */
 public interface I_Connection {
 
-    List<JsonDTO> Get_Image_Information(Image img) throws DarknetConnectionException;
+    List<JsonDTO> Get_Image_Information(Image img) throws UnirestException;
 
 }

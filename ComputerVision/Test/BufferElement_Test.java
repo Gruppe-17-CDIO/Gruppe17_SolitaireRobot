@@ -1,7 +1,9 @@
-import Converter.Util.Sorting.SortingHelperClass;
+import Converter.BoxMapping;
+import Converter.Util.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import Data.BufferElement;
 import Data.JsonDTO;
+import com.sun.rowset.internal.Row;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -11,9 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-/**
- * @author Andreas B.G. Jensen
- */
+
 public class BufferElement_Test {
 
 
@@ -31,7 +31,7 @@ public class BufferElement_Test {
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.calibrateImageInputDimensions();
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
 
         List<JsonDTO> expectdUpperRowElements = new ArrayList<>();
         JsonDTO upperElement = new JsonDTO();
@@ -64,8 +64,8 @@ public class BufferElement_Test {
         List<JsonDTO> lowerRow = bufferElement.getLowerRow();
 
         //Sorting actual and expected lower row
-        lowerRow = sorting.sortingTheListAccordingToY(lowerRow);
-        expectdLowerRowElements = sorting.sortingTheListAccordingToY(expectdLowerRowElements);
+        lowerRow = sorting.sortingTheListOfPrecardsAccordingToY(lowerRow);
+        expectdLowerRowElements = sorting.sortingTheListOfPrecardsAccordingToY(expectdLowerRowElements);
         for (int i = 0; i<upperRow.size();i++){
             assertEquals(lowerRow.get(i),expectdLowerRowElements.get(i));
         }
@@ -80,7 +80,7 @@ public class BufferElement_Test {
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.calibrateImageInputDimensions();
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
         bufferElement.calculateBufferY();
 
         List<JsonDTO> upperRow = bufferElement.getUpperRow();
@@ -112,8 +112,8 @@ public class BufferElement_Test {
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.calibrateImageInputDimensions();
-        //bufferElement.calculateVerticalGrid();
+        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calculateVerticalGrid();
 
         HashMap<Integer, Double> verticalGrid = bufferElement.getRowFixedGridLines();
 

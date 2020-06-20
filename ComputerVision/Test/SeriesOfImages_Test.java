@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.*;
 
-/**
- * @author Andreas B.G. Jensen
- * Not implementet
- */
+
 public class SeriesOfImages_Test {
 
     @Test
