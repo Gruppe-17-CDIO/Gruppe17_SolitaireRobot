@@ -12,7 +12,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
+/**
+ * @author Andreas B.G. Jensen
+ */
 public class BoxMapping_Test {
 
     @Test
@@ -175,6 +177,9 @@ public class BoxMapping_Test {
         bufferElement.calibrateImageInputDimensions();
        // bufferElement.calculateVerticalGrid();
         BoxMapping mapping = new BoxMapping(bufferElement,sorting);
+
+        //Avoding the callibrationsstate
+        mapping.setNumberOfAnalysedPic(0);
         bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
 
         TopCards expectedTopCard = new TopCards();
@@ -259,6 +264,9 @@ public class BoxMapping_Test {
         bufferElement.calibrateImageInputDimensions();
         //bufferElement.calculateVerticalGrid();
         BoxMapping mapping = new BoxMapping(bufferElement,sorting);
+
+        //Avoding the callibrationsstate
+        mapping.setNumberOfAnalysedPic(0);
         bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
 
         TopCards expectedTopCard = new TopCards();

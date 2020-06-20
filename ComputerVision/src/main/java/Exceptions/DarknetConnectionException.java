@@ -1,9 +1,12 @@
 package Exceptions;
 
-import kong.unirest.UnirestException;
-
+/**
+ * @author Andreas B.G. Jensen
+ */
 public class DarknetConnectionException extends ComputerVisionException {
     public DarknetConnectionException(String errorMessage) {
         super(errorMessage);
     }
 }
+
+

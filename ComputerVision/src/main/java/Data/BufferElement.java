@@ -1,6 +1,7 @@
 package Data;
 
 import Converter.Util.Sorting.I_Sorting;
+import Exceptions.BufferElementException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -156,6 +157,7 @@ public class BufferElement {
                 rowCounter++;
 
             }
+
     }
 
 
@@ -210,8 +212,14 @@ public class BufferElement {
         return drawCardSeparationLineX;
     }
 
-    public void setCallibrationInputList(List<JsonDTO> callibrationInputList ){
-        this.callibrationInputList = callibrationInputList;
+    public void setCallibrationInputList(List<JsonDTO> callibrationInputList ) throws BufferElementException {
+        if(!callibrationInputList.isEmpty()) {
+            this.callibrationInputList = callibrationInputList;
+        }else{
+            throw new BufferElementException("No output from darknet have been detected\nThe calibration could not be done");
+
+        }
+
     }
 
 }

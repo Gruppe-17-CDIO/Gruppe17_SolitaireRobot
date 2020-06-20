@@ -50,6 +50,7 @@ public class Convertion_Test {
     /*
     Convertin a BufferedImage to jfx image
     This is used only for testing.
+    Converting a BufferedImage into javaFX image in order to simulate that an javafx imegages which is send from the controller.
      */
     @Test
     private static Image convertToFxImage(BufferedImage image) {

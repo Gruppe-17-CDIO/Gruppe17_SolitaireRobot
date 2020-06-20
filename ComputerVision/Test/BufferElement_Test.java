@@ -11,7 +11,9 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-
+/**
+ * @author Andreas B.G. Jensen
+ */
 public class BufferElement_Test {
 
 

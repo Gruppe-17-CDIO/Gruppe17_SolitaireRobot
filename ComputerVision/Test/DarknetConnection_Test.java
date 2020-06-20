@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * * @author Andreas B.G. Jensen
+ * @author Andreas B.G. Jensen
  */
 public class DarknetConnection_Test {
     Test_Create_Image imageCreator = new Test_Create_Image();
@@ -49,13 +49,9 @@ public class DarknetConnection_Test {
     public void Sending_ImageToServer_Test() throws DarknetConnectionException {
         try {
 
-              //BufferedImage  img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\TestKabale.PNG"));
             BufferedImage  img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\AllDeck.jpg"));
 
-
-
             Image image = SwingFXUtils.toFXImage(img, null);
-
 
             connection.Get_Image_Information(image);
 
