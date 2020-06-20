@@ -1,13 +1,14 @@
-package Converter.Util;
+package Converter.Util.Sorting;
 
 import Data.JsonDTO;
 import Data.PreCard;
 
 import java.util.*;
 
-public class SortingHelperClass {
+public class SortingHelperClass implements I_Sorting {
 
-    public List<JsonDTO> sortingTheListOfPrecardsAccordingToX(List<JsonDTO> preCardList) {
+    @Override
+    public List<JsonDTO> sortingTheListAccordingToX(List<JsonDTO> preCardList) {
 
         Comparator<JsonDTO> sortingPreCardList = new Comparator<JsonDTO>() {
             @Override
@@ -27,8 +28,8 @@ public class SortingHelperClass {
         return preCardList;
     }
 
-
-    public List<JsonDTO> sortingTheListOfPrecardsAccordingToY(List<JsonDTO> preCardList) {
+    @Override
+    public List<JsonDTO> sortingTheListAccordingToY(List<JsonDTO> preCardList) {
 
         Comparator<JsonDTO> sortingPreCardList = new Comparator<JsonDTO>() {
             @Override
@@ -48,7 +49,7 @@ public class SortingHelperClass {
         return preCardList;
     }
 
-
+    @Override
     public List<JsonDTO> removeNonDublicatesFromList(List<JsonDTO> preCardList) {
         Map<String, JsonDTO> charMap = new HashMap<String, JsonDTO>();
         List<JsonDTO> sortedPreCard = new ArrayList<>();
@@ -64,7 +65,7 @@ public class SortingHelperClass {
         return acceptOnlyDublicate(sortedPreCard);
     }
 
-
+    @Override
     public List<JsonDTO> acceptOnlyDublicate(List<JsonDTO> preCardList){
 
         Map<String, Integer> charMap = new HashMap<String, Integer>();
@@ -92,7 +93,8 @@ public class SortingHelperClass {
 
 
     //TODO: Fix this method so that it will check for which elements are removed. We want the diagonal box coordinates if possible.
-    private void removeSecondInstance(List<JsonDTO> preCardList, String entryKey, String com){
+    @Override
+    public void removeSecondInstance(List<JsonDTO> preCardList, String entryKey, String com){
         int counter = 0;
         String command = com;
         switch (command){

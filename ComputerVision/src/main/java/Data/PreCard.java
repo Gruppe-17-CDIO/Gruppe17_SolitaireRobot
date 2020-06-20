@@ -6,6 +6,7 @@ import java.awt.*;
 
 /**
  * * @author Andreas B.G. Jensen
+ * @deprecated
  */
 public class PreCard{
     private Point upperCoordinate;
