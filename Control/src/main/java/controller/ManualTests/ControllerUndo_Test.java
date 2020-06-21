@@ -14,21 +14,21 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Stack;
 
-public class controllerUNDO_Test {
+public class ControllerUndo_Test {
     private Controller controller;
     private SolitaireState beforeLastState;
     private int turnCount = 0;
     private boolean errorFound = false;
 
     public static void main(String[] args) {
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Test of the UNDO-method.");
-        System.out.println("This test will show that undo resets\n" +
+        System.out.println("This test is sucessful ifundo resets\n" +
                 "to previous state. In an actual game,\n" +
                 "cards from computervision must be read\n" +
                 "again. This test does not account for \nthat.");
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        new controllerUNDO_Test().runGame();
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        new ControllerUndo_Test().runGame();
     }
 
 

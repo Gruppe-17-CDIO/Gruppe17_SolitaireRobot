@@ -19,9 +19,9 @@ import java.util.Stack;
  */
 
 public class Controller implements I_Controller {
+    private final I_ComputerVisionController CV_Controller = new Convertion();
     private I_Logic logic;
     private StateManager stateManager;
-    private final I_ComputerVisionController CV_Controller = new Convertion();
     private boolean testmode = false;
     private TopCardsSimulator topCardsSimulator;
     private boolean gameStarted = false;
@@ -66,10 +66,10 @@ public class Controller implements I_Controller {
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         // Make sure game is started!
-        if (!gameStarted) {
-            startNewGame(img, callBack);
-        } else {
-            try {
+        try {
+            if (!gameStarted) {
+                startNewGame(img, callBack);
+            } else {
                 // Get move from state before calculating new
                 Move currentMove = stateManager.getBestMove();
 
@@ -91,9 +91,9 @@ public class Controller implements I_Controller {
 
                 stateManager.updateGameProcess(moves);
                 callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
-            } catch (Exception e) {
-                callBack.OnError(e);
             }
+        } catch (Exception e) {
+            callBack.OnError(e);
         }
     }
 
