@@ -1,6 +1,5 @@
 package logger;
 
-import PropertyLoader.SinglePropertyLoader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dataObjects.SolitaireState;
@@ -20,8 +19,9 @@ import java.util.List;
 
 public class StateLogger implements I_StateLogger {
     // Filepath for current session with timestamp
+    Timestamp stamp = new Timestamp(System.currentTimeMillis());
     final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
-            new Timestamp(System.currentTimeMillis()).toString() +
+            stamp.toString().substring(0, 10) + "_" + stamp.toString().substring(11, 22) +
             ".json";
     boolean newGame = true;
 

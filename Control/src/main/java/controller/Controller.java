@@ -19,9 +19,9 @@ import java.util.Stack;
  */
 
 public class Controller implements I_Controller {
+    private final I_ComputerVisionController CV_Controller = new Convertion();
     private I_Logic logic;
     private StateManager stateManager;
-    private final I_ComputerVisionController CV_Controller = new Convertion();
     private boolean testmode = false;
     private TopCardsSimulator topCardsSimulator;
     private boolean gameStarted = false;
@@ -29,10 +29,10 @@ public class Controller implements I_Controller {
     @Override
     // Note that this method returns the first move suggestion and saves state
     public void startNewGame(Image img, NextMoveCallBack callBack) {
-        logic = new Logic();
-        stateManager = new StateManager();
-        gameStarted = true;
         try {
+            logic = new Logic();
+            stateManager = new StateManager();
+            gameStarted = true;
             TopCards topCards;
             SolitaireState state;
             if (!testmode) {
@@ -49,6 +49,7 @@ public class Controller implements I_Controller {
             stateManager.updateGameProcess(moves);
             callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
+            gameStarted = false;
             callBack.OnError(e);
         }
     }
@@ -91,6 +92,7 @@ public class Controller implements I_Controller {
 
                 stateManager.updateGameProcess(moves);
                 callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
+
             } catch (Exception e) {
                 callBack.OnError(e);
             }
