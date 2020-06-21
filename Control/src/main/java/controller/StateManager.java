@@ -1,6 +1,7 @@
 package controller;
 
 import cardCalculator.CardCalculator;
+import cardCalculator.CardReadException;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
 import dataObjects.TopCards;
@@ -29,7 +30,7 @@ public class StateManager {
     public SolitaireState initiate(TopCards cardData) throws Exception {
         SolitaireState state;
         if (cardData == null) {
-            throw new Exception("Card data was null. Can't create state without data from Computer Vision.");
+            throw new CardReadException("Card data was null. Can't create state without data from Computer Vision.");
         } else {
             System.out.println("New session started. Creating new state, blank history and logfile.");
             history = new Stack<>();
@@ -62,7 +63,7 @@ public class StateManager {
             return cardCalculator.updateState(history.peek(), move, null, topCardsSimulator, true);
         } else {
             if (topCards == null) {
-                throw new Exception("updatestate: Missing TopCards");
+                throw new CardReadException("updatestate: Missing TopCards");
             }
             return cardCalculator.updateState(history.peek(), move, topCards, null, false);
         }

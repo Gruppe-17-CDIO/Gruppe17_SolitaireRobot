@@ -29,10 +29,10 @@ public class Controller implements I_Controller {
     @Override
     // Note that this method returns the first move suggestion and saves state
     public void startNewGame(Image img, NextMoveCallBack callBack) {
-        logic = new Logic();
-        stateManager = new StateManager();
-        gameStarted = true;
         try {
+            logic = new Logic();
+            stateManager = new StateManager();
+            gameStarted = true;
             TopCards topCards;
             SolitaireState state;
             if (!testmode) {
@@ -49,6 +49,7 @@ public class Controller implements I_Controller {
             stateManager.updateGameProcess(moves);
             callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
+            gameStarted = false;
             callBack.OnError(e);
         }
     }
@@ -66,10 +67,10 @@ public class Controller implements I_Controller {
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         // Make sure game is started!
-        try {
-            if (!gameStarted) {
-                startNewGame(img, callBack);
-            } else {
+        if (!gameStarted) {
+            startNewGame(img, callBack);
+        } else {
+            try {
                 // Get move from state before calculating new
                 Move currentMove = stateManager.getBestMove();
 
@@ -91,9 +92,10 @@ public class Controller implements I_Controller {
 
                 stateManager.updateGameProcess(moves);
                 callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
+
+            } catch (Exception e) {
+                callBack.OnError(e);
             }
-        } catch (Exception e) {
-            callBack.OnError(e);
         }
     }
 
