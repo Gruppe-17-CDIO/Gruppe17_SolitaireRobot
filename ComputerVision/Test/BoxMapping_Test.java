@@ -3,17 +3,12 @@ import Converter.Util.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import Data.BufferElement;
 import Data.JsonDTO;
-import com.sun.rowset.internal.Row;
 import dataObjects.Card;
 import dataObjects.TopCards;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import static org.junit.Assert.*;
-
 
 public class BoxMapping_Test {
 

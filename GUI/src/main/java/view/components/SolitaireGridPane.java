@@ -8,6 +8,10 @@ import javafx.geometry.VPos;
 import javafx.scene.layout.*;
 import view.components.card.CardUI;
 import view.components.card.SuitEnum;
+import view.components.cardStackPanes.CollectionStackPane;
+import view.components.cardStackPanes.DeckStackPane;
+import view.components.cardStackPanes.HighlightType;
+import view.components.cardStackPanes.RowStackPane;
 
 import java.util.List;
 
@@ -58,7 +62,7 @@ public class SolitaireGridPane extends GridPane {
     public void clearAllHighlights() {
         // Clears all row highlights
         for (int rowIndex = 1; rowIndex <= 7; rowIndex++) {
-            rowHighlight(rowIndex,false);
+            rowHighlight(rowIndex,false, HighlightType.FROM);
         }
 
         // Clears all collection highlights
@@ -67,7 +71,7 @@ public class SolitaireGridPane extends GridPane {
         }
 
         // Clears all deck highlights
-        deckDrawableHighlight(false);
+        deckDrawableHighlight(false, HighlightType.FROM);
         deckHighlight(false);
     }
 
@@ -119,13 +123,17 @@ public class SolitaireGridPane extends GridPane {
             case MOVE_FROM_PILE:
                 switch (move.getDestinationType()) {
                     case FOUNDATION:
+                        // FROM
+                        rowHighlight(move.getPosition()[0]+1,true, HighlightType.FROM);
+                        // TO
                         collectionHighlight(SuitEnum.ofSuit(move.getCard().getSuit()),true);
-                        rowHighlight(move.getPosition()[0]+1,true);
                         break;
 
                     case PILE:
-                        rowHighlight(move.getDestPosition()+1,true);
-                        rowHighlight(move.getPosition()[0]+1,true);
+                        // FROM
+                        rowHighlight(move.getPosition()[0]+1,true, HighlightType.FROM);
+                        // TO
+                        rowHighlight(move.getDestPosition()+1,true, HighlightType.TO);
                         break;
 
                     default:
@@ -134,24 +142,33 @@ public class SolitaireGridPane extends GridPane {
                 break;
 
             case DRAW:
+                // FROM
                 deckHighlight(true);
-                deckDrawableHighlight(true);
+                // TO
+                deckDrawableHighlight(true, HighlightType.TO);
                 break;
 
             case USE_DRAWN:
-                deckDrawableHighlight(true);
+                // FROM
+                deckDrawableHighlight(true, HighlightType.FROM);
+                // TO
                 switch (move.getDestinationType()) {
                     case FOUNDATION:
                         collectionHighlight(SuitEnum.ofSuit(move.getCard().getSuit()),true);
                         break;
 
                     case PILE:
-                        rowHighlight(move.getDestPosition()+1,true);
+                        rowHighlight(move.getDestPosition()+1,true, HighlightType.TO);
                         break;
 
                     default:
                         break;
                 }
+                break;
+
+            case FACE_UP_IN_PILE:
+                // FROM (and TO)
+                rowHighlight(move.getDestPosition()+1,true, HighlightType.FROM);
                 break;
 
             default:
@@ -178,11 +195,11 @@ public class SolitaireGridPane extends GridPane {
     }
 
     public void deckHighlight (boolean isHighlighted) {
-        deck_SP.highlight(isHighlighted);
+        deck_SP.highlight(isHighlighted,HighlightType.FROM);
     }
 
-    public void deckDrawableHighlight(boolean isHighlighted) {
-       drawableDeck_SP.highlight(isHighlighted);
+    public void deckDrawableHighlight(boolean isHighlighted, HighlightType highlightType) {
+       drawableDeck_SP.highlight(isHighlighted, highlightType);
     }
 
     // endregion
@@ -301,28 +318,28 @@ public class SolitaireGridPane extends GridPane {
         }
     }
 
-    public void rowHighlight(int rowNumber, boolean isHighlighted) {
+    public void rowHighlight(int rowNumber, boolean isHighlighted, HighlightType highlightType) {
         switch (rowNumber) {
             case 1:
-                row1_SP.highlight(isHighlighted);
+                row1_SP.highlight(isHighlighted, highlightType);
                 break;
             case 2:
-                row2_SP.highlight(isHighlighted);
+                row2_SP.highlight(isHighlighted, highlightType);
                 break;
             case 3:
-                row3_SP.highlight(isHighlighted);
+                row3_SP.highlight(isHighlighted, highlightType);
                 break;
             case 4:
-                row4_SP.highlight(isHighlighted);
+                row4_SP.highlight(isHighlighted, highlightType);
                 break;
             case 5:
-                row5_SP.highlight(isHighlighted);
+                row5_SP.highlight(isHighlighted, highlightType);
                 break;
             case 6:
-                row6_SP.highlight(isHighlighted);
+                row6_SP.highlight(isHighlighted, highlightType);
                 break;
             case 7:
-                row7_SP.highlight(isHighlighted);
+                row7_SP.highlight(isHighlighted, highlightType);
                 break;
             default:
                 break;
@@ -355,16 +372,16 @@ public class SolitaireGridPane extends GridPane {
     public void collectionHighlight (SuitEnum suitEnum, boolean isHighlighted) {
         switch (suitEnum) {
             case Heart:
-                heartCollection_SP.highlight(isHighlighted);
+                heartCollection_SP.highlight(isHighlighted, HighlightType.TO);
                 break;
             case Diamond:
-                diamondCollection_SP.highlight(isHighlighted);
+                diamondCollection_SP.highlight(isHighlighted, HighlightType.TO);
                 break;
             case Club:
-                clubCollection_SP.highlight(isHighlighted);
+                clubCollection_SP.highlight(isHighlighted, HighlightType.TO);
                 break;
             case Spade:
-                spadeCollection_SP.highlight(isHighlighted);
+                spadeCollection_SP.highlight(isHighlighted, HighlightType.TO);
                 break;
             default:
                 break;

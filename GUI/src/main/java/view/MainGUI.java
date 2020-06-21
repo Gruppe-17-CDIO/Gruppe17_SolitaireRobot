@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import view.components.OutputTextArea;
 import view.components.TopMenuBar;
+import view.taps.OutputTab;
 import view.taps.TabPane;
 
 /**
@@ -22,10 +23,11 @@ public class MainGUI extends Application {
     private final String WINDOW_TITLE = "7 Solitaire";
     private final String WINDOW_ICON_PATH = "/game_icon.png";
 
-    public final static int sceneWidth = 1000;
-    public final static int sceneHeight = 600;
+    public final static int SCREEN_WIDTH = 1000;
+    public final static int SCREEN_HEIGHT = 700;
 
-    private static OutputTextArea outputTextArea;
+    private static OutputTab outputTab;
+    private static TabPane tabPane = new TabPane();
 
     public static boolean isTesting = false;
 
@@ -42,12 +44,11 @@ public class MainGUI extends Application {
                new Image(getClass().getResourceAsStream(WINDOW_ICON_PATH)));
         primaryStage.show();
 
-        outputTextArea = new OutputTextArea();
         printTestStatus();
-        TabPane tabPane = new TabPane();
         //tabPane.getSelectionModel().selectLast();
         //tabPane.getSelectionModel().clearAndSelect(0);
 
+        /*
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
         splitPane.setDividerPositions(500);
@@ -56,14 +57,16 @@ public class MainGUI extends Application {
         outputTextArea.setMinWidth(500);
         outputTextArea.setEditable(false);
         tabPane.setMinWidth(500);
-
+         */
         BorderPane mainPane = new BorderPane();
-        mainPane.setCenter(splitPane);
+        mainPane.setCenter(tabPane);
+
         if (isTesting){
-            mainPane.setTop(new TopMenuBar());
+            // TODO: REMOVE
+            //mainPane.setTop(new TopMenuBar());
         }
 
-        primaryStage.setScene(new Scene(mainPane,1000,600));
+        primaryStage.setScene(new Scene(mainPane,SCREEN_WIDTH,SCREEN_HEIGHT));
     }
 
     @Override
@@ -92,7 +95,8 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline(text);
+
+                tabPane.appendTextNewlineToOutput(text);
             }
         });
 
@@ -101,7 +105,7 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline("Success:\n" + text);
+                tabPane.appendTextNewlineToOutput("Success:\n" + text);
             }
         });
     }
@@ -109,7 +113,7 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline("Failure:\n" +text);
+                tabPane.appendTextNewlineToOutput("Failure:\n" +text);
             }
         });
     }
@@ -117,7 +121,7 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline("Error:\n" +text);
+                tabPane.appendTextNewlineToOutput("Error:\n" +text);
             }
         });
     }
@@ -126,7 +130,7 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendText(text);
+                tabPane.appendTextToOutput(text);
             }
         });
     }
@@ -134,7 +138,7 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.printDivider();
+                tabPane.printDivider();
             }
         });
 

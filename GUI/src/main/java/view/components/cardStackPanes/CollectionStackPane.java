@@ -1,14 +1,8 @@
-package view.components;
+package view.components.cardStackPanes;
 
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 import view.components.card.CardUI;
 import view.components.card.SuitEnum;
-
-import java.awt.*;
+import view.components.cardStackPanes.CardStackPane;
 
 /**
  * @author Rasmus Sander Larsen

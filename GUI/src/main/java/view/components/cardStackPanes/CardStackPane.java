@@ -1,4 +1,4 @@
-package view.components;
+package view.components.cardStackPanes;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,7 +18,8 @@ public class CardStackPane extends StackPane {
     //-------------------------- Fields --------------------------
 
     private final String CARD_OUTLINE = "-fx-border-color: grey; -fx-border-width: 1; -fx-border-radius: 5;";
-    private final String HIGHLIGHT_OUTLINE = ";-fx-border-color: darkgreen; -fx-border-width: "+(CardUI.CARD_PADDING+2)+"; -fx-border-radius: 5;";
+    private final String HIGHLIGHT_TO_OUTLINE = ";-fx-border-color: darkgreen; -fx-border-width: "+(CardUI.CARD_PADDING+2)+"; -fx-border-radius: 5;";
+    private final String HIGHLIGHT_FROM_OUTLINE = ";-fx-border-color: darkorange; -fx-border-width: "+(CardUI.CARD_PADDING+2)+"; -fx-border-radius: 5;";
     private final Insets DEFAULT_MARGIN = new Insets(CardUI.CARD_PADDING,0,CardUI.CARD_PADDING,0);
 
     private int pressCounterBoolean = 0;
@@ -44,8 +45,8 @@ public class CardStackPane extends StackPane {
         return CARD_OUTLINE;
     }
 
-    public String getHIGHLIGHT_OUTLINE() {
-        return HIGHLIGHT_OUTLINE;
+    public String getHIGHLIGHT_TO_OUTLINE() {
+        return HIGHLIGHT_TO_OUTLINE;
     }
 
     public int getPressCounterBoolean() {
@@ -76,8 +77,9 @@ public class CardStackPane extends StackPane {
 
     //---------------------- Public Methods -----------------------
 
-    public void highlight(boolean toHighlight) {
+    public void highlight(boolean toHighlight, HighlightType highlightType) {
         if (toHighlight) {
+            highLightBox.setStyle(highlightType.highlightStyle);
             highLightBox.setVisible(true);
             outlineBox.setVisible(false);
         } else {
@@ -131,7 +133,7 @@ public class CardStackPane extends StackPane {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (press()%2==0){
                     isHighlighted = !isHighlighted;
-                    highlight(isHighlighted);
+                    highlight(isHighlighted,HighlightType.FROM);
                     MainGUI.printToOutputAreaNewline("No of Children: " + getChildren().size());
                     MainGUI.printToOutputAreaNewline("No of Children in cardStackPane: " + cardStackPane.getChildren().size());
                     MainGUI.printToOutputAreaNewline("StackPane Height: " +getMaxHeight());
@@ -160,10 +162,10 @@ public class CardStackPane extends StackPane {
 
     private void createAndAddHighLightBox() {
         highLightBox = new HBox();
-        highLightBox.setStyle(HIGHLIGHT_OUTLINE);
+        highLightBox.setStyle(HIGHLIGHT_TO_OUTLINE);
         highLightBox.setMinSize(CardUI.CARD_WIDTH_PADDED,CardUI.CARD_HEIGHT_PADDED);
         highLightBox.setMaxSize(CardUI.CARD_WIDTH_PADDED,CardUI.CARD_HEIGHT_PADDED);
-        highlight(false);
+        highlight(false, HighlightType.FROM);
         getChildren().add(highLightBox);
     }
 

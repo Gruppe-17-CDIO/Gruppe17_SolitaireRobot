@@ -21,6 +21,7 @@ public class TabPane extends javafx.scene.control.TabPane {
     private List<Tab> tabList = new ArrayList<>();
     private CameraSourceTabNew cameraSourceTabNew = new CameraSourceTabNew();
     private GameTab gameTab = new GameTab();
+    private OutputTab outputTab = new OutputTab();
     /*
     ----------------------- Constructor -------------------------
      */
@@ -43,6 +44,18 @@ public class TabPane extends javafx.scene.control.TabPane {
     /*
     ---------------------- Public Methods -----------------------
      */
+
+    public void appendTextNewlineToOutput(String message) {
+        outputTab.appendTextNewlineToOutput(message);
+    }
+
+    public void appendTextToOutput(String message) {
+        outputTab.appendTextToOutput(message);
+    }
+
+    public void printDivider () {
+        outputTab.printDivider();
+    }
     
     /*
     ---------------------- Support Methods ----------------------
@@ -51,6 +64,7 @@ public class TabPane extends javafx.scene.control.TabPane {
     private void loadDefaultTabs () {
         tabList.add(cameraSourceTabNew);
         tabList.add(gameTab);
+        tabList.add(outputTab);
 
         getTabs().addAll(tabList);
     }

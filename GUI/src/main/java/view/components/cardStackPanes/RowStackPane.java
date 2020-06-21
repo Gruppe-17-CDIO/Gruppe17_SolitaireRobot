@@ -1,8 +1,9 @@
-package view.components;
+package view.components.cardStackPanes;
 
 import dataObjects.Card;
 import javafx.scene.Node;
 import view.components.card.CardUI;
+import view.components.cardStackPanes.CardStackPane;
 
 import java.util.List;
 

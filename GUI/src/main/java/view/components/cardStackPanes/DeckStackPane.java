@@ -1,6 +1,7 @@
-package view.components;
+package view.components.cardStackPanes;
 
 import view.components.card.CardUI;
+import view.components.cardStackPanes.CardStackPane;
 
 /**
  * @author Rasmus Sander Larsen

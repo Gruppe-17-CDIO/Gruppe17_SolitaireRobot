@@ -424,7 +424,8 @@ public class WebCamImageView extends ImageView {
             protected Void call() throws Exception {
                 long threadNo =Thread.currentThread().getId();
                 String threadName =Thread.currentThread().getName();;
-                // TODO: Det her skal nok vaek!
+                // TODO: Det her skal nok væk!
+                /*
                 if (MainGUI.isTesting){
                     MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" just started by: " + method);
                     if (webcam != null) {
@@ -434,29 +435,31 @@ public class WebCamImageView extends ImageView {
                     MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isBindingNeeded: " +isBindingNeeded.get());
                     MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 }
+                 */
                 while (isBindingNeeded.get() && isRunning.get()) {
-                    System.out.println("ThreadID: " + Thread.currentThread().getId());
+                    //System.out.println("ThreadID: " + Thread.currentThread().getId());
                     try {
                         if (isWebCamManipulated.get()) {
                             useManipulationFeed();
                             isBindingNeeded.set(false);
-                            System.out.println("UseManipulationFeed");
+                           // System.out.println("UseManipulationFeed");
                         }
 
                         if (webcam != null) {
                             if (!isWebCamManipulated.get()){
                                 useWebCamFeed();
-                               System.out.println("UseWebCamFeed");
+                               //System.out.println("UseWebCamFeed");
                             }
                         } else {
                             clearImage();
                             isBindingNeeded.set(false);
-                          System.out.println("UseDefaultNoWebCamFeed");
+                          //System.out.println("UseDefaultNoWebCamFeed");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
+                /*
                 if (MainGUI.isTesting){
                     MainGUI.printToOutputAreaNewline("Thread No: " +threadNo +" just stopped");
                     if (webcam != null) {
@@ -466,6 +469,7 @@ public class WebCamImageView extends ImageView {
                     MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName  + "// isBindingNeeded: " +isBindingNeeded.get());
                     MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 }
+                 */
 
                 return null;
             }
@@ -482,6 +486,7 @@ public class WebCamImageView extends ImageView {
 
             @Override
             protected Void call() throws Exception {
+                /*
                 if (MainGUI.isTesting){
                     long threadNo =Thread.currentThread().getId();
                     String threadName = Thread.currentThread().getName();
@@ -493,30 +498,34 @@ public class WebCamImageView extends ImageView {
                     MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isBindingNeeded: " +isBindingNeeded.get());
                     MainGUI.printToOutputAreaNewline(threadNo +"@" + threadName + "// isWebCamManipulated: " +isWebCamManipulated);
                 }
+                 */
 
                 try {
                     if (isWebCamManipulated.get()) {
                         useManipulationFeed();
-                        System.out.println("UseManipulationFeed");
+                        //System.out.println("UseManipulationFeed");
                     }
 
                     if (webcam != null) {
                         if (!isWebCamManipulated.get()){
                             useWebCamFeed();
-                            System.out.println("UseWebCamFeed");
+                            //System.out.println("UseWebCamFeed");
                         }
                     } else {
                         if (!isWebCamManipulated.get()){
                             clearImage();
-                            System.out.println("UseDefaultNoWebCamFeed");
+                            //System.out.println("UseDefaultNoWebCamFeed");
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                /*
                 if (MainGUI.isTesting){
                     printThreadStatus();
                 }
+
+                 */
                 return null;
             }
         };
