@@ -1,6 +1,5 @@
 package view.taps;
 
-import cardCalculator.CardReadException;
 import controller.CompletionCallBack;
 import controller.Controller;
 import controller.I_Controller;
@@ -47,26 +46,26 @@ public class GameTab extends TabStd {
     private final String TAG = getClass().getSimpleName();
 
     private WebCamManiButton webCamManiBtn;
-    private WebCamImageView webCamImageView ;
+    private WebCamImageView webCamImageView;
 
-    private BorderPane mainPane;
+    private final BorderPane mainPane;
 
     private GridPane gridPane;
     private VBox bottomBox;
 
-    private SolitaireGridPane solitaireGridPane;
+    private final SolitaireGridPane solitaireGridPane;
 
-    private VBox btnBox = FxUtil.vBox(true);
-    private Text moveText = new Text();
-    private Button btnNextMove = new Button();
+    private final VBox btnBox = FxUtil.vBox(true);
+    private final Text moveText = new Text();
+    private final Button btnNextMove = new Button();
     private Button btnStartNewGame = new Button();
-    private ProgressIndicator progressIndicator = new ProgressIndicator(-1.0);
+    private final ProgressIndicator progressIndicator = new ProgressIndicator(-1.0);
 
-    private I_Controller controller = new Controller();
+    private final I_Controller controller = new Controller();
 
     //----------------------- Constructor -------------------------
 
-    public GameTab () {
+    public GameTab() {
         super("Game", "Game", "The webcam should point at the solitaire that you have layed out and we will help you to a win!" +
                 " Get ready to play!");
 
@@ -216,13 +215,6 @@ public class GameTab extends TabStd {
         return new NextMoveCallBack() {
             @Override
             public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress gameProgress) {
-
-                //TODO: Remove when not testing
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
                 Platform.runLater(new Runnable() {
                     @Override
