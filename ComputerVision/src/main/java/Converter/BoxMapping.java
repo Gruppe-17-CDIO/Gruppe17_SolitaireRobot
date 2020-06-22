@@ -4,7 +4,6 @@ import Converter.Util.SortingHelperClass;
 import Converter.Util.Util;
 import Data.BufferElement;
 import Data.JsonDTO;
-import Data.PreCard;
 import dataObjects.Card;
 import dataObjects.TopCards;
 
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BoxMapping {
-    private SortingHelperClass sorting = new SortingHelperClass();
+    private final SortingHelperClass sorting = new SortingHelperClass();
     private static List<JsonDTO> currentPreCardList;
     private static int getNumberOfAnalysedImage = 0;
     private BufferElement bufferElement;

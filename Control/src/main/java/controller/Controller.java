@@ -19,7 +19,7 @@ import java.util.Stack;
  */
 
 public class Controller implements I_Controller {
-    private final I_ComputerVisionController CV_Controller = new Convertion();
+    private I_ComputerVisionController CV_Controller;
     private I_Logic logic;
     private StateManager stateManager;
     private boolean testmode = false;
@@ -32,6 +32,7 @@ public class Controller implements I_Controller {
         try {
             logic = new Logic();
             stateManager = new StateManager();
+            CV_Controller = new Convertion();
             gameStarted = true;
             TopCards topCards;
             SolitaireState state;
@@ -45,7 +46,10 @@ public class Controller implements I_Controller {
             List<Move> moves = logic.getMoves(state);
             stateManager.saveState(state);
             stateManager.addMovesToState(moves);
+
             Move currentMove = stateManager.getBestMove();
+            System.out.println("\nStartNewGame: " + currentMove + "\n");
+            System.out.println(state.getPrintFormat());
             stateManager.updateGameProcess(moves);
             callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
@@ -72,17 +76,17 @@ public class Controller implements I_Controller {
         } else {
             try {
                 // Get move from state before calculating new
-                Move currentMove = stateManager.getBestMove();
+                Move prevMove = stateManager.getBestMove();
 
                 TopCards topCards;
                 SolitaireState state;
                 if (!testmode) {
                     topCards = CV_Controller.getSolitaireCards(img);
-                    state = stateManager.updateState(currentMove, topCards, null, false); // Needs topCards
+                    state = stateManager.updateState(prevMove, topCards, null, false); // Needs topCards
                     //stateManager.checkStateAgainstImage(topCards, state);
 
                 } else {
-                    state = stateManager.updateState(currentMove, null, topCardsSimulator, true); // Test mode needs simulator
+                    state = stateManager.updateState(prevMove, null, topCardsSimulator, true); // Test mode needs simulator
                 }
                 List<Move> moves = logic.getMoves(state);
 
@@ -91,7 +95,9 @@ public class Controller implements I_Controller {
                 stateManager.addMovesToState(moves);
 
                 stateManager.updateGameProcess(moves);
-                callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
+                Move move = stateManager.getBestMove();
+                System.out.println("NextMove: " + move);
+                callBack.OnSuccess(move, stateManager.getHistory().peek(), state.getGameProgress());
 
             } catch (Exception e) {
                 callBack.OnError(e);
