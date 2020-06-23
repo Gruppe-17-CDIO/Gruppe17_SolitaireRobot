@@ -1,6 +1,7 @@
 package controller;
 
-import Converter.Convertion;
+
+import computerVision.Converter.Convertion;
 import computerVision.I_ComputerVisionController;
 import dataObjects.Move;
 import dataObjects.SolitaireState;
