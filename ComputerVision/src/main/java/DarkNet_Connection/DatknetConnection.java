@@ -94,10 +94,9 @@ public class DatknetConnection implements I_Connection {
         }catch (Exception e){
             if(reconnectTry<connectionTryes) {
                 return makePOSTRequest(imageByteArray);
-            } else {
-                throw new DarknetConnectionException("Three tryes failed to connect to the Darknet REST endpoint\n" +
-                        "Please contact Gruppe 17.\nException message: " + e.getMessage());
             }
+            throw new DarknetConnectionException("Three tryes failed to connect to the Darknet REST endpoint\n" +
+                    "Please contact Gruppe 17.\nException message: " +e.getMessage());
         }
 
     }

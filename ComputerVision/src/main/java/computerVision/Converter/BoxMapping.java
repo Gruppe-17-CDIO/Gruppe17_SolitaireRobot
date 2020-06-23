@@ -1,7 +1,7 @@
-package Converter;
+package computerVision.Converter;
 
-import Converter.Util.Sorting.I_Sorting;
-import Converter.Util.Util;
+import computerVision.Converter.Util.Sorting.I_Sorting;
+import computerVision.Converter.Util.Util;
 import Data.BufferElement;
 import Data.JsonDTO;
 import Exceptions.BoxMappingException;
@@ -164,7 +164,7 @@ public class BoxMapping {
      * @return cardList
      */
     public JsonDTO[] mappingLowerRow(){
-        List<JsonDTO> lowerRowList = sorting.sortingTheListAccordingToX(bufferElement.getLowerRow());
+        List<JsonDTO> lowerRowList = sorting.sortingListAccordingToX(bufferElement.getLowerRow());
         HashMap<Integer, Double> rowGrow = bufferElement.getRowFixedGridLines();
         lowerRowList = averageXCoordinates(lowerRowList);
         JsonDTO[] cardList = new JsonDTO[7];

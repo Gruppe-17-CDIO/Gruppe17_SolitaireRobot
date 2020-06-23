@@ -1,6 +1,6 @@
 package Data;
 
-import Converter.Util.Sorting.I_Sorting;
+import computerVision.Converter.Util.Sorting.I_Sorting;
 import Exceptions.BufferElementException;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class BufferElement {
      * The callibration will only pass if a drawCard is detected in the upperRow and 7 elements are detected in the lower row.
      */
     public void calibrateImageInputDimensions(){
-        callibrationInputList = sortingObject.sortingTheListAccordingToY(callibrationInputList);
+        callibrationInputList = sortingObject.sortingListAccordingToY(callibrationInputList);
         List<JsonDTO> upperElements = callibrationInputList;
         for(int i = 0; i<upperElements.size();i++){
             if(upperElements.get(i).getCat().equals(upperElements.get(0).getCat())){
@@ -66,9 +66,9 @@ public class BufferElement {
         lowerRow = removeSameElementsInList(callibrationInputList,upperRow);
        //Chect for correct input
         //Else throw an error
-        setDrawCardSeparationLineX();
+        calculateDrawCardSeparationLineX();
         calculateVerticalGrid();
-        calculateBufferY();
+        calculateSeparationLineY();
     }
 
 
@@ -80,10 +80,10 @@ public class BufferElement {
      * is closes to the upperRow.
      *
      */
-    public void calculateBufferY(){
+    public void calculateSeparationLineY(){
 
-        upperRow = sortingObject.sortingTheListAccordingToY(upperRow);
-        lowerRow = sortingObject.sortingTheListAccordingToY(lowerRow);
+        upperRow = sortingObject.sortingListAccordingToY(upperRow);
+        lowerRow = sortingObject.sortingListAccordingToY(lowerRow);
 
         double highesYFromUppeRow =upperRow.get(upperRow.size()-1).getY();
         double lowestYFromLowerRow = lowerRow.get(0).getY();
@@ -99,9 +99,10 @@ public class BufferElement {
      * Set the extra buffer from the drawcard to the X-Koordinate in which the drawCard wont be evaluated as a drawcard anymore.
      * NB: In stead it will be evaluated as a foundation.
      */
-    private void setDrawCardSeparationLineX(){
-        List<JsonDTO> rowUpperRow = sortingObject.sortingTheListAccordingToX(upperRow);
+    private void calculateDrawCardSeparationLineX(){
+        List<JsonDTO> rowUpperRow = sortingObject.sortingListAccordingToX(upperRow);
         drawCardSeparationLineX = rowUpperRow.get(rowUpperRow.size()-1).getX()+drawCard_HorisontalBuffer;
+        //drawCardSeparationLineX = upperRow.get(upperRow.size()-1).getX()+drawCard_HorisontalBuffer;
     }
 
     /**
@@ -132,7 +133,7 @@ public class BufferElement {
      */
     public void calculateVerticalGrid(){
          rowFixedGridLines = new HashMap<>();
-        lowerRow = sortingObject.sortingTheListAccordingToX(lowerRow);
+        lowerRow = sortingObject.sortingListAccordingToX(lowerRow);
 
         int rowCounter = 0;
         //while(rowCounter<7) {
@@ -152,7 +153,7 @@ public class BufferElement {
                     }
 
                 }
-                rowFixedGridLines.put(rowCounter, calculateAverageX(lowX,highX).doubleValue());
+                rowFixedGridLines.put(rowCounter, calculateAverageX(lowX, highX));
                 if(rowCounter==6) break;
                 rowCounter++;
 
@@ -167,10 +168,10 @@ public class BufferElement {
      * The deviding aspect will be based on the calibration (method calibrateImageInputDimensions()) which
      * must be run before using this method.
      * @param preCardList
-     * @return void
+     *
      */
     public void setNewUpperAndLowerRow(List<JsonDTO> preCardList){
-        preCardList = sortingObject.sortingTheListAccordingToY(preCardList);
+        preCardList = sortingObject.sortingListAccordingToY(preCardList);
         List<JsonDTO> upperElements = preCardList;
         for(int i = 0; i<upperElements.size();i++){
             if(upperElements.get(i).getY()<separationLine){

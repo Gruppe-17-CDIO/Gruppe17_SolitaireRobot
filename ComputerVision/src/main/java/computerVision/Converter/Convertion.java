@@ -1,10 +1,9 @@
-package Converter;
+package computerVision.Converter;
 
-import Converter.Util.Sorting.SortingHelperClass;
+import computerVision.Converter.Util.Sorting.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.DatknetConnection;
 import DarkNet_Connection.I_Connection;
-import Data.BufferElement;
 import Data.JsonDTO;
 
 import Exceptions.ComputerVisionException;
@@ -12,7 +11,6 @@ import Exceptions.DarknetConnectionException;
 import computerVision.I_ComputerVisionController;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
-import kong.unirest.UnirestException;
 
 import java.util.*;
 
@@ -21,7 +19,7 @@ import java.util.*;
  */
 public class Convertion implements I_ComputerVisionController {
 
-    boolean test = false;
+    boolean test = true;
     SortingHelperClass sorting;
     I_Connection connection;
     BoxMapping mapper;
@@ -34,6 +32,7 @@ public class Convertion implements I_ComputerVisionController {
             connection = new DatknetConnection();
         }
         sorting = new SortingHelperClass();
+        mapper = new BoxMapping(sorting);
 
     }
 
@@ -47,8 +46,6 @@ public class Convertion implements I_ComputerVisionController {
             List<JsonDTO> returnImages = getOutputDarknet(img);
            // buffer = new BufferElement(returnImages,sorting);
             //mapper = new BoxMapping(buffer,sorting);
-            mapper = new BoxMapping(sorting);
-            System.out.println("Test");
             //return boxCreator.boxMapping(returnImages,boxesArea,img);
             return mapper.makeBoxMapping(returnImages);
 

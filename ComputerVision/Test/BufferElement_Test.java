@@ -1,5 +1,4 @@
-
-import Converter.Util.Sorting.SortingHelperClass;
+import computerVision.Converter.Util.Sorting.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import Data.BufferElement;
 import Data.JsonDTO;
@@ -12,7 +11,9 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-
+/**
+ * @author Andreas B.G. Jensen
+ */
 public class BufferElement_Test {
 
 
@@ -63,8 +64,8 @@ public class BufferElement_Test {
         List<JsonDTO> lowerRow = bufferElement.getLowerRow();
 
         //Sorting actual and expected lower row
-        lowerRow = sorting.sortingTheListAccordingToY(lowerRow);
-        expectdLowerRowElements = sorting.sortingTheListAccordingToY(expectdLowerRowElements);
+        lowerRow = sorting.sortingListAccordingToY(lowerRow);
+        expectdLowerRowElements = sorting.sortingListAccordingToY(expectdLowerRowElements);
         for (int i = 0; i<upperRow.size();i++){
             assertEquals(lowerRow.get(i),expectdLowerRowElements.get(i));
         }
@@ -80,7 +81,7 @@ public class BufferElement_Test {
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
         bufferElement.calibrateImageInputDimensions();
-        bufferElement.calculateBufferY();
+        bufferElement.calculateSeparationLineY();
 
         List<JsonDTO> upperRow = bufferElement.getUpperRow();
         List<JsonDTO> lowerRow = bufferElement.getLowerRow();
@@ -112,7 +113,7 @@ public class BufferElement_Test {
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
         bufferElement.calibrateImageInputDimensions();
-        bufferElement.calculateVerticalGrid();
+        //bufferElement.calculateVerticalGrid();
 
         HashMap<Integer, Double> verticalGrid = bufferElement.getRowFixedGridLines();
 

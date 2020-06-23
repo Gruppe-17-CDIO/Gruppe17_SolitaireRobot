@@ -1,12 +1,8 @@
 package Test;
 
-import Converter.Convertion;
-import Converter.Util.Util;
-import javafx.embed.swing.SwingFXUtils;
+import computerVision.Converter.Convertion;
+import computerVision.Converter.Util.Util;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
 
 import java.awt.image.BufferedImage;

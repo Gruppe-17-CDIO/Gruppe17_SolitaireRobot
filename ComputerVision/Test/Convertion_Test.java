@@ -1,9 +1,9 @@
-
-import Converter.Convertion;
-import Converter.Util.Sorting.SortingHelperClass;
+import computerVision.Converter.Convertion;
+import computerVision.Converter.Util.Sorting.SortingHelperClass;
 import Data.JsonDTO;
 import Exceptions.ComputerVisionException;
 import Exceptions.DarknetConnectionException;
+import computerVision.I_ComputerVisionController;
 import dataObjects.Card;
 import dataObjects.TopCards;
 import javafx.embed.swing.SwingFXUtils;
@@ -15,11 +15,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +53,7 @@ public class Convertion_Test {
     /*
     Convertin a BufferedImage to jfx image
     This is used only for testing.
+    Converting a BufferedImage into javaFX image in order to simulate that an javafx imegages which is send from the controller.
      */
     @Test
     private static Image convertToFxImage(BufferedImage image) {
@@ -72,7 +73,7 @@ public class Convertion_Test {
 
 
     @Test
-    public void Convert_Image_Test() throws DarknetConnectionException {
+    public void Convert_Image_Test(){
         BufferedImage  img = null;
         try {
             img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\AllDeck.jpg"));
@@ -83,7 +84,11 @@ public class Convertion_Test {
 
         Image image = SwingFXUtils.toFXImage(img, null);
 
-        List<JsonDTO> preCardList = converter.getOutputDarknet(image);
+        try {
+            List<JsonDTO> preCardList = converter.getOutputDarknet(image);
+        } catch (DarknetConnectionException e) {
+            e.printStackTrace();
+        }
         System.out.println();
     }
 
@@ -105,7 +110,7 @@ public class Convertion_Test {
             preCardList.add(obj);
         }
 
-        preCardList = sorting.sortingTheListAccordingToX(preCardList);
+        preCardList = sorting.sortingListAccordingToX(preCardList);
 
         List<JsonDTO> expectedPrecardList = new ArrayList<>();
 
@@ -173,7 +178,7 @@ public class Convertion_Test {
             preCardList.add(obj);
         }
 
-       preCardList = sorting.sortingTheListAccordingToY(preCardList);
+       preCardList = sorting.sortingListAccordingToY(preCardList);
 
         List<JsonDTO> expectedPrecardList = new ArrayList<>();
 
@@ -332,6 +337,46 @@ public class Convertion_Test {
 
         }
         return null;
+    }
+
+    /**
+     * @author Andreas B.G. Jensen
+     * Testing the performance. The upper limit is set to be 1 sec, which means that if the execution takes longer, the test will fail.
+     * @throws ComputerVisionException
+     */
+    @Test
+    public void performance_Test() throws ComputerVisionException {
+
+        double expectedTimeLimit =1;
+        long toSeconds = 1000000000;
+        long startTimer;
+        long startTimeWatch;
+        long endTime;
+        long totalTime = 0;
+        int numberOfMeasurements = 1;
+
+        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        Image im = convertToFxImage(image);
+
+        for(int i = 0;i<numberOfMeasurements;i++) {
+             startTimer = System.nanoTime();
+
+
+            startTimeWatch = System.nanoTime();
+            TopCards actualTopCard = converter.getSolitaireCards(im);
+
+            endTime = System.nanoTime();
+            totalTime+= endTime - 2*startTimeWatch + startTimer;
+        }
+        long actualExecutionTime = totalTime/numberOfMeasurements;
+        System.out.println((double) actualExecutionTime/toSeconds);
+
+
+        if((double)actualExecutionTime/toSeconds<=expectedTimeLimit){
+            assert(true);
+        }else{
+            assert (false);
+        }
     }
 
 }
