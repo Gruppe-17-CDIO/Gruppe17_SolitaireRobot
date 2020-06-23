@@ -85,7 +85,7 @@ public class DatknetConnection implements I_Connection {
     private HttpResponse<String> makePOSTRequest(byte[] imageByteArray) throws DarknetConnectionException{
         try {
 
-            HttpResponse<String> res = Unirest.post("http://192.168.0.20:6969/detect/hello.png")
+            HttpResponse<String> res = Unirest.post("http://212.237.130.109:6969/detect/hello.png")
                     .header("Content-Type", "image/png")
                     .body(imageByteArray)
                     .asString();
@@ -94,9 +94,10 @@ public class DatknetConnection implements I_Connection {
         }catch (Exception e){
             if(reconnectTry<connectionTryes) {
                 return makePOSTRequest(imageByteArray);
+            } else {
+                throw new DarknetConnectionException("Three tryes failed to connect to the Darknet REST endpoint\n" +
+                        "Please contact Gruppe 17.\nException message: " + e.getMessage());
             }
-            throw new DarknetConnectionException("Three tryes failed to connect to the Darknet REST endpoint\n" +
-                    "Please contact Gruppe 17.\nException message: " +e.getMessage());
         }
 
     }

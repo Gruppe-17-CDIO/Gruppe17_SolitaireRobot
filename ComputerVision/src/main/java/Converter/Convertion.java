@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class Convertion implements I_ComputerVisionController {
 
-    boolean test = true;
+    boolean test = false;
     SortingHelperClass sorting;
     I_Connection connection;
     BoxMapping mapper;

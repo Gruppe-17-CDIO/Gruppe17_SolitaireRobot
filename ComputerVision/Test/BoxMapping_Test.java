@@ -1,5 +1,5 @@
 import Converter.BoxMapping;
-import Converter.Util.SortingHelperClass;
+import Converter.Util.Sorting.SortingHelperClass;
 import DarkNet_Connection.Darknet_Stub;
 import Data.BufferElement;
 import Data.JsonDTO;
@@ -20,9 +20,9 @@ public class BoxMapping_Test {
 
 
     BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calibrateImageInputDimensions();
         bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        BoxMapping mapping = new BoxMapping(sorting);
 
     JsonDTO[] mappedJson = mapping.mappingLowerRow();
     JsonDTO[] expectedMappingLowerRow = new JsonDTO[7];
@@ -68,9 +68,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calibrateImageInputDimensions();
         bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        BoxMapping mapping = new BoxMapping(sorting);
 
         JsonDTO[] mappedJson = mapping.mappingUpperRow();
 
@@ -95,9 +95,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(expectedPrecardList,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calibrateImageInputDimensions();
         bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        BoxMapping mapping = new BoxMapping(sorting);
 
         TopCards expectedTopCard = new TopCards();
         //Piles
@@ -169,9 +169,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(callibrationImage,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calibrateImageInputDimensions();
         bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        BoxMapping mapping = new BoxMapping(sorting);
         bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
 
         TopCards expectedTopCard = new TopCards();
@@ -253,9 +253,9 @@ public class BoxMapping_Test {
 
 
         BufferElement bufferElement = new BufferElement(callibrationImage,sorting);
-        bufferElement.devideElementsBetweenUpperAndLowerRow();
+        bufferElement.calibrateImageInputDimensions();
         bufferElement.calculateVerticalGrid();
-        BoxMapping mapping = new BoxMapping(bufferElement);
+        BoxMapping mapping = new BoxMapping(sorting);
         bufferElement.setNewUpperAndLowerRow(expectedPrecardList);
 
         TopCards expectedTopCard = new TopCards();
