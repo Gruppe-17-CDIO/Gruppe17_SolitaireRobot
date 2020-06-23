@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * * @author Andreas B.G. Jensen
  */
-public class DatknetConnection implements I_Connection {
+public class DarknetConnection implements I_Connection {
     final int reconnectTry = 3;
     int connectionTryes = 0;
     /*

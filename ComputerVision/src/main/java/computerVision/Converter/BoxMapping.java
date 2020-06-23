@@ -128,6 +128,7 @@ public class BoxMapping {
             }
         }
 
+        System.out.println(topcards.toString());
         return topcards;
 
     }

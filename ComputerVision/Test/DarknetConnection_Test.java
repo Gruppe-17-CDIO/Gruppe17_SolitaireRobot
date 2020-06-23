@@ -1,6 +1,4 @@
-import DarkNet_Connection.DatknetConnection;
-import DarkNet_Connection.*;
-import Data.JsonDTO;
+import DarkNet_Connection.DarknetConnection;
 
 import Exceptions.DarknetConnectionException;
 import javafx.embed.swing.SwingFXUtils;
@@ -12,7 +10,7 @@ import kong.unirest.UnirestException;
 
 import org.junit.jupiter.api.Test;
 import Test.*;
-import com.fasterxml.jackson.core.type.TypeReference;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -21,14 +19,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * @author Andreas B.G. Jensen
  */
 public class DarknetConnection_Test {
     Test_Create_Image imageCreator = new Test_Create_Image();
-    DatknetConnection connection = new DatknetConnection();
+    DarknetConnection connection = new DarknetConnection();
 
 
     @Test
