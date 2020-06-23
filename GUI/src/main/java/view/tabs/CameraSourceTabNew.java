@@ -1,4 +1,4 @@
-package view.taps;
+package view.tabs;
 
 import com.github.sarxos.webcam.Webcam;
 import javafx.application.Platform;
@@ -23,8 +23,6 @@ import view.MainGUI;
 import view.components.FxUtil;
 import view.components.TabStd;
 import view.components.webCamImageView.WebCamImageView;
-import view.components.webCamManipulationButton.ManipulationStateCallback;
-import view.components.webCamManipulationButton.WebCamManiButton;
 import view.components.webCamImageView.WebCamStateCallback;
 
 import javax.imageio.ImageIO;
@@ -377,7 +375,7 @@ public class CameraSourceTabNew extends TabStd {
 
     // region Placeholder for ComboBox to select webcam
     private static class WebCamCbHolder {
-        private Webcam webcam;
+        private final Webcam webcam;
         private String name;
 
         public WebCamCbHolder (Webcam webcam) {
@@ -425,7 +423,7 @@ public class CameraSourceTabNew extends TabStd {
 
     // region Placeholder for ComboBox to select resolution
     private static class ResolutionCbHolder {
-        private Dimension dimension;
+        private final Dimension dimension;
         private String resolutionText;
 
         public ResolutionCbHolder (Dimension dimension) {

@@ -31,12 +31,12 @@ public interface I_Controller {
 
     /**
      * Undo the last move, giving the player a
-     * chance to save a broken game.
+     * chance to save a broken game if card is misread. (False positive)
      * (The 'bad' state is still in the log file.)
      *
      * @param callBack A status message and history
      */
-    void undo(CompletionCallBack callBack);
+    void redo(Image img, NextMoveCallBack callBack);
 
     /**
      * Enter test mode, which maintains state without computervision

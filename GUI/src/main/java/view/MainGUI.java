@@ -2,16 +2,12 @@ package view;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import view.components.OutputTextArea;
-import view.components.TopMenuBar;
-import view.taps.OutputTab;
-import view.taps.TabPane;
+import view.tabs.OutputTab;
+import view.tabs.TabPane;
 
 /**
  * @author Rasmus Sander Larsen
@@ -27,7 +23,7 @@ public class MainGUI extends Application {
     public final static int SCREEN_HEIGHT = 700;
 
     private static OutputTab outputTab;
-    private static TabPane tabPane = new TabPane();
+    private static final TabPane tabPane = new TabPane();
 
     public static boolean isTesting = false;
 
