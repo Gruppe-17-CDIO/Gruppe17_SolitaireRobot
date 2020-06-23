@@ -1,5 +1,9 @@
 package Data;
 
+/**
+ * @author Andreas B.G. Jensen
+ * Holds darknet output until it will be converted to a Card object and mapped to TopCards element
+ */
 public class JsonDTO {
 
     public double x;
