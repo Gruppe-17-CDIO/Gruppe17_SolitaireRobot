@@ -3,9 +3,7 @@ package Data;
 import computerVision.Converter.Util.Sorting.I_Sorting;
 import Exceptions.BufferElementException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -32,10 +30,10 @@ public class BufferElement {
 
 
     /**
-     * @author Andreas B.G. Jensen
-     * This constructor is used for testing.
      * @param calubrationList
      * @param sortingObject
+     * @author Andreas B.G. Jensen
+     * This constructor is used for testing.
      */
     public BufferElement(List<JsonDTO> calubrationList, I_Sorting sortingObject) {
         this.callibrationInputList = calubrationList;
@@ -55,19 +53,19 @@ public class BufferElement {
      * The lowes Y-koordinate represent the Card in the drawPile. The rest of the elements represent the the piles in the lower row.
      * The callibration will only pass if a drawCard is detected in the upperRow and 7 elements are detected in the lower row.
      */
-    public void calibrateImageInputDimensions(){
+    public void calibrateImageInputDimensions() {
         callibrationInputList = sortingObject.sortingListAccordingToY(callibrationInputList);
         List<JsonDTO> upperElements = callibrationInputList;
-        for(int i = 0; i<upperElements.size();i++){
-            if(upperElements.get(i).getCat().equals(upperElements.get(0).getCat())){
+        for (int i = 0; i < upperElements.size(); i++) {
+            if (upperElements.get(i).getCat().equals(upperElements.get(0).getCat())) {
                 upperRow.add(upperElements.get(i));
             }
         }
-        lowerRow = removeSameElementsInList(callibrationInputList,upperRow);
-       //Chect for correct input
+        lowerRow = removeSameElementsInList(callibrationInputList, upperRow);
+        //Chect for correct input
         //Else throw an error
         calculateDrawCardSeparationLineX();
-        calculateVerticalGrid();
+        calculateVerticalGrid_V2();
         calculateSeparationLineY();
     }
 
@@ -78,19 +76,18 @@ public class BufferElement {
      * This method will set the separationLine which is the Y-koordinate that separates the upper row from the lower row.
      * Returns the averaging distance between the card from the upperRow that is closest to the lowerRow and the distance from the lower row that
      * is closes to the upperRow.
-     *
      */
-    public void calculateSeparationLineY(){
+    public void calculateSeparationLineY() {
 
         upperRow = sortingObject.sortingListAccordingToY(upperRow);
         lowerRow = sortingObject.sortingListAccordingToY(lowerRow);
 
-        double highesYFromUppeRow =upperRow.get(upperRow.size()-1).getY();
+        double highesYFromUppeRow = upperRow.get(upperRow.size() - 1).getY();
         double lowestYFromLowerRow = lowerRow.get(0).getY();
 
-        double buffer = (lowestYFromLowerRow-highesYFromUppeRow)/2;
+        double buffer = (lowestYFromLowerRow - highesYFromUppeRow) / 2;
 
-        separationLine = highesYFromUppeRow+buffer;
+        separationLine = highesYFromUppeRow + buffer;
     }
 
 
@@ -99,22 +96,22 @@ public class BufferElement {
      * Set the extra buffer from the drawcard to the X-Koordinate in which the drawCard wont be evaluated as a drawcard anymore.
      * NB: In stead it will be evaluated as a foundation.
      */
-    private void calculateDrawCardSeparationLineX(){
+    private void calculateDrawCardSeparationLineX() {
         List<JsonDTO> rowUpperRow = sortingObject.sortingListAccordingToX(upperRow);
-        drawCardSeparationLineX = rowUpperRow.get(rowUpperRow.size()-1).getX()+drawCard_HorisontalBuffer;
+        drawCardSeparationLineX = rowUpperRow.get(rowUpperRow.size() - 1).getX() + drawCard_HorisontalBuffer;
         //drawCardSeparationLineX = upperRow.get(upperRow.size()-1).getX()+drawCard_HorisontalBuffer;
     }
 
     /**
-     * @author Andreas B.G. Jensen
-     * Removes identical elements from one list in another.
      * @param listToRemoveFrom
      * @param listToCompare
      * @return List<JsonDTO>
+     * @author Andreas B.G. Jensen
+     * Removes identical elements from one list in another.
      */
-    private List<JsonDTO> removeSameElementsInList(List<JsonDTO> listToRemoveFrom, List<JsonDTO> listToCompare){
-        for(int i = 0; i<listToCompare.size();i++){
-            if(listToRemoveFrom.contains(listToCompare.get(i))){
+    private List<JsonDTO> removeSameElementsInList(List<JsonDTO> listToRemoveFrom, List<JsonDTO> listToCompare) {
+        for (int i = 0; i < listToCompare.size(); i++) {
+            if (listToRemoveFrom.contains(listToCompare.get(i))) {
                 listToRemoveFrom.remove(listToCompare.get(i));
             }
         }
@@ -122,105 +119,162 @@ public class BufferElement {
     }
 
     /**
+     * @return void
      * @author Andreas B.G. Jensen
      * This method should only be run in the method calibrateImageInputDimensions()
      * Calculates a fixed coordinate on each pile in the lower row. The Fixpoint is calculated by averaging the X-coordinates
      * from identical cards. Remember that the DarknetOut can give two (maby more) detection for the same card.
      * The list rowFixedGridLines will be used every time a new darknetinput will be evaluated, and the list will be used for
      * mapping the incomming detection input to the correct pile.
-     *
-     * @return void
      */
-    public void calculateVerticalGrid(){
-         rowFixedGridLines = new HashMap<>();
+    public void calculateVerticalGrid() {
+        rowFixedGridLines = new HashMap<>();
         lowerRow = sortingObject.sortingListAccordingToX(lowerRow);
 
         int rowCounter = 0;
         //while(rowCounter<7) {
-            for (int i = 0; i < lowerRow.size(); i++) {
-                double lowX = lowerRow.get(i).getX();
-                double highX = lowerRow.get(i).getX();
-                for (int j = i; j < lowerRow.size(); j++) {
+        for (int i = 0; i < lowerRow.size(); i++) {
+            double lowX = lowerRow.get(i).getX();
+            double highX = lowerRow.get(i).getX();
+            for (int j = i; j < lowerRow.size(); j++) {
 
-                    //Finding the highest X value of the same type of card
-                    if(lowerRow.get(i).getCat().equals(lowerRow.get(j).getCat())){
-                        if(lowerRow.get(j).getX()>=highX){
-                            highX = lowerRow.get(j).getX()+lowerRow.get(j).getW();
-                        }
-                    }else{
-                        i=j-1;
-                        break;
+                //Finding the highest X value of the same type of card
+                if (lowerRow.get(i).getCat().equals(lowerRow.get(j).getCat())) {
+                    if (lowerRow.get(j).getX() >= highX) {
+                        highX = lowerRow.get(j).getX() + lowerRow.get(j).getW();
                     }
-
+                } else {
+                    i = j - 1;
+                    break;
                 }
-                rowFixedGridLines.put(rowCounter, calculateAverageX(lowX, highX));
-                if(rowCounter==6) break;
-                rowCounter++;
 
             }
+            rowFixedGridLines.put(rowCounter, calculateAverageX(lowX, highX));
+            if (rowCounter == 6) break;
+            rowCounter++;
+
+        }
 
     }
 
 
     /**
+     * @param preCardList
      * @author Andreas B.G. Jensen
      * This method devides an incomming list into the upper- and lower lower row.
      * The deviding aspect will be based on the calibration (method calibrateImageInputDimensions()) which
      * must be run before using this method.
-     * @param preCardList
-     *
      */
-    public void setNewUpperAndLowerRow(List<JsonDTO> preCardList){
+    public void setNewUpperAndLowerRow(List<JsonDTO> preCardList) {
         preCardList = sortingObject.sortingListAccordingToY(preCardList);
         List<JsonDTO> upperElements = preCardList;
-        for(int i = 0; i<upperElements.size();i++){
-            if(upperElements.get(i).getY()<separationLine){
+        for (int i = 0; i < upperElements.size(); i++) {
+            if (upperElements.get(i).getY() < separationLine) {
                 upperRow.add(upperElements.get(i));
             }
         }
-        lowerRow = removeSameElementsInList(preCardList,upperRow);
+        lowerRow = removeSameElementsInList(preCardList, upperRow);
     }
 
     /**
-     * @author Andreas B.G. Jensen
-     * Calculates the average between two points
      * @param lowX
      * @param highX
      * @return Double
+     * @author Andreas B.G. Jensen
+     * Calculates the average between two points
      */
-    public Double calculateAverageX(double lowX, double highX){
-        Double average = lowX+((highX-lowX)/2);
+    public Double calculateAverageX(double lowX, double highX) {
+        Double average = lowX + ((highX - lowX) / 2);
         return average;
     }
 
-    public List<JsonDTO> getUpperRow(){
+    public List<JsonDTO> getUpperRow() {
         return upperRow;
     }
 
-    public List<JsonDTO> getLowerRow(){
+    public List<JsonDTO> getLowerRow() {
         return lowerRow;
     }
 
-    public double getSeparationLine(){
+    public double getSeparationLine() {
         return separationLine;
     }
 
-    public HashMap<Integer, Double> getRowFixedGridLines(){
+    public HashMap<Integer, Double> getRowFixedGridLines() {
         return rowFixedGridLines;
     }
 
-    public double getDrawCardSeparationLine(){
+    public double getDrawCardSeparationLine() {
         return drawCardSeparationLineX;
     }
 
-    public void setCallibrationInputList(List<JsonDTO> callibrationInputList ) throws BufferElementException {
-        if(!callibrationInputList.isEmpty()) {
+    public void setCallibrationInputList(List<JsonDTO> callibrationInputList) throws BufferElementException {
+        if (!callibrationInputList.isEmpty()) {
             this.callibrationInputList = callibrationInputList;
-        }else{
+        } else {
             throw new BufferElementException("No output from darknet have been detected\nThe calibration could not be done");
 
         }
 
     }
 
+
+    public void calculateVerticalGrid_V2() {
+        rowFixedGridLines = new HashMap<>();
+        List<JsonDTO> callibrationlowerRow = new ArrayList<>(sortingObject.sortingListAccordingToX(lowerRow));
+
+        //Calculating average Coordinates
+        int rowCounter = 0;
+        for (int i = 0; i < callibrationlowerRow.size(); i++) {
+            InterMidiateClass intermidi = new InterMidiateClass();
+            intermidi.setType(callibrationlowerRow.get(i).getCat());
+            intermidi.addXCoordinate(callibrationlowerRow.get(i).getX());
+
+            for (int j = i; j < callibrationlowerRow.size(); j++) {
+                if(callibrationlowerRow.get(j).getCat().equals(intermidi.getType())){
+                    intermidi.addXCoordinate(callibrationlowerRow.get(j).getX()+callibrationlowerRow.get(j).getW());
+                    callibrationlowerRow.remove(j);
+                    j--;
+
+                }
+            }
+            rowFixedGridLines.put(rowCounter, intermidi.getAverageX());
+            if (rowCounter == 6) break;
+            rowCounter++;
+            i=-1;
+
+
+        }
+    }
+
+
+    class InterMidiateClass{
+        String type;
+        ArrayList<Double> xCoordinates = new ArrayList<>();
+
+        public InterMidiateClass(){}
+
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+
+
+        public void addXCoordinate(double xValue){
+            xCoordinates.add(xValue);
+        }
+
+        public double getAverageX(){
+            Collections.sort(xCoordinates);
+            if(!xCoordinates.isEmpty()) {
+                return calculateAverageX(xCoordinates.get(0),xCoordinates.get(xCoordinates.size()-1));
+            }
+            return 0;
+        }
+    }
 }

@@ -141,53 +141,7 @@ public class BufferElement_Test {
     }
 
 
-    @Test
-    public void overlappingCalibration_Test() throws Exception {
-        SortingHelperClass sorting = new SortingHelperClass();
-        I_Connection darknetReturnList = new Darknet_Stub();
-        BufferElement buffer = new BufferElement(sorting);
 
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V4\\ComputerVision\\src\\main\\resources\\export.png"));
-
-            Image inputToDarknet = convertToFxImage(img);
-
-            List<JsonDTO> outPutList = darknetReturnList.Get_Image_Information(inputToDarknet);
-
-            buffer.setCallibrationInputList(outPutList);
-            buffer.calibrateImageInputDimensions();
-
-
-            TopCards expectedTopCards = new TopCards();
-            Card drawCard = new Card(createSuit("s"),9);
-            Card pile1 = new Card(createSuit("s"),13);
-            Card pile2 = new Card(createSuit("d"),5);
-            Card pile3 = new Card(createSuit("h"),8);
-            Card pile4 = new Card(createSuit("s"),1);
-            Card pile5 = new Card(createSuit("c"),1);
-            Card pile6 = new Card(createSuit("h"),1);
-            Card pile7 = new Card(createSuit("d"),1);
-
-            Card[] pile = new Card[7];
-
-            pile[1] = pile1;
-            pile[2] = pile2;
-            pile[3] = pile3;
-            pile[4] = pile4;
-            pile[5] = pile5;
-            pile[6] = pile6;
-            pile[7] = pile7;
-
-            expectedTopCards.setDrawnCard(drawCard);
-            expectedTopCards.setPiles(pile);
-
-
-
-        } catch (IOException e) {
-        }
-
-    }
 
 
     /*
