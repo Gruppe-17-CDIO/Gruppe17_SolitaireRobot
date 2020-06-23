@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Stack;
 
-public class controllerUNDO_Test {
+public class controllerUndo_Test {
     private Controller controller;
     private SolitaireState beforeLastState;
     private int turnCount = 0;
@@ -28,7 +28,7 @@ public class controllerUNDO_Test {
                 "cards from computervision must be read\n" +
                 "again. This test does not account for \nthat.");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        new controllerUNDO_Test().runGame();
+        new controllerUndo_Test().runGame();
     }
 
 
