@@ -16,14 +16,13 @@ public class MainGUI extends Application {
 
     // -------------------------- Fields --------------------------
 
-    private final String WINDOW_TITLE = "7 Solitaire";
+    private final String WINDOW_TITLE = "Gruppe 17 - Solitaire";
     private final String WINDOW_ICON_PATH = "/game_icon.png";
 
     public final static int SCREEN_WIDTH = 1000;
     public final static int SCREEN_HEIGHT = 700;
 
-    private static OutputTab outputTab;
-    private static final TabPane tabPane = new TabPane();
+    private static TabPane tabPane;
 
     public static boolean isTesting = false;
 
@@ -40,27 +39,11 @@ public class MainGUI extends Application {
                new Image(getClass().getResourceAsStream(WINDOW_ICON_PATH)));
         primaryStage.show();
 
+        tabPane = new TabPane();
+
         printTestStatus();
-        //tabPane.getSelectionModel().selectLast();
-        //tabPane.getSelectionModel().clearAndSelect(0);
-
-        /*
-        SplitPane splitPane = new SplitPane();
-        splitPane.setOrientation(Orientation.HORIZONTAL);
-        splitPane.setDividerPositions(500);
-        splitPane.getItems().addAll(tabPane, outputTextArea);
-
-        outputTextArea.setMinWidth(500);
-        outputTextArea.setEditable(false);
-        tabPane.setMinWidth(500);
-         */
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(tabPane);
-
-        if (isTesting){
-            // TODO: REMOVE
-            //mainPane.setTop(new TopMenuBar());
-        }
 
         primaryStage.setScene(new Scene(mainPane,SCREEN_WIDTH,SCREEN_HEIGHT));
     }
@@ -74,7 +57,6 @@ public class MainGUI extends Application {
             }
             MainGUI.printToOutputAreaNewline(thread.getId() +"@" +thread.getName() +" is alive");
         }
-        //TODO: Handle shutdown
     }
 
     //------------------------ Properties -------------------------
@@ -91,12 +73,11 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
                 tabPane.appendTextNewlineToOutput(text);
             }
         });
-
     }
+
     public static void printSuccessToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
@@ -105,6 +86,7 @@ public class MainGUI extends Application {
             }
         });
     }
+
     public static void printFailureToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
@@ -113,6 +95,7 @@ public class MainGUI extends Application {
             }
         });
     }
+
     public static void printErrorToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
@@ -130,6 +113,7 @@ public class MainGUI extends Application {
             }
         });
     }
+
     public static void printDivider() {
         Platform.runLater(new Runnable() {
             @Override
