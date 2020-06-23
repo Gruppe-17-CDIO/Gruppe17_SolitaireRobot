@@ -48,8 +48,8 @@ public class Controller implements I_Controller {
             stateManager.addMovesToState(moves);
 
             Move currentMove = stateManager.getBestMove();
-            System.out.println("\nStartNewGame: " + currentMove + "\n");
-            System.out.println(state.getPrintFormat());
+            //System.out.println("\nStartNewGame: " + currentMove + "\n");
+            //System.out.println(state.getPrintFormat());
             stateManager.updateGameProcess(moves);
             callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class Controller implements I_Controller {
 
                 stateManager.updateGameProcess(moves);
                 Move move = stateManager.getBestMove();
-                System.out.println("NextMove: " + move);
+                //System.out.println("NextMove: " + move);
                 callBack.OnSuccess(move, stateManager.getHistory().peek(), state.getGameProgress());
 
             } catch (Exception e) {
@@ -105,15 +105,16 @@ public class Controller implements I_Controller {
         }
     }
 
+    // Remove last move and try again! Use if a card is misread.
+    // Don't use if card is simply not found, only if the value is wrong!
     @Override
-    public void undo(CompletionCallBack callBack) {
+    public void redo(Image img, NextMoveCallBack callBack) {
         try {
             stateManager.undo();
-            callBack.OnSuccess("UNDO registered. Last move and state logged, but deleted from current history. " +
-                    "\nPerform calculation again to continue");
         } catch (Exception e) {
             callBack.OnError(e);
         }
+        getNextMove(img, callBack);
     }
 
     // This method is for testing, not part of interface

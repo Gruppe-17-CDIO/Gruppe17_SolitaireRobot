@@ -1,4 +1,4 @@
-package view.taps;
+package view.tabs;
 
 import controller.CompletionCallBack;
 import controller.Controller;
@@ -44,24 +44,19 @@ public class GameTab extends TabStd {
     private final int VGAP = 10;
 
     private final String TAG = getClass().getSimpleName();
-
-    private WebCamManiButton webCamManiBtn;
-    private WebCamImageView webCamImageView;
-
     private final BorderPane mainPane;
-
-    private GridPane gridPane;
-    private VBox bottomBox;
-
     private final SolitaireGridPane solitaireGridPane;
-
     private final VBox btnBox = FxUtil.vBox(true);
     private final Text moveText = new Text();
     private final Button btnNextMove = new Button();
-    private Button btnStartNewGame = new Button();
     private final ProgressIndicator progressIndicator = new ProgressIndicator(-1.0);
-
     private final I_Controller controller = new Controller();
+    private WebCamManiButton webCamManiBtn;
+    private WebCamImageView webCamImageView;
+    private GridPane gridPane;
+    private VBox bottomBox;
+    private Button btnStartNewGame = new Button();
+    private Button btnUndo = new Button();
 
     //----------------------- Constructor -------------------------
 
@@ -77,10 +72,10 @@ public class GameTab extends TabStd {
 
         // Creates and add the SolitaireGridPane that is the GUI representation of the layed out cards.
         solitaireGridPane = new SolitaireGridPane();
-        gridPane.add(solitaireGridPane,1,0);
+        gridPane.add(solitaireGridPane, 1, 0);
 
         // Add the GridPane to the Tab with a little bit for spacing above.
-        addToContent(FxUtil.emptySpace(Orientation.VERTICAL,5));
+        addToContent(FxUtil.emptySpace(Orientation.VERTICAL, 5));
 
         createBottomMenu();
 
@@ -109,14 +104,14 @@ public class GameTab extends TabStd {
 
     //---------------------- Support Methods ----------------------
 
-    private void setupGridPane ()  {
+    private void setupGridPane() {
         gridPane = new GridPane();
         gridPane.setAlignment(Pos.TOP_CENTER);
-        gridPane.setMaxSize(MAX_WIDTH,MAX_HEIGHT);
-        gridPane.setPrefSize(MAX_WIDTH,MAX_HEIGHT);
+        gridPane.setMaxSize(MAX_WIDTH, MAX_HEIGHT);
+        gridPane.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
         gridPane.setVgap(VGAP);
         // Set ColumnConstraints to 1/7 for each of the 7 columns.
-        for(int i = 0; i < 2 ; i++) {
+        for (int i = 0; i < 2; i++) {
             ColumnConstraints tempColumnConstraints = new ColumnConstraints();
             tempColumnConstraints.setPercentWidth(50);
             gridPane.getColumnConstraints().add(tempColumnConstraints);
@@ -153,16 +148,19 @@ public class GameTab extends TabStd {
 
         webCamImageView.setStateCallback(new WebCamStateCallback() {
             @Override
-            public void onStarted() { }
+            public void onStarted() {
+            }
 
             @Override
-            public void onStopped() { }
+            public void onStopped() {
+            }
 
             @Override
-            public void onDisposed() { }
+            public void onDisposed() {
+            }
         });
         webCamImageView.setFitWidth(450);
-        webCamImageView.setFitHeight(450d/16*9);
+        webCamImageView.setFitHeight(450d / 16 * 9);
 
         // Creates the framed view for the webcam
         HBox webCamPane = new HBox();
@@ -174,7 +172,7 @@ public class GameTab extends TabStd {
 
         // NEEDS to be in Group.
         // Adds the left side for GameTab
-        gridPane.add(new Group(webCamPane),0,0);
+        gridPane.add(new Group(webCamPane), 0, 0);
     }
 
     private void createBottomMenu() {
@@ -194,8 +192,8 @@ public class GameTab extends TabStd {
         });
 
         progressIndicator.setVisible(false);
-        progressIndicator.setMinSize(20,20);
-        progressIndicator.setMaxSize(20,20);
+        progressIndicator.setMinSize(20, 20);
+        progressIndicator.setMaxSize(20, 20);
 
         moveText.setFont(FxUtil.textFont());
 
@@ -208,10 +206,20 @@ public class GameTab extends TabStd {
             }
         });
 
-        bottomBox.getChildren().addAll(moveText, btnNextMove, progressIndicator, btnStartNewGame);
+        btnUndo = new Button("Redo");
+        btnUndo.setPrefWidth(150);
+        btnUndo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                runUndoMoveTask();
+            }
+        });
+
+        bottomBox.getChildren().addAll(moveText, btnNextMove, progressIndicator, btnStartNewGame, btnUndo);
+
     }
 
-    private NextMoveCallBack defaultNextMoveCallback () {
+    private NextMoveCallBack defaultNextMoveCallback() {
         return new NextMoveCallBack() {
             @Override
             public void OnSuccess(Move move, SolitaireState state, GlobalEnums.GameProgress gameProgress) {
@@ -251,7 +259,7 @@ public class GameTab extends TabStd {
 
             @Override
             public void OnFailure(String message, List<Move> moves, Stack<SolitaireState> history) {
-                MainGUI.printToOutputAreaNewline("Failure: " +message);
+                MainGUI.printToOutputAreaNewline("Failure: " + message);
                 solitaireGridPane.ofSolitaireState(history.peek());
                 Platform.runLater(postFailedControlCall());
             }
@@ -265,14 +273,14 @@ public class GameTab extends TabStd {
         };
     }
 
-    private void runNextMoveTask () {
+    private void runNextMoveTask() {
 
         Task<Integer> nextMoveTask = new Task<Integer>() {
             @Override
             protected Integer call() throws Exception {
                 Platform.runLater(preControlCall());
 
-                controller.getNextMove(webCamImageView.getImage(),defaultNextMoveCallback());
+                controller.getNextMove(webCamImageView.getImage(), defaultNextMoveCallback());
 
                 btnNextMove.requestFocus();
                 return null;
@@ -284,63 +292,91 @@ public class GameTab extends TabStd {
         nextMoveThread.start();
     }
 
-    private Runnable preControlCall () {
+    private void runUndoMoveTask() {
+
+        Task<Integer> nextMoveTask = new Task<Integer>() {
+            @Override
+            protected Integer call() throws Exception {
+                Platform.runLater(preControlCall());
+
+                controller.redo(webCamImageView.getImage(), defaultNextMoveCallback());
+
+                btnNextMove.requestFocus();
+                return null;
+            }
+        };
+
+        Thread nextMoveThread = new Thread(nextMoveTask);
+        nextMoveThread.setDaemon(true);
+        nextMoveThread.start();
+    }
+
+    private Runnable preControlCall() {
         return () -> {
             progressIndicator.setVisible(true);
             btnNextMove.setDisable(true);
             btnStartNewGame.setDisable(true);
+            btnUndo.setDisable(true);
         };
     }
 
-    private Runnable postPlayingControlCall () {
+    private Runnable postPlayingControlCall() {
         return () -> {
             progressIndicator.setVisible(false);
             btnNextMove.setDisable(false);
             btnStartNewGame.setDisable(false);
             btnNextMove.requestFocus();
+            btnUndo.setDisable(false);
         };
     }
-    private Runnable postWonControlCall () {
+
+    private Runnable postWonControlCall() {
         return () -> {
             progressIndicator.setVisible(false);
             btnNextMove.setDisable(true);
             btnStartNewGame.setDisable(false);
             btnStartNewGame.requestFocus();
+            btnUndo.setDisable(true);
         };
     }
-    private Runnable postLostControlCall () {
+
+    private Runnable postLostControlCall() {
         return () -> {
             progressIndicator.setVisible(false);
             btnNextMove.setDisable(true);
             btnStartNewGame.setDisable(false);
+            btnUndo.setDisable(true);
             //btnStartNewGame.requestFocus();
         };
     }
 
-    private Runnable postFailedControlCall () {
+    private Runnable postFailedControlCall() {
         return () -> {
             progressIndicator.setVisible(false);
             btnNextMove.setDisable(false);
             btnStartNewGame.setDisable(false);
-            btnNextMove.requestFocus();
-        };
-    }
-    private Runnable postErrorControlCall () {
-        return () -> {
-            progressIndicator.setVisible(false);
-            btnNextMove.setDisable(false);
-            btnStartNewGame.setDisable(false);
+            btnUndo.setDisable(false);
             btnNextMove.requestFocus();
         };
     }
 
-    private void setUserData () {
+    private Runnable postErrorControlCall() {
+        return () -> {
+            progressIndicator.setVisible(false);
+            btnNextMove.setDisable(false);
+            btnStartNewGame.setDisable(false);
+            btnNextMove.requestFocus();
+            btnUndo.setDisable(false);
+        };
+    }
+
+    private void setUserData() {
         TabUserData tabUserData = new TabUserData.Builder()
                 .usedInClassName(TAG)
                 .openRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        if (WebCamSettings.getInstance().setWebCamImageViewWithSetting(TAG,webCamImageView)){
+                        if (WebCamSettings.getInstance().setWebCamImageViewWithSetting(TAG, webCamImageView)) {
                             webCamImageView.startRunning();
                             btnNextMove.setDisable(false);
                             btnStartNewGame.setDisable(false);
@@ -356,10 +392,10 @@ public class GameTab extends TabStd {
                     }
                 })
                 .closeRunnable(new Runnable() {
-                  @Override
-                  public void run() {
-                      webCamImageView.stopRunning();
-                  }
+                    @Override
+                    public void run() {
+                        webCamImageView.stopRunning();
+                    }
                 })
                 .build();
 

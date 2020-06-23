@@ -91,6 +91,7 @@ public class ControllerUndo_Test {
             beforeLastState = state;
         }
         if (turnCount > 1) {
+            /*
             controller.undo(new CompletionCallBack() {
                 @Override
                 public void OnSuccess(String status) {
@@ -118,6 +119,8 @@ public class ControllerUndo_Test {
                     e.printStackTrace();
                 }
             });
+
+             */
         }
 
         performMove();

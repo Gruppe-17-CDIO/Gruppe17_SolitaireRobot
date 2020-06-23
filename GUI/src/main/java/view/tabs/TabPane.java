@@ -1,4 +1,4 @@
-package view.taps;
+package view.tabs;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,15 +18,15 @@ public class TabPane extends javafx.scene.control.TabPane {
     -------------------------- Fields --------------------------
      */
 
-    private List<Tab> tabList = new ArrayList<>();
-    private CameraSourceTabNew cameraSourceTabNew = new CameraSourceTabNew();
-    private GameTab gameTab = new GameTab();
-    private OutputTab outputTab = new OutputTab();
+    private final List<Tab> tabList = new ArrayList<>();
+    private final CameraSourceTabNew cameraSourceTabNew = new CameraSourceTabNew();
+    private final GameTab gameTab = new GameTab();
+    private final OutputTab outputTab = new OutputTab();
     /*
     ----------------------- Constructor -------------------------
      */
-    
-    public TabPane () {
+
+    public TabPane() {
         setTabMinWidth(TAB_MIN_WIDTH);
         loadDefaultTabs();
         setSelectionProperty();

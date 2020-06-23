@@ -1,4 +1,4 @@
-package view.taps;
+package view.tabs;
 
 /**
  * @author Rasmus Sander Larsen

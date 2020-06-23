@@ -132,7 +132,7 @@ public class Logic implements I_Logic {
         //moves = removeRepeatMoves(moves);
 
         // End game if all cards viewed since last meaningful move
-        if (drawsInRow > state.getStock() + state.getDrawnCards().size() + 1) {
+        if (drawsInRow > 20) {
             state.setGameProgress(LOST);
             moves = new ArrayList<>();
         }
@@ -142,7 +142,7 @@ public class Logic implements I_Logic {
         if (moves.size() > 0 && moves.get(0).getMoveType() == DRAW) {
             drawsInRow++;
         } else {
-            drawsInRow = 0;
+            drawsInRow = 0; // Reset
         }
         return moves;
     }
@@ -203,7 +203,7 @@ public class Logic implements I_Logic {
                         moves.add(
                                 new Move(MOVE_FROM_PILE, card, new int[]{pileNumber, cardNumber}, PILE, p, REVEAL_CARD));
                     } else {
-                        // These might be wasted moves
+                        // These moves are kept as comments, because they make the game complete, wuth all allowed moves.
                         //moves.add(
                         //        new Move(MOVE, card, new int[]{pileNumber, cardNumber}, PILE, p, NO_BENEFIT)
                         //);

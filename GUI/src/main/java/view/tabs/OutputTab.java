@@ -1,4 +1,4 @@
-package view.taps;
+package view.tabs;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
@@ -12,7 +12,7 @@ public class OutputTab extends TabStd {
 
     //-------------------------- Fields --------------------------
 
-    private OutputTextArea outputTextArea;
+    private final OutputTextArea outputTextArea;
 
     //----------------------- Constructor -------------------------
 

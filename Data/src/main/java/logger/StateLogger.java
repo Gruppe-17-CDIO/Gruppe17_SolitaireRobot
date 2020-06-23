@@ -21,7 +21,7 @@ public class StateLogger implements I_StateLogger {
     // Filepath for current session with timestamp
     Timestamp stamp = new Timestamp(System.currentTimeMillis());
     final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
-            stamp.toString().substring(0, 10) + "_" + stamp.toString().substring(11, 22) +
+            stamp.toString().substring(0, 10) + "_" + stamp.toString().substring(11, 21) +
             ".json";
     boolean newGame = true;
 

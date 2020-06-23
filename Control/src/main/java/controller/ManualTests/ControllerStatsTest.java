@@ -22,7 +22,7 @@ import java.util.Stack;
 
 public class ControllerStatsTest {
     private static ControllerStatsTest test;
-    final double iterations = 100; // Number of whole games played.
+    final double iterations = 1000; // Number of whole games played.
     static double moves = 0;
     int wins = 0;
     boolean roundFinished = false;
@@ -54,11 +54,10 @@ public class ControllerStatsTest {
 
         System.out.println("Wins: " + wins +
                 "\nIterations: " + (int) iterations +
-                "\nWin ratio: " + (double) wins / (double) iterations +
+                "\nWin ratio: " + (double) wins / iterations +
                 "\nTotal time: " + (int) (time / 1000) + " seconds." +
                 "\nTime per iteration: " + (int) (time / iterations) + " millis." +
                 "\nTime per move: " + (int) (time / moves) + " millis.");
-        ;
     }
 
     private static void playRound(I_Controller controller, ControllerStatsTest test) {
