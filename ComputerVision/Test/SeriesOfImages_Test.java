@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 /**
  * @author Andreas B.G. Jensen
- * Not implementet
+ * Not implementet in test. Have been tested by trile and error
  */
 public class SeriesOfImages_Test {
 

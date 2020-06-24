@@ -31,26 +31,6 @@ public class Convertion_Test {
 
 
     /*
-    Testing that an image will be put into sections.
-     */
-
-    @Test
-    private void Test_calibrateImgBoxes(){
-
-        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-        Image im = convertToFxImage(image);
-
-        System.out.println(image.getWidth());
-        System.out.println(image.getHeight());
-
-
-
-
-
-
-    }
-
-    /*
     Convertin a BufferedImage to jfx image
     This is used only for testing.
     Converting a BufferedImage into javaFX image in order to simulate that an javafx imegages which is send from the controller.
@@ -260,6 +240,12 @@ public class Convertion_Test {
         assertEquals(expectedDublicateList.get(1).toString(),actualPreCardList.get(1).toString());
     }
 
+
+    /**
+     * @auther Andreas B.G. Jensen
+     * To run this test you will have to return init_Stup_Cards() in the method public List<JsonDTO> Get_Image_Information(Image img) located in Darknet_Stub class
+     * @throws ComputerVisionException
+     */
     @Test
     public void getSolitaireCards_Test() throws ComputerVisionException {
 

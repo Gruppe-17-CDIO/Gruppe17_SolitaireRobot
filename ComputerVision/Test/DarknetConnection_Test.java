@@ -1,5 +1,6 @@
 import DarkNet_Connection.DarknetConnection;
 
+import Data.JsonDTO;
 import Exceptions.DarknetConnectionException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Andreas B.G. Jensen
@@ -50,8 +52,11 @@ public class DarknetConnection_Test {
 
             Image image = SwingFXUtils.toFXImage(img, null);
 
-            connection.Get_Image_Information(image);
+            List<JsonDTO> outputFromComputerVisionList = connection.Get_Image_Information(image);
 
+            if(!outputFromComputerVisionList.isEmpty()){
+                assert (true);
+            }
 
         } catch (UnirestException e) {
             e.printStackTrace();

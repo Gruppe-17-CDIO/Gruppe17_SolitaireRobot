@@ -50,7 +50,9 @@ public class TopCards {
         String drawCard = this.drawnCard.getColor() + Integer.toString(this.drawnCard.getRank());
 
         for(Card card: piles){
-            stringBuilder.append(card.getSuit()+Integer.toString(card.getRank())+"\n");
+            if(card!=null) {
+                stringBuilder.append(card.getSuit() + Integer.toString(card.getRank()) + "\n");
+            }
 
         }
 

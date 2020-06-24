@@ -19,19 +19,12 @@ import java.util.Random;
 public class Darknet_Stub implements I_Connection {
 
 
-    final static int DRAW = 1;
-    final static int ROW = 7;
-    final static int FOUNDATION = 4;
-    final static int BOX_HEIGHT = 100;
-    final static int BOX_WIDTH = 50;
-    // Koordinat af bounding boxes
-    // Højde og bredda af bounding boxes
-    // Procentsats for hvad hvilket kort den tror det er
-    // Klassificering af, hvilket kort det er.
-
     @Override
     public List<JsonDTO> Get_Image_Information(Image img) {
 
+        /*
+        Different return methods for testing.
+         */
         //return init_Stup_Cards(); //Used for all other tests
         //return missing_Darknet_input_when_Callibrating(); //Only used for testing Throwing_Exception_Test
         return overLappingImageForCardCallibration_Test();

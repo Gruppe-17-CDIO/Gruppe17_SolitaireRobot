@@ -70,6 +70,7 @@ public class BoxMapping {
         numberOfAnalysedImage--;
         throw e;
     }catch (Exception e){
+        e.printStackTrace();
         throw new BoxMappingException(e.getMessage());
     }
 
@@ -123,6 +124,7 @@ public class BoxMapping {
 
         if(numberOfAnalysedImage ==1){
             if(!validateCalibration(topcards)){
+                numberOfAnalysedImage--;
                 throw new BoxMappingException("The calibrating could not be identified\n" +
                         "Please try to adjust the piles.\n " +
                         "Keep in mind that the Computer Vision will be able to detect on your dect of cards");

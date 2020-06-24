@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 
 /**
  * @author Andreas B.G. Jensen
+ * @deprecated
  */
 public class ImageBoxes_Test {
 

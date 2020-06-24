@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class Convertion implements I_ComputerVisionController {
 
-    boolean test = false;
+    boolean test = true;
     SortingHelperClass sorting;
     I_Connection connection;
     BoxMapping mapper;
@@ -50,6 +50,7 @@ public class Convertion implements I_ComputerVisionController {
             return mapper.makeBoxMapping(returnImages);
 
         }catch (Exception e){
+            e.printStackTrace();
            throw new ComputerVisionException(e.getMessage());
         }
     }
