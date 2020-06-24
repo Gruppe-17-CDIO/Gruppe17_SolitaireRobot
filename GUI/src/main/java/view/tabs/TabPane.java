@@ -3,6 +3,7 @@ package view.tabs;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Tab;
+import view.MainGUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,9 @@ public class TabPane extends javafx.scene.control.TabPane {
     private void loadDefaultTabs () {
         tabList.add(cameraSourceTabNew);
         tabList.add(gameTab);
-        tabList.add(outputTab);
+        if (MainGUI.isTesting) {
+            tabList.add(outputTab);
+        }
 
         getTabs().addAll(tabList);
     }

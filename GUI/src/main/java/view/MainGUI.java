@@ -22,8 +22,7 @@ public class MainGUI extends Application {
     public final static int SCREEN_WIDTH = 1000;
     public final static int SCREEN_HEIGHT = 700;
 
-    private static OutputTab outputTab;
-    private static final TabPane tabPane = new TabPane();
+    private static TabPane tabPane;
 
     public static boolean isTesting = false;
 
@@ -40,27 +39,12 @@ public class MainGUI extends Application {
                new Image(getClass().getResourceAsStream(WINDOW_ICON_PATH)));
         primaryStage.show();
 
+        tabPane = new TabPane();
+
         printTestStatus();
-        //tabPane.getSelectionModel().selectLast();
-        //tabPane.getSelectionModel().clearAndSelect(0);
 
-        /*
-        SplitPane splitPane = new SplitPane();
-        splitPane.setOrientation(Orientation.HORIZONTAL);
-        splitPane.setDividerPositions(500);
-        splitPane.getItems().addAll(tabPane, outputTextArea);
-
-        outputTextArea.setMinWidth(500);
-        outputTextArea.setEditable(false);
-        tabPane.setMinWidth(500);
-         */
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(tabPane);
-
-        if (isTesting){
-            // TODO: REMOVE
-            //mainPane.setTop(new TopMenuBar());
-        }
 
         primaryStage.setScene(new Scene(mainPane,SCREEN_WIDTH,SCREEN_HEIGHT));
     }
