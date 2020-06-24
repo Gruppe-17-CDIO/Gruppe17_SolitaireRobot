@@ -1,6 +1,7 @@
 package DarkNet_Connection;
 
 import Data.JsonDTO;
+import Exceptions.DarknetConnectionException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
@@ -27,13 +28,14 @@ import java.util.List;
 /**
  * * @author Andreas B.G. Jensen
  */
-public class DatknetConnection implements I_Connection {
-
+public class DarknetConnection implements I_Connection {
+    final int reconnectTry = 3;
+    int connectionTryes = 0;
     /*
     Sending a post request to python server and return the coordinates of the image recognition.
      */
     @Override
-    public List<JsonDTO> Get_Image_Information(Image img) throws UnirestException {
+    public List<JsonDTO> Get_Image_Information(Image img) throws DarknetConnectionException {
         try {
             byte[] imageByteArray = convertImageToByteArray(img);
             HttpResponse<String> res = makePOSTRequest(imageByteArray);
@@ -51,9 +53,11 @@ public class DatknetConnection implements I_Connection {
         } catch (Exception e) {
 
             e.printStackTrace();
+            throw new DarknetConnectionException(e.getMessage());
         }
-        return null;
     }
+
+
 
     /*
     Author: Andreas Jensen
@@ -78,10 +82,9 @@ public class DatknetConnection implements I_Connection {
         return os.toByteArray();
     }
 
-    private HttpResponse<String> makePOSTRequest(byte[] imageByteArray){
+    private HttpResponse<String> makePOSTRequest(byte[] imageByteArray) throws DarknetConnectionException{
         try {
 
-            //HttpResponse<String> res = Unirest.post("http://192.168.0.20:6969/detect/hello.png")
             HttpResponse<String> res = Unirest.post("http://212.237.130.109:6969/detect/hello.png")
                     .header("Content-Type", "image/png")
                     .body(imageByteArray)
@@ -89,7 +92,11 @@ public class DatknetConnection implements I_Connection {
 
             return res;
         }catch (Exception e){
-           return makePOSTRequest(imageByteArray);
+           // if(reconnectTry<connectionTryes) {
+                return makePOSTRequest(imageByteArray);
+
+           /* throw new DarknetConnectionException("Three tryes failed to connect to the Darknet REST endpoint\n" +
+                    "Please contact Gruppe 17.\nException message: " +e.getMessage());*/
         }
 
     }

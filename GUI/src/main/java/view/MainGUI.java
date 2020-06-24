@@ -16,7 +16,7 @@ public class MainGUI extends Application {
 
     // -------------------------- Fields --------------------------
 
-    private final String WINDOW_TITLE = "7 Solitaire";
+    private final String WINDOW_TITLE = "Gruppe 17 - Solitaire";
     private final String WINDOW_ICON_PATH = "/game_icon.png";
 
     public final static int SCREEN_WIDTH = 1000;
@@ -75,12 +75,11 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
                 tabPane.appendTextNewlineToOutput(text);
             }
         });
-
     }
+
     public static void printSuccessToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
@@ -89,6 +88,7 @@ public class MainGUI extends Application {
             }
         });
     }
+
     public static void printFailureToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
@@ -97,6 +97,7 @@ public class MainGUI extends Application {
             }
         });
     }
+
     public static void printErrorToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
@@ -114,6 +115,7 @@ public class MainGUI extends Application {
             }
         });
     }
+
     public static void printDivider() {
         Platform.runLater(new Runnable() {
             @Override

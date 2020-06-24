@@ -1,11 +1,6 @@
-import Converter.Convertion;
-import Converter.ImageBoxes;
-import DarkNet_Connection.Darknet_Stub;
-import DarkNet_Connection.I_Connection;
-import Data.JsonDTO;
+import computerVision.Converter.ImageBoxes;
 import Data.PreCard;
 import dataObjects.Card;
-import dataObjects.ConvertState;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.junit.jupiter.api.Test;
@@ -15,12 +10,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * * @author Andreas B.G. Jensen
+ * @author Andreas B.G. Jensen
+ * @deprecated
  */
 public class ImageBoxes_Test {
 
@@ -110,7 +105,7 @@ public class ImageBoxes_Test {
         List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         //Creating a return from
-        List<JsonDTO> returnFromDarknet = convert.ConvertImage(image);
+        List<JsonDTO> returnFromDarknet = convert.getOutputDarknet(image);
         //converting all precard to Card object for late use to assertEqual
         List<Card> preCardToCards = preCardToCard(returnFromDarknet);
 
@@ -186,7 +181,7 @@ public class ImageBoxes_Test {
         List<double[]> boxs = boxes.returnImgBoxes(image,null);
 
         //Creating a return from
-        List<PreCard> returnFromDarknet = convert.ConvertImage(image);
+        List<PreCard> returnFromDarknet = convert.getOutputDarknet(image);
         Collections.shuffle(returnFromDarknet);
 
         returnFromDarknet = sortingListX(returnFromDarknet,image);

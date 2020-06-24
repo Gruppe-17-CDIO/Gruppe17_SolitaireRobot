@@ -1,4 +1,4 @@
-package Converter;
+package computerVision.Converter;
 
 import Data.PreCard;
 import dataObjects.Card;
@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * * @author Andreas B.G. Jensen
+ * @deprecated
  */
 public class ImageBoxes {
     double upperHeight;

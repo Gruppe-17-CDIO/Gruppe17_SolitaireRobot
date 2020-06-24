@@ -1,4 +1,4 @@
-package Converter.Util;
+package computerVision.Converter.Util;
 
 import Data.JsonDTO;
 import Data.PreCard;
@@ -23,7 +23,11 @@ Class used for mapping a JsonObject to PreCard objects.
  */
 public class Util {
 
-
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     public List<PreCard> getPreCard(JsonArray obj){
 
         List<PreCard> preCardList = new ArrayList<PreCard>();
@@ -40,7 +44,11 @@ public class Util {
         return preCardList;
     }
 
-
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private Point getUpperCoordinate(JsonObject obj){
         double X_koordinate = getUpperKoordinate_X(obj);
         double Y_koordinate = getUpperKoordinate_Y(obj);
@@ -51,6 +59,11 @@ public class Util {
         return newPoint;
     }
 
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private Point getLowerCoordinate(JsonObject obj){
         double X_koordinate = getLowerKoordinate_X(obj);
         double Y_koordinate = getLowerKoordinate_Y(obj);
@@ -62,27 +75,51 @@ public class Util {
     }
 
 
-
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private double getUpperKoordinate_X(JsonObject obj){
         return obj.get("upperKoordinate_X").getAsInt();
 
     }
 
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private double getUpperKoordinate_Y(JsonObject obj){
         return obj.get("upperKoordinate_Y").getAsInt();
 
     }
 
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private double getLowerKoordinate_X(JsonObject obj){
         return obj.get("lowerKoordinate_X").getAsInt();
 
     }
 
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private double getLowerKoordinate_Y(JsonObject obj){
         return obj.get("lowerKoordinate_Y").getAsInt();
 
     }
 
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private int getRank(JsonObject obj){
         String classsss = obj.get("Classification").toString();
         classsss = classsss.replace("\"","");
@@ -91,6 +128,12 @@ public class Util {
         return rank;
     }
 
+
+    /**
+     * @deprecated
+     * @param obj
+     * @return
+     */
     private String getColor(JsonObject obj){
         String classsss = obj.get("Classification").toString();
         classsss = classsss.replace("\"","");
@@ -132,6 +175,7 @@ public class Util {
 
     /**
      * @Auther Andreas B.G. Jensen
+     * Converts a JsonDTO to a the DataObject Card
      * @param json
      * @return
      */
@@ -167,6 +211,18 @@ public class Util {
         return null;
     }
 
+    /**
+     * @param lowX
+     * @param highX
+     * @return Double
+     * @author Andreas B.G. Jensen
+     * Calculates the average between two X-coordinates
+     */
+    public static Double calculateAverageX(double lowX, double highX) {
+        Double average = lowX + ((highX - lowX) / 2);
+        return average;
+    }
+
     private static Card.Suit createSuit(String suite){
 
         switch (suite){
@@ -178,10 +234,5 @@ public class Util {
         }
         return null;
     }
-
-
-
-
-
 
 }

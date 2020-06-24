@@ -11,6 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+
+/**
+ * @author Andreas B.G. Jensen
+ * Testing that a JsonArray string can can be mapped to at List of JsonDTU ovjects
+ * AssertEquals is not used in this test the console have been used insted.
+ */
 public class MappingJSON_Test {
 
     @Test
@@ -29,6 +35,7 @@ public class MappingJSON_Test {
             // print list of users
             for(int i = 0; i<jsonDTOList.size();i++){
                 System.out.println(jsonDTOList.get(i).getCat());
+                assert (true);
             }
 
         } catch (Exception ex) {

@@ -1,7 +1,7 @@
-import DarkNet_Connection.DatknetConnection;
-import DarkNet_Connection.*;
-import Data.JsonDTO;
+import DarkNet_Connection.DarknetConnection;
 
+import Data.JsonDTO;
+import Exceptions.DarknetConnectionException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -11,7 +11,7 @@ import kong.unirest.UnirestException;
 
 import org.junit.jupiter.api.Test;
 import Test.*;
-import com.fasterxml.jackson.core.type.TypeReference;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -20,14 +20,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 /**
- * * @author Andreas B.G. Jensen
+ * @author Andreas B.G. Jensen
  */
 public class DarknetConnection_Test {
     Test_Create_Image imageCreator = new Test_Create_Image();
-    DatknetConnection connection = new DatknetConnection();
+    DarknetConnection connection = new DarknetConnection();
 
 
     @Test
@@ -45,19 +45,18 @@ public class DarknetConnection_Test {
 
 
     @Test
-    public void Sending_ImageToServer_Test(){
+    public void Sending_ImageToServer_Test() throws DarknetConnectionException {
         try {
 
-              //BufferedImage  img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\TestKabale.PNG"));
             BufferedImage  img = ImageIO.read(new File("C:\\Uddannelse\\DTU\\4sem\\CDIO\\Kabale_V2\\ComputerVision\\AllDeck.jpg"));
-
-
 
             Image image = SwingFXUtils.toFXImage(img, null);
 
+            List<JsonDTO> outputFromComputerVisionList = connection.Get_Image_Information(image);
 
-            connection.Get_Image_Information(image);
-
+            if(!outputFromComputerVisionList.isEmpty()){
+                assert (true);
+            }
 
         } catch (UnirestException e) {
             e.printStackTrace();
