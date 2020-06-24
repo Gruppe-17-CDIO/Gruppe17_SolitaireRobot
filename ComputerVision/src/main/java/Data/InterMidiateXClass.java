@@ -5,6 +5,10 @@ import computerVision.Converter.Util.Util;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Andreas B.G. Jensen
+ * Class used for avereging a X-coordinate for more outputelements of the same type.
+ */
 public class InterMidiateXClass {
     String type;
     ArrayList<Double> xCoordinates = new ArrayList<>();
