@@ -38,7 +38,7 @@ public class BufferElement_Test {
      */
 
     @Test
-    public void CreateSeparationLine_Test(){
+    public void CreateSeparationLine_Test() throws BufferElementException {
         SortingHelperClass sorting = new SortingHelperClass();
         Darknet_Stub darknetReturnList = new Darknet_Stub();
         List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
@@ -87,7 +87,7 @@ public class BufferElement_Test {
 
 
     @Test
-    public void calculateBufferY_Test(){
+    public void calculateBufferY_Test() throws BufferElementException {
         SortingHelperClass sorting = new SortingHelperClass();
         Darknet_Stub darknetReturnList = new Darknet_Stub();
         List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
@@ -119,7 +119,7 @@ public class BufferElement_Test {
     }
 
     @Test
-    public void calculateVerticalGrid_Test(){
+    public void calculateVerticalGrid_Test() throws BufferElementException {
         SortingHelperClass sorting = new SortingHelperClass();
         Darknet_Stub darknetReturnList = new Darknet_Stub();
         List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();

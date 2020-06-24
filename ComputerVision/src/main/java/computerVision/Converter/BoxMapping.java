@@ -29,6 +29,7 @@ public class BoxMapping {
     public BoxMapping(BufferElement bufferElement, I_Sorting sortObject) {
         this.bufferElement = bufferElement;
         sorting = sortObject;
+        numberOfAnalysedImage = 0; // Reset this value when new game started
     }
 
     /**

@@ -1,4 +1,5 @@
 import DarkNet_Connection.I_Connection;
+import Exceptions.BufferElementException;
 import computerVision.Converter.BoxMapping;
 import computerVision.Converter.Util.Sorting.I_Sorting;
 import computerVision.Converter.Util.Sorting.SortingHelperClass;
@@ -25,7 +26,7 @@ import static org.junit.Assert.*;
 public class BoxMapping_Test {
 
     @Test
-    public void mappingLowerRow_Test(){
+    public void mappingLowerRow_Test() throws BufferElementException {
         I_Sorting sorting = new SortingHelperClass();
     Darknet_Stub darknetReturnList = new Darknet_Stub();
     List<JsonDTO> expectedPrecardList = darknetReturnList.init_Stup_Cards();
@@ -72,7 +73,7 @@ public class BoxMapping_Test {
     }
 
     @Test
-    public void mappingUpperRow_Test(){
+    public void mappingUpperRow_Test() throws BufferElementException {
 
         I_Sorting sorting = new SortingHelperClass();
         Darknet_Stub darknetReturnList = new Darknet_Stub();
