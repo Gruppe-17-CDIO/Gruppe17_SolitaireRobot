@@ -22,7 +22,8 @@ import java.util.Stack;
 
 public class ControllerStatsTest {
     private static ControllerStatsTest test;
-    final double iterations = 1000; // Number of whole games played.
+    final double iterations = 10000; // Number of whole games played.
+
     static double moves = 0;
     int wins = 0;
     boolean roundFinished = false;

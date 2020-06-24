@@ -42,6 +42,7 @@ public class MainGUI extends Application {
         tabPane = new TabPane();
 
         printTestStatus();
+
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(tabPane);
 
@@ -57,6 +58,7 @@ public class MainGUI extends Application {
             }
             MainGUI.printToOutputAreaNewline(thread.getId() +"@" +thread.getName() +" is alive");
         }
+        //TODO: Handle shutdown
     }
 
     //------------------------ Properties -------------------------

@@ -42,7 +42,7 @@ public class Logic implements I_Logic {
          * Inner loop iterates each pile-stack from top to bottom
          */
         List<List<Card>> piles = state.getPiles();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 6; i >= 0; i--) {
             List<Card> pile = piles.get(i);
 
             // Make sure pile is list and not null
