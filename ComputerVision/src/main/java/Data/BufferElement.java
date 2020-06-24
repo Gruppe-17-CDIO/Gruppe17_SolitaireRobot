@@ -54,7 +54,7 @@ public class BufferElement {
      * The lowes Y-koordinate represent the Card in the drawPile. The rest of the elements represent the the piles in the lower row.
      * The callibration will only pass if a drawCard is detected in the upperRow and 7 elements are detected in the lower row.
      */
-    public void calibrateImageInputDimensions() {
+    public void calibrateImageInputDimensions() throws BufferElementException {
         callibrationInputList = sortingObject.sortingListAccordingToY(callibrationInputList);
         List<JsonDTO> upperElements = callibrationInputList;
         for (int i = 0; i < upperElements.size(); i++) {
@@ -97,10 +97,14 @@ public class BufferElement {
      * Set the extra buffer from the drawcard to the X-Koordinate in which the drawCard wont be evaluated as a drawcard anymore.
      * NB: In stead it will be evaluated as a foundation.
      */
-    private void calculateDrawCardSeparationLineX() {
-        List<JsonDTO> rowUpperRow = sortingObject.sortingListAccordingToX(upperRow);
-        drawCardSeparationLineX = rowUpperRow.get(rowUpperRow.size() - 1).getX() + drawCard_HorisontalBuffer;
-        //drawCardSeparationLineX = upperRow.get(upperRow.size()-1).getX()+drawCard_HorisontalBuffer;
+    private void calculateDrawCardSeparationLineX() throws BufferElementException {
+        try {
+            List<JsonDTO> rowUpperRow = sortingObject.sortingListAccordingToX(upperRow);
+            drawCardSeparationLineX = rowUpperRow.get(rowUpperRow.size() - 1).getX() + drawCard_HorisontalBuffer;
+            //drawCardSeparationLineX = upperRow.get(upperRow.size()-1).getX()+drawCard_HorisontalBuffer;
+        } catch (Exception e) {
+            throw new BufferElementException("Missing a card detection in upper row");
+        }
     }
 
     /**
@@ -122,6 +126,7 @@ public class BufferElement {
     /**
      * @return void
      * @author Andreas B.G. Jensen
+     * @deprecated
      * This method should only be run in the method calibrateImageInputDimensions()
      * Calculates a fixed coordinate on each pile in the lower row. The Fixpoint is calculated by averaging the X-coordinates
      * from identical cards. Remember that the DarknetOut can give two (maby more) detection for the same card.
@@ -210,6 +215,15 @@ public class BufferElement {
     }
 
 
+    /**
+     * @return void
+     * @author Andreas B.G. Jensen
+     * This method should only be run in the method calibrateImageInputDimensions()
+     * Calculates a fixed coordinate on each pile in the lower row. The Fixpoint is calculated by averaging the X-coordinates
+     * from identical cards. Remember that the DarknetOut can give two (maby more) detection for the same card.
+     * The list rowFixedGridLines will be used every time a new darknetinput will be evaluated, and the list will be used for
+     * mapping the incomming detection input to the correct pile.
+     */
     public void calculateVerticalGrid_V2() {
         rowFixedGridLines = new HashMap<>();
         List<JsonDTO> callibrationlowerRow = new ArrayList<>(sortingObject.sortingListAccordingToX(lowerRow));

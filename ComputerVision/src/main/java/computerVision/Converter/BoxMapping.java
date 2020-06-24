@@ -211,6 +211,7 @@ public class BoxMapping {
 
     /**
      * @author Andreas B.G. Jensen
+     * @deprecated
      * Calculates the average X-koordinate for each card.
      * The averageing X-coordinate will be calculatet from the lowest X-value to the highest X-value of the same cardtype.
      * NB: Remember that the darknet output can give more coordinates for the same type of card element.
@@ -255,7 +256,14 @@ public class BoxMapping {
     }
 
 
-
+    /**
+     * @author Andreas B.G. Jensen
+     * Calculates the average X-koordinate for each card.
+     * The averageing X-coordinate will be calculatet from the lowest X-value to the highest X-value of the same cardtype.
+     * NB: Remember that the darknet output can give more coordinates for the same type of card element.
+     * @param rowList
+     * @return actualNumberOfElementsList
+     */
     private List<JsonDTO> averageXCoordinates_V2(List<JsonDTO> rowList) {
         List<JsonDTO> actualNumberOfElementsList = new ArrayList<>();
         for (int i = 0; i < rowList.size(); i++) {
@@ -286,7 +294,7 @@ public class BoxMapping {
      * @return upperRow
      */
     public JsonDTO[] mappingUpperRow(){
-        List<JsonDTO> singleElementRow = averageXCoordinates(bufferElement.getUpperRow());
+        List<JsonDTO> singleElementRow = averageXCoordinates_V2(bufferElement.getUpperRow());
         JsonDTO[] upperRow = new JsonDTO[singleElementRow.size()];
 
         for(int i = 0; i<upperRow.length;i++){
