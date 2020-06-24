@@ -53,13 +53,13 @@ public class BoxMapping {
         numberOfAnalysedImage++;
 
         TopCards topcard = new TopCards();
-        if (numberOfAnalysedImage == 1) {
+        if (numberOfAnalysedImage == 1) {//Callibrating grid
 
             bufferElement.setCallibrationInputList(preCardList);
             bufferElement.calibrateImageInputDimensions();
             return mappingToTopCard(topcard);
 
-        } else {
+        } else {//Mapping output to existing callibration
             bufferElement.setNewUpperAndLowerRow(preCardList);
             return mappingToTopCard(topcard);
         }
