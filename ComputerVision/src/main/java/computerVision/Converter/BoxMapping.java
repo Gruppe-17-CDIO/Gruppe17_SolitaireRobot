@@ -1,5 +1,6 @@
 package computerVision.Converter;
 
+import Data.InterMidiateXClass;
 import computerVision.Converter.Util.Sorting.I_Sorting;
 import computerVision.Converter.Util.Util;
 import Data.BufferElement;
@@ -167,7 +168,9 @@ public class BoxMapping {
     public JsonDTO[] mappingLowerRow(){
         List<JsonDTO> lowerRowList = sorting.sortingListAccordingToX(bufferElement.getLowerRow());
         HashMap<Integer, Double> rowGrow = bufferElement.getRowFixedGridLines();
-        lowerRowList = averageXCoordinates(lowerRowList);
+        //lowerRowList = averageXCoordinates(lowerRowList);
+        lowerRowList = averageXCoordinates_V2(lowerRowList);
+        lowerRowList = sorting.sortingListAccordingToX(lowerRowList);
         JsonDTO[] cardList = new JsonDTO[7];
         int closestMatchRow =0;
 
@@ -240,12 +243,38 @@ public class BoxMapping {
                     break;
                 }
             }JsonDTO obj = new JsonDTO();
-            obj.setX(bufferElement.calculateAverageX(lowX,highX));
+            obj.setX(Util.calculateAverageX(lowX,highX));
             obj.setY(lowY);
             obj.setCat(color);
             actualNumberOfElementsList.add(obj);
             i = j-1;
         }
+        return actualNumberOfElementsList;
+    }
+
+
+
+    private List<JsonDTO> averageXCoordinates_V2(List<JsonDTO> rowList) {
+        List<JsonDTO> actualNumberOfElementsList = new ArrayList<>();
+        for (int i = 0; i < rowList.size(); i++) {
+            InterMidiateXClass intermidi = new InterMidiateXClass();
+            intermidi.setType(rowList.get(i).getCat());
+            intermidi.addXCoordinate(rowList.get(i).getX());
+
+            for (int j = i; j < rowList.size(); j++) {
+                if(rowList.get(j).getCat().equals(intermidi.getType())){
+                    intermidi.addXCoordinate(rowList.get(j).getX()+rowList.get(j).getW());
+                    rowList.remove(j);
+                    j--;
+                }
+            }
+            JsonDTO obj = new JsonDTO();
+            obj.setX(intermidi.getAverageX());
+            obj.setCat(intermidi.getType());
+            actualNumberOfElementsList.add(obj);
+            i = -1;
+            }
+
         return actualNumberOfElementsList;
     }
 

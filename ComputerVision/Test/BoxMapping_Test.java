@@ -370,7 +370,7 @@ public class BoxMapping_Test {
             Card pile2 = new Card(createSuit("d"),5);
             Card pile3 = new Card(createSuit("h"),8);
             Card pile4 = new Card(createSuit("s"),1);
-            Card pile5 = new Card(createSuit("c"),1);
+            Card pile5 = new Card(createSuit("c"),11);
             Card pile6 = new Card(createSuit("h"),1);
             Card pile7 = new Card(createSuit("d"),1);
 

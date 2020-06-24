@@ -167,6 +167,18 @@ public class Util {
         return null;
     }
 
+    /**
+     * @param lowX
+     * @param highX
+     * @return Double
+     * @author Andreas B.G. Jensen
+     * Calculates the average between two points
+     */
+    public static Double calculateAverageX(double lowX, double highX) {
+        Double average = lowX + ((highX - lowX) / 2);
+        return average;
+    }
+
     private static Card.Suit createSuit(String suite){
 
         switch (suite){

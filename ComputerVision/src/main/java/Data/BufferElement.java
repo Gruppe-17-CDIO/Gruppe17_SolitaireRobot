@@ -2,6 +2,7 @@ package Data;
 
 import computerVision.Converter.Util.Sorting.I_Sorting;
 import Exceptions.BufferElementException;
+import computerVision.Converter.Util.Util;
 
 import java.util.*;
 
@@ -149,7 +150,7 @@ public class BufferElement {
                 }
 
             }
-            rowFixedGridLines.put(rowCounter, calculateAverageX(lowX, highX));
+            rowFixedGridLines.put(rowCounter, Util.calculateAverageX(lowX, highX));
             if (rowCounter == 6) break;
             rowCounter++;
 
@@ -176,17 +177,7 @@ public class BufferElement {
         lowerRow = removeSameElementsInList(preCardList, upperRow);
     }
 
-    /**
-     * @param lowX
-     * @param highX
-     * @return Double
-     * @author Andreas B.G. Jensen
-     * Calculates the average between two points
-     */
-    public Double calculateAverageX(double lowX, double highX) {
-        Double average = lowX + ((highX - lowX) / 2);
-        return average;
-    }
+
 
     public List<JsonDTO> getUpperRow() {
         return upperRow;
@@ -226,7 +217,7 @@ public class BufferElement {
         //Calculating average Coordinates
         int rowCounter = 0;
         for (int i = 0; i < callibrationlowerRow.size(); i++) {
-            InterMidiateClass intermidi = new InterMidiateClass();
+            InterMidiateXClass intermidi = new InterMidiateXClass();
             intermidi.setType(callibrationlowerRow.get(i).getCat());
             intermidi.addXCoordinate(callibrationlowerRow.get(i).getX());
 
@@ -248,33 +239,5 @@ public class BufferElement {
     }
 
 
-    class InterMidiateClass{
-        String type;
-        ArrayList<Double> xCoordinates = new ArrayList<>();
 
-        public InterMidiateClass(){}
-
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-
-
-        public void addXCoordinate(double xValue){
-            xCoordinates.add(xValue);
-        }
-
-        public double getAverageX(){
-            Collections.sort(xCoordinates);
-            if(!xCoordinates.isEmpty()) {
-                return calculateAverageX(xCoordinates.get(0),xCoordinates.get(xCoordinates.size()-1));
-            }
-            return 0;
-        }
-    }
 }
