@@ -55,7 +55,7 @@ public class Move {
             s += "Draw a new card from the stock.";
 
         } else if (moveType == MoveType.FACE_UP_IN_PILE) {
-            return "Turn pile " + (position[0] + 1) + ", card " + (position[1] + 1) + " face up.";
+            return "Turn top card in pile " + (position[0] + 1) + " face up.";
         } else if (moveType == MoveType.USE_DRAWN) {
             s = "Move the " + card + " from drawn cards to ";
             if (destinationType == FOUNDATION) {
