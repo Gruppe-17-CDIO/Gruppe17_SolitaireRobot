@@ -20,6 +20,7 @@ public class BoxMapping {
 
     public BoxMapping(BufferElement bufferElement) {
         this.bufferElement = bufferElement;
+        getNumberOfAnalysedImage = 0; // Reset this value when new game started
     }
 
     public TopCards makeBoxMapping(List<JsonDTO> preCardList) throws Exception {
