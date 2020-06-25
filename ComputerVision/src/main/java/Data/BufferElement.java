@@ -55,19 +55,24 @@ public class BufferElement {
      * The callibration will only pass if a drawCard is detected in the upperRow and 7 elements are detected in the lower row.
      */
     public void calibrateImageInputDimensions() throws BufferElementException {
-        callibrationInputList = sortingObject.sortingListAccordingToY(callibrationInputList);
-        List<JsonDTO> upperElements = callibrationInputList;
-        for (int i = 0; i < upperElements.size(); i++) {
-            if (upperElements.get(i).getCat().equals(upperElements.get(0).getCat())) {
-                upperRow.add(upperElements.get(i));
+        try {
+            callibrationInputList = sortingObject.sortingListAccordingToY(callibrationInputList);
+            List<JsonDTO> upperElements = callibrationInputList;
+            for (int i = 0; i < upperElements.size(); i++) {
+                if (upperElements.get(i).getCat().equals(upperElements.get(0).getCat())) {
+                    upperRow.add(upperElements.get(i));
+                }
             }
+            lowerRow = removeSameElementsInList(callibrationInputList, upperRow);
+            //Chect for correct input
+            //Else throw an error
+            calculateDrawCardSeparationLineX();
+            calculateVerticalGrid_V2();
+            calculateSeparationLineY();
+        }catch (Exception e){
+            String errorMessage = "Somthing wentwrong in BufferedElement: " + e.getMessage();
+            throw new BufferElementException(errorMessage);
         }
-        lowerRow = removeSameElementsInList(callibrationInputList, upperRow);
-        //Chect for correct input
-        //Else throw an error
-        calculateDrawCardSeparationLineX();
-        calculateVerticalGrid_V2();
-        calculateSeparationLineY();
     }
 
 
@@ -224,7 +229,7 @@ public class BufferElement {
      * The list rowFixedGridLines will be used every time a new darknetinput will be evaluated, and the list will be used for
      * mapping the incomming detection input to the correct pile.
      */
-    public void calculateVerticalGrid_V2() {
+    private void calculateVerticalGrid_V2() {
         rowFixedGridLines = new HashMap<>();
         List<JsonDTO> callibrationlowerRow = new ArrayList<>(sortingObject.sortingListAccordingToX(lowerRow));
 
@@ -246,12 +251,7 @@ public class BufferElement {
             rowFixedGridLines.put(rowCounter, intermidi.getAverageX());
             if (rowCounter == 6) break;
             rowCounter++;
-            i=-1;
-
-
+            i=-1; //So that we will get the first element in the list.
         }
     }
-
-
-
 }
