@@ -49,8 +49,6 @@ public class Controller implements I_Controller {
             stateManager.addMovesToState(moves);
 
             Move currentMove = stateManager.getBestMove();
-            //System.out.println("\nStartNewGame: " + currentMove + "\n");
-            //System.out.println(state.getPrintFormat());
             stateManager.updateGameProcess(moves);
             callBack.OnSuccess(currentMove, stateManager.getHistory().peek(), state.getGameProgress());
         } catch (Exception e) {
@@ -59,16 +57,6 @@ public class Controller implements I_Controller {
         }
     }
 
-    /**
-     * Precondition: A move has been selected, saved as currentMove. The cards are moved in the same way as the
-     * selected move. A State exists in history.
-     * <p>
-     * This method starts image analysis, creates a new state based on move and image data, checks for inconsistencies,
-     * calculates moves and saves new state + move list.
-     *
-     * @param img      Image to control the state
-     * @param callBack List of suggested moves and history
-     */
     @Override
     public void getNextMove(Image img, NextMoveCallBack callBack) {
         // Make sure game is started!
@@ -97,7 +85,6 @@ public class Controller implements I_Controller {
 
                 stateManager.updateGameProcess(moves);
                 Move move = stateManager.getBestMove();
-                //System.out.println("NextMove: " + move);
                 callBack.OnSuccess(move, stateManager.getHistory().peek(), state.getGameProgress());
 
             } catch (Exception e) {
