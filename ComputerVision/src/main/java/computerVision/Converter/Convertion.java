@@ -1,25 +1,24 @@
 package computerVision.Converter;
 
-import computerVision.Converter.Util.Sorting.SortingHelperClass;
-import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.DarknetConnection;
+import DarkNet_Connection.Darknet_Stub;
 import DarkNet_Connection.I_Connection;
 import Data.JsonDTO;
-
 import Exceptions.ComputerVisionException;
 import Exceptions.DarknetConnectionException;
+import computerVision.Converter.Util.Sorting.SortingHelperClass;
 import computerVision.I_ComputerVisionController;
 import dataObjects.TopCards;
 import javafx.scene.image.Image;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * * @author Andreas B.G. Jensen
  */
 public class Convertion implements I_ComputerVisionController {
 
-    boolean test = true;
+    boolean test = false;
     SortingHelperClass sorting;
     I_Connection connection;
     BoxMapping mapper;
