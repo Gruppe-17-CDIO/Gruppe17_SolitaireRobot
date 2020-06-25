@@ -26,7 +26,7 @@ public class WebCamSettings {
     };
 
     private Webcam webcam;
-    private boolean isMirrored = true;
+    private boolean isMirrored = false;
     private Dimension selectedResolution;// = resolutionOptions[5];
 
     //----------------------- Constructor -------------------------

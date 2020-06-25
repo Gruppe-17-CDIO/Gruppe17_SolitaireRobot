@@ -1,15 +1,27 @@
 package view.components;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
+import view.MainGUI;
+import view.components.confetti.ConfettiPane;
+import view.components.confetti.MovingDot;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Rasmus Sander Larsen
@@ -21,7 +33,13 @@ public abstract class TabStd extends Tab {
     protected final String TAG = getClass().getSimpleName();
 
     protected String header, desc;
+    protected StackPane stackPane = new StackPane();
+    protected ConfettiPane confettiPane = new ConfettiPane();
     protected VBox content = FxUtil.vBox(true);
+
+    // Confetti
+    private final Random random = new Random();
+    private final List<MovingDot> dots = new ArrayList<>();
 
     //----------------------- Constructor -------------------------
 
@@ -58,7 +76,12 @@ public abstract class TabStd extends Tab {
         content.setSpacing(FxUtil.getSpacing());
         content.setPadding(new Insets(FxUtil.getPadding()));
         setClosable(false);
-        setContent(content);
+
+        // Makes sure that the dotsPane does not block for nodes below it.
+        confettiPane.setMouseTransparent(true);
+        stackPane.setAlignment(Pos.CENTER);
+        stackPane.getChildren().addAll(content, confettiPane);
+        setContent(stackPane);
     }
 
     protected void addToContent(Node node) {
@@ -81,6 +104,10 @@ public abstract class TabStd extends Tab {
         // endregion
 
         addAllToContent(headerText, descText);
+    }
+
+    protected void onShotOfGifConfetti() {
+        confettiPane.onShotOfGifConfetti();
     }
 
     private File folderOfFile(File file) {

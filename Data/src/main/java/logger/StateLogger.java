@@ -19,31 +19,26 @@ import java.util.List;
 
 public class StateLogger implements I_StateLogger {
     // Filepath for current session with timestamp
-
-    /*
-    static final String FILE_PATH = "src/main/resources/SolitaireData_" +
-            new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) +
+    Timestamp stamp = new Timestamp(System.currentTimeMillis());
+    final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
+            stamp.toString().substring(0, 10) + "_" + stamp.toString().substring(11, 21) +
             ".json";
-*/
-
-    //Better, but does not work in test:
-    static final String FILE_PATH = "Data/src/main/resources/SolitaireData_" +
-            new Timestamp(System.currentTimeMillis()).toString().substring(0, 16) +
-            ".json";
+    boolean newGame = true;
 
     @Override
-    public synchronized void logState(SolitaireState currentGameCards) {
+    public synchronized void logState(SolitaireState state) {
         List<SolitaireState> historyCards;
 
         historyCards = getHistory();
 
-        historyCards.add(currentGameCards);
+        historyCards.add(state);
         try {
-            System.out.println(System.getProperty("user.dir"));
-            Writer writer = new FileWriter(FILE_PATH);
-            new Gson().toJson(historyCards, writer);
-            writer.close();
+                Writer writer = new FileWriter(FILE_PATH);
+                new Gson().toJson(historyCards, writer);
+                writer.close();
+
         } catch (IOException e) {
+
             System.out.println("StateLogger failed to log game data in the file '" + FILE_PATH + "'.");
             e.printStackTrace();
         }
@@ -59,8 +54,12 @@ public class StateLogger implements I_StateLogger {
             }.getType();
             history = new Gson().fromJson(reader, type);
         } catch (IOException i) {
-            System.out.println("StateLogger could not read file '" + FILE_PATH + "'.");
-            //i.printStackTrace();
+            // Suppress error message if new history.
+            if (!newGame) {
+                System.out.println("StateLogger could not read file '" + FILE_PATH + "'.");
+                //i.printStackTrace();
+            }
+            newGame = false;
         }
         if (history == null) {
             history = new ArrayList<>();

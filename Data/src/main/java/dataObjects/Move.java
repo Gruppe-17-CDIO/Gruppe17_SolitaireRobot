@@ -1,16 +1,24 @@
 package dataObjects;
 
+import static dataObjects.Move.DestinationType.FOUNDATION;
+import static dataObjects.Move.MoveBenefit.TURN_STOCK;
+
 public class Move {
     private final MoveType moveType;
     private final DestinationType destinationType;
     private final int[] position;
     private final int destPosition;
+    private final MoveBenefit benefit;
 
-    public Move(MoveType moveType, int[] position, DestinationType destinationType, int destPosition) {
+    private final Card card;
+
+    public Move(MoveType moveType, Card card, int[] position, DestinationType destinationType, int destPosition, MoveBenefit benefit) {
         this.moveType = moveType;
+        this.card = card;
         this.destinationType = destinationType;
         this.position = position;
         this.destPosition = destPosition;
+        this.benefit = benefit;
     }
 
     public MoveType getMoveType() {
@@ -29,31 +37,64 @@ public class Move {
         return destPosition;
     }
 
+    public Card getCard() {
+        return card;
+    }
+
+    public MoveBenefit getBenefit() {
+        return benefit;
+    }
+
     public String toString() {
+        String s;
         if (moveType == MoveType.DRAW) {
-            return "Draw a new card from the stock. (Turn the pile if there are no cards left.)";
-        } else if (moveType == MoveType.FACEUP) {
-            return "Turn " + position[0] + " " + position[1] + " face up.";
-        } else if (moveType == MoveType.USEDRAWN) {
-            return "Move card from drawn cards to " + destinationType + " " + destPosition + ".";
-        } else if (moveType == MoveType.MOVE) {
-            return "Move from piles " + position[0] + ", card " + position[1] +
-                    " to " + destinationType + " " + destPosition + ".";
+            s = "";
+            if (benefit == TURN_STOCK) {
+                s += "Turn the pile. ";
+            }
+            s += "Draw a new card from the stock.";
+
+        } else if (moveType == MoveType.FACE_UP_IN_PILE) {
+            return "Turn top card in pile " + (position[0] + 1) + " face up.";
+        } else if (moveType == MoveType.USE_DRAWN) {
+            s = "Move the " + card + " from drawn cards to ";
+            if (destinationType == FOUNDATION) {
+                s += card.getSuit() + " foundation.";
+            } else {
+                s += destinationType + " " + (destPosition + 1) + ".";
+            }
+        } else if (moveType == MoveType.MOVE_FROM_PILE) {
+
+            s = "Move the " + card + " from pile " + (position[0] + 1) + " to ";
+            if (destinationType == FOUNDATION) {
+                s += card.getSuit() + " foundation.";
+            } else {
+                s += destinationType + " " + (destPosition + 1) + ".";
+            }
         } else {
             return "No Movetype";
         }
+        return s;
     }
 
     public enum MoveType {
+        FACE_UP_IN_PILE,
+        MOVE_FROM_PILE,
+        USE_DRAWN,
         DRAW,
-        FACEUP,
-        USEDRAWN,
-        MOVE
     }
 
     public enum DestinationType {
-        PILE,
+        SELF,
         FOUNDATION,
-        SELF
+        PILE
+    }
+
+    public enum MoveBenefit {
+        CLEAN_PILE,
+        PLACE_KING,
+        REVEAL_CARD,
+        NO_BENEFIT,
+        TURN_STOCK
     }
 }

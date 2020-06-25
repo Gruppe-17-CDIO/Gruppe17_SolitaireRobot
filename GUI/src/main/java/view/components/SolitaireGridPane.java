@@ -1,10 +1,19 @@
 package view.components;
 
+import dataObjects.Card;
+import dataObjects.Move;
+import dataObjects.SolitaireState;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.*;
 import view.components.card.CardUI;
 import view.components.card.SuitEnum;
+import view.components.cardStackPanes.CollectionStackPane;
+import view.components.cardStackPanes.DeckStackPane;
+import view.components.cardStackPanes.HighlightType;
+import view.components.cardStackPanes.RowStackPane;
+
+import java.util.List;
 
 /**
  * @author Rasmus Sander Larsen
@@ -41,7 +50,6 @@ public class SolitaireGridPane extends GridPane {
         setupLayout();
     }
 
-
     //------------------------ Properties -------------------------
 
     // region Properties
@@ -50,6 +58,123 @@ public class SolitaireGridPane extends GridPane {
     // endregion
 
     //---------------------- Public Methods -----------------------
+
+    public void clearAllHighlights() {
+        // Clears all row highlights
+        for (int rowIndex = 1; rowIndex <= 7; rowIndex++) {
+            rowHighlight(rowIndex,false, HighlightType.FROM);
+        }
+
+        // Clears all collection highlights
+        for (SuitEnum suitEnum : SuitEnum.values()) {
+            collectionHighlight(suitEnum, false);
+        }
+
+        // Clears all deck highlights
+        deckDrawableHighlight(false, HighlightType.FROM);
+        deckHighlight(false);
+    }
+
+    public void ofSolitaireState(SolitaireState solitaireState) {
+        // Clears all Highlights
+        clearAllHighlights();
+
+        // Shows/hides the Deck depending on if there is any cards left in it.
+        if (solitaireState.getStock() == 0) {
+            //MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
+            deckShowCard(false);
+        } else {
+            //MainGUI.printToOutputAreaNewline("Deck Stock No: " + solitaireState.getStock());
+            deckShowCard(true);
+        }
+
+        // Sets and shows the top card in the deck of drawn cards.
+        if (solitaireState.getDrawnCards().size() != 0) {
+            //MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: " +CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)).toString());
+            deckDrawableSetAndShowCard(CardUI.ofCard(solitaireState.getDrawnCards().get(solitaireState.getDrawnCards().size()-1)));
+        } else {
+            //MainGUI.printToOutputAreaNewline("Top Card in DeckDrawn: Null");
+            deckDrawableHideCards();
+        }
+
+        // Sets the cards visible in each of the Foundations/Collections.
+        for (Card card : solitaireState.getFoundations()){
+            // Only adds cards to the Foundations/Collections where there is cards.
+            if (card != null) {
+                //MainGUI.printToOutputAreaNewline("Collection card: " + card);
+                collectionSetAndShowCard(CardUI.ofCard(card));
+            }
+        }
+
+        // Generates all 7 Piles.
+        for (int rowIndex = 0; rowIndex < solitaireState.getPiles().size(); rowIndex++)  {
+            //MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~\nCards in Row " + (rowIndex+1) + ":");
+            for (Card card : solitaireState.getPiles().get(rowIndex)) {
+               // MainGUI.printToOutputAreaNewline(card.toString());
+            }
+            createFullRowOfCardList((rowIndex+1),solitaireState.getPiles().get(rowIndex));
+        }
+        //MainGUI.printToOutputAreaNewline("~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+    }
+
+    public void highlightOfMove(Move move) {
+        switch (move.getMoveType()){
+            case MOVE_FROM_PILE:
+                switch (move.getDestinationType()) {
+                    case FOUNDATION:
+                        // FROM
+                        rowHighlight(move.getPosition()[0]+1,true, HighlightType.FROM);
+                        // TO
+                        collectionHighlight(SuitEnum.ofSuit(move.getCard().getSuit()),true);
+                        break;
+
+                    case PILE:
+                        // FROM
+                        rowHighlight(move.getPosition()[0]+1,true, HighlightType.FROM);
+                        // TO
+                        rowHighlight(move.getDestPosition()+1,true, HighlightType.TO);
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+
+            case DRAW:
+                // FROM
+                deckHighlight(true);
+                // TO
+                deckDrawableHighlight(true, HighlightType.TO);
+                break;
+
+            case USE_DRAWN:
+                // FROM
+                deckDrawableHighlight(true, HighlightType.FROM);
+                // TO
+                switch (move.getDestinationType()) {
+                    case FOUNDATION:
+                        collectionHighlight(SuitEnum.ofSuit(move.getCard().getSuit()),true);
+                        break;
+
+                    case PILE:
+                        rowHighlight(move.getDestPosition()+1,true, HighlightType.TO);
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+
+            case FACE_UP_IN_PILE:
+                // FROM (and TO)
+                rowHighlight(move.getDestPosition()+1,true, HighlightType.FROM);
+                break;
+
+            default:
+                break;
+        }
+    }
 
     // region Deck Methods
 
@@ -67,6 +192,14 @@ public class SolitaireGridPane extends GridPane {
 
     public void deckDrawableHideCards () {
         drawableDeck_SP.showCards(false);
+    }
+
+    public void deckHighlight (boolean isHighlighted) {
+        deck_SP.highlight(isHighlighted,HighlightType.FROM);
+    }
+
+    public void deckDrawableHighlight(boolean isHighlighted, HighlightType highlightType) {
+       drawableDeck_SP.highlight(isHighlighted, highlightType);
     }
 
     // endregion
@@ -157,11 +290,67 @@ public class SolitaireGridPane extends GridPane {
         }
     }
 
+    public void createFullRowOfCardList(int rowNumber, List<Card> cardList) {
+        switch (rowNumber) {
+            case 1:
+                row1_SP.createFullRowOfCardList(cardList);
+                break;
+            case 2:
+                row2_SP.createFullRowOfCardList(cardList);
+                break;
+            case 3:
+                row3_SP.createFullRowOfCardList(cardList);
+                break;
+            case 4:
+                row4_SP.createFullRowOfCardList(cardList);
+                break;
+            case 5:
+                row5_SP.createFullRowOfCardList(cardList);
+                break;
+            case 6:
+                row6_SP.createFullRowOfCardList(cardList);
+                break;
+            case 7:
+                row7_SP.createFullRowOfCardList(cardList);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void rowHighlight(int rowNumber, boolean isHighlighted, HighlightType highlightType) {
+        switch (rowNumber) {
+            case 1:
+                row1_SP.highlight(isHighlighted, highlightType);
+                break;
+            case 2:
+                row2_SP.highlight(isHighlighted, highlightType);
+                break;
+            case 3:
+                row3_SP.highlight(isHighlighted, highlightType);
+                break;
+            case 4:
+                row4_SP.highlight(isHighlighted, highlightType);
+                break;
+            case 5:
+                row5_SP.highlight(isHighlighted, highlightType);
+                break;
+            case 6:
+                row6_SP.highlight(isHighlighted, highlightType);
+                break;
+            case 7:
+                row7_SP.highlight(isHighlighted, highlightType);
+                break;
+            default:
+                break;
+        }
+    }
+
     // endregion
 
     // region Collection Methods
 
-    public void setAndShowCard (CardUI cardUI) {
+    public void collectionSetAndShowCard (CardUI cardUI) {
         switch (cardUI.getSuit()) {
             case Heart:
                 heartCollection_SP.setAndShowCard(cardUI);
@@ -174,6 +363,25 @@ public class SolitaireGridPane extends GridPane {
                 break;
             case Spade:
                 spadeCollection_SP.setAndShowCard(cardUI);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void collectionHighlight (SuitEnum suitEnum, boolean isHighlighted) {
+        switch (suitEnum) {
+            case Heart:
+                heartCollection_SP.highlight(isHighlighted, HighlightType.TO);
+                break;
+            case Diamond:
+                diamondCollection_SP.highlight(isHighlighted, HighlightType.TO);
+                break;
+            case Club:
+                clubCollection_SP.highlight(isHighlighted, HighlightType.TO);
+                break;
+            case Spade:
+                spadeCollection_SP.highlight(isHighlighted, HighlightType.TO);
                 break;
             default:
                 break;

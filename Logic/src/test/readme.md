@@ -1,12 +1,12 @@
-# Logic unittest
+# logic.Logic unittest
 
 ## Summary
 
-Logic implementation can be tested with a SolitaireState object using the StateGenerator class and builder-files.
+logic.Logic implementation can be tested with a SolitaireState object using the StateGenerator class and builder-files.
 
 ### How-to
 
-1. Copy/create a builder-file and put it in this module (Logic) *.
+1. Copy/create a builder-file and put it in this module (logic.Logic) *.
 2. Add junit test in ``src/test/LogicTest```
 
 *see "Computer Vision Simulation" readme in Data-module.
@@ -20,7 +20,7 @@ Arrange and act:
 ```
 // Arrange
 SolitaireState state = null;
-I_Logic logic = new Logic();
+logic.I_Logic logic = new logic.Logic();
 List<Move> moves;
 
 try {

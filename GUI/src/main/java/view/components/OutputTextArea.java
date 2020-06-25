@@ -20,7 +20,8 @@ public class OutputTextArea extends TextArea {
      */
     
     public OutputTextArea() {
-        setFont(Font.font("Tahoma", FontWeight.THIN, 10));
+        //setFont(Font.font("Tahoma", FontWeight.THIN, 10));
+        setFont(Font.font("Monospace", FontWeight.THIN, 10));
     }
     
     /*

@@ -42,4 +42,21 @@ public class TopCards {
         }
         this.piles = piles;
     }
+
+
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Piles:");
+        String drawCard = this.drawnCard.getColor() + Integer.toString(this.drawnCard.getRank());
+
+        for(Card card: piles){
+            if(card!=null) {
+                stringBuilder.append(card.getSuit() + Integer.toString(card.getRank()) + "\n");
+            }
+
+        }
+
+        stringBuilder.append("Draw Card: "+drawCard);
+        return stringBuilder.toString();
+    }
 }

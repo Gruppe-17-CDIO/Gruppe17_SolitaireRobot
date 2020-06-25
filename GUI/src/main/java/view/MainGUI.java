@@ -2,19 +2,12 @@ package view;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import view.components.OutputTextArea;
-import view.components.TopMenuBar;
-import view.taps.TabPane;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.*;
+import view.tabs.OutputTab;
+import view.tabs.TabPane;
 
 /**
  * @author Rasmus Sander Larsen
@@ -23,10 +16,13 @@ public class MainGUI extends Application {
 
     // -------------------------- Fields --------------------------
 
-    private final String WINDOW_TITLE = "7 Solitaire";
+    private final String WINDOW_TITLE = "Gruppe 17 - Solitaire";
     private final String WINDOW_ICON_PATH = "/game_icon.png";
 
-    private static OutputTextArea outputTextArea;
+    public final static int SCREEN_WIDTH = 1000;
+    public final static int SCREEN_HEIGHT = 700;
+
+    private static TabPane tabPane;
 
     public static boolean isTesting = false;
 
@@ -43,28 +39,14 @@ public class MainGUI extends Application {
                new Image(getClass().getResourceAsStream(WINDOW_ICON_PATH)));
         primaryStage.show();
 
-        outputTextArea = new OutputTextArea();
+        tabPane = new TabPane();
+
         printTestStatus();
-        TabPane tabPane = new TabPane();
-        //tabPane.getSelectionModel().selectLast();
-        //tabPane.getSelectionModel().clearAndSelect(0);
-
-        SplitPane splitPane = new SplitPane();
-        splitPane.setOrientation(Orientation.HORIZONTAL);
-        splitPane.setDividerPositions(500);
-        splitPane.getItems().addAll(tabPane, outputTextArea);
-
-        outputTextArea.setMinWidth(500);
-        outputTextArea.setEditable(false);
-        tabPane.setMinWidth(500);
 
         BorderPane mainPane = new BorderPane();
-        mainPane.setCenter(splitPane);
-        if (isTesting){
-            mainPane.setTop(new TopMenuBar());
-        }
+        mainPane.setCenter(tabPane);
 
-        primaryStage.setScene(new Scene(mainPane,1000,600));
+        primaryStage.setScene(new Scene(mainPane,SCREEN_WIDTH,SCREEN_HEIGHT));
     }
 
     @Override
@@ -93,32 +75,34 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline(text);
+                tabPane.appendTextNewlineToOutput(text);
             }
         });
-
     }
+
     public static void printSuccessToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline("Success:\n" + text);
+                tabPane.appendTextNewlineToOutput("Success:\n" + text);
             }
         });
     }
+
     public static void printFailureToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline("Failure:\n" +text);
+                tabPane.appendTextNewlineToOutput("Failure:\n" +text);
             }
         });
     }
+
     public static void printErrorToOutputArea (String text) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendTextNewline("Error:\n" +text);
+                tabPane.appendTextNewlineToOutput("Error:\n" +text);
             }
         });
     }
@@ -127,15 +111,16 @@ public class MainGUI extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.appendText(text);
+                tabPane.appendTextToOutput(text);
             }
         });
     }
+
     public static void printDivider() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                outputTextArea.printDivider();
+                tabPane.printDivider();
             }
         });
 

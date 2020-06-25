@@ -29,20 +29,20 @@ public class CardCalculator {
     public SolitaireState initiateState(TopCards topCards) throws Exception {
         // Check input
         if (topCards == null) {
-            throw new Exception("initiateState(): topCards was null.");
+            throw new CardReadException("initiateState(): topCards was null.");
         }
         if (topCards.getDrawnCard() == null) {
-            throw new Exception("initiateState(): Missing a drawn card in the setup. " +
+            throw new CardReadException("initiateState(): Missing a drawn card in the setup. " +
                     "Draw exactly one card from stock before calling initiate.");
         }
         for (int i = 0; i < 4; i++) {
             if (topCards.getFoundations()[i] != null) {
-                throw new Exception("initiateState(): Can't start game with foundations already present.");
+                throw new CardReadException("initiateState(): Can't start game with foundations already present.");
             }
         }
         for (int i = 0; i < 7; i++) {
             if (topCards.getPiles()[i] == null) {
-                throw new Exception("initiateState(): Missing card from pile: " + i + ". " +
+                throw new CardReadException("initiateState(): Missing card from pile: " + (i + 1) + ". " +
                         "All piles must have one card at start of new game.");
             }
         }
@@ -72,15 +72,16 @@ public class CardCalculator {
      * Makes new state based on previous state and move.
      *
      * @param prevState
-     * @param move
+     * @param prevMove
      * @param topCards
      * @return state
      */
-    public SolitaireState updateState(SolitaireState prevState, Move move, TopCards topCards,
+    public SolitaireState updateState(SolitaireState prevState, Move prevMove, TopCards topCards,
                                       TopCardsSimulator topCardsSimulator, boolean test) throws Exception {
         // Deep copy
         Gson gson = new Gson();
         SolitaireState state = gson.fromJson(gson.toJson(prevState), SolitaireState.class);
+        state.createTimeStamp(); // Setting a new timestamp id
 
         // Clear suggestedmoves
         state.setSuggestedMoves(new ArrayList<>());
@@ -90,33 +91,51 @@ public class CardCalculator {
         List<List<Card>> piles = state.getPiles();
 
         // If move is draw, add the newly turned card from CV
-        if (move.getMoveType() == Move.MoveType.DRAW) {
+        if (prevMove.getMoveType() == Move.MoveType.DRAW) {
             int stock = state.getStock();
 
             if (stock < 0) {
                 throw new Exception("Stock is below zero. Should not be possible.");
+
             } else if (stock == 0 && drawnCards.size() > 0) {
                 // Drawn cards become new stock ("turn draw pile").
                 stock = drawnCards.size();
+                if (test) {
+                    // Keep track of cards in deck to avoid duplicates, test only
+                    topCardsSimulator.setUsedCards(drawnCards);
+                }
                 drawnCards = new ArrayList<>();
                 int flipped = state.getStockTurned();
-                state.setStockTurned(flipped + 1); // 3 means you can't draw
+                state.setStockTurned(flipped + 1); // 3 means you can't draw anymore
 
             } else if (stock == 0) { // No cards left to draw
                 throw new Exception("Draw was suggested, but there are no cards left in stock or drawn cards.");
             }
 
-            state.setStock(stock - 1);
             if (test) {
-                drawnCards.add(topCardsSimulator.getCard());
-                System.out.println("BOMBIBOFF");
-            } else {
-                drawnCards.add(topCards.getDrawnCard());
+                List<Card> cards = topCardsSimulator.getUsedCards();
+                if (state.getStockTurned() > 0 && cards.size() > 0) {
+                    drawnCards.add(cards.get(0));
+                    topCardsSimulator.getUsedCards().remove(0);
+                } else {
+                    drawnCards.add(topCardsSimulator.getCard());
+                }
+            } else { // if not test
+                if (topCards.getDrawnCard() == null) {
+                    // Throw special exception for drawn cards
+                    throw new CardReadException("Expected a new drawn card but found null.");
+                } else {
+                    drawnCards.add(topCards.getDrawnCard());
+                }
             }
+
+            // Unless exception is raised, decrement stock.
+            state.setStock(stock - 1);
+
             state.setDrawnCards(drawnCards);
         }
 
-        if (move.getMoveType() == Move.MoveType.USEDRAWN) {
+        if (prevMove.getMoveType() == Move.MoveType.USE_DRAWN) {
             if (drawnCards.size() < 1) {
                 throw new Exception("Can't perform 'use drawn card'. No cards in the DrawnCards pile.");
             }
@@ -125,43 +144,41 @@ public class CardCalculator {
             drawnCards.remove(drawnCards.size() - 1);
             state.setDrawnCards(drawnCards);
 
-            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
-                foundations.set(move.getDestPosition(), card);
+            if (prevMove.getDestinationType() == Move.DestinationType.FOUNDATION) {
+                foundations.set(prevMove.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
-            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
+            } else if (prevMove.getDestinationType() == Move.DestinationType.PILE) {
                 List<Card> cards = new ArrayList<>();
                 cards.add(card);
-                piles.get(move.getDestPosition()).addAll(cards);
+                piles.get(prevMove.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
 
-        if (move.getMoveType() == Move.MoveType.MOVE) {
-            int pileIndex = move.getPosition()[0];
-            int cardIndex = move.getPosition()[1];
+        if (prevMove.getMoveType() == Move.MoveType.MOVE_FROM_PILE) {
+            int pileIndex = prevMove.getPosition()[0];
+            int cardIndex = prevMove.getPosition()[1];
 
             // Pick up the cards and all cards on top of it.
             List<Card> cards = piles.get(pileIndex).subList(cardIndex, piles.get(pileIndex).size());
             piles.set(pileIndex, piles.get(pileIndex).subList(0, cardIndex));
             state.setPiles(piles);
 
-            if (move.getDestinationType() == Move.DestinationType.FOUNDATION) {
+            if (prevMove.getDestinationType() == Move.DestinationType.FOUNDATION) {
                 if (cards.size() != 1) {
                     throw new Exception("Move exactly one card to foundation at a time. Was "
                             + cards.size() + ".");
                 }
                 Card card = cards.get(0);
-                foundations.set(move.getDestPosition(), card);
+                foundations.set(prevMove.getDestPosition(), card);
                 state.setFoundations(foundations);
-                checkWin(state);
-            } else if (move.getDestinationType() == Move.DestinationType.PILE) {
-                piles.get(move.getDestPosition()).addAll(cards);
+            } else if (prevMove.getDestinationType() == Move.DestinationType.PILE) {
+                piles.get(prevMove.getDestPosition()).addAll(cards);
                 state.setPiles(piles);
             }
         }
 
-        // Lastly: If a face down card is uncovered on top of a pile, replace with card from CV
+        // Last: If a face down card is uncovered on top of a pile, replace with card from CV
         // (Implicitly this is the FACEUP move type.)
         for (int i = 0; i < 7; i++) {
             List<Card> pile = piles.get(i);
@@ -170,18 +187,26 @@ public class CardCalculator {
                     piles.get(i).set(piles.get(i).size() - 1, topCardsSimulator.getCard());
                 } else {
                     // Replace if there is a visible topcard (This assumes that face down cards are null in the array)
-                    if (topCards.getPiles()[i] != null) {
+                    if (topCards.getPiles()[i] == null) {
+                        // Exception here is removed: This means that
+                        // if there is a card, and CV fails to read it, the program will still ask user to turn
+                        // the card Face up!
+                        //throw new Exception("Expected to see a new card on top of pile " + (i + 1) + ".");
+                        piles.get(i).set(piles.get(i).size() - 1, new Card(Card.Status.FACEDOWN));
+                    } else {
+                        if (topCards.getPiles()[i] == null) {
+                            throw new CardReadException("Could not read discovered card in pile " + (i + 1) + ".");
+                        }
                         piles.get(i).set(piles.get(i).size() - 1, topCards.getPiles()[i]);
                     }
                 }
                 state.setPiles(piles);
             }
         }
-
         return state;
     }
 
-    private boolean checkWin(SolitaireState state) {
+    public boolean checkWin(SolitaireState state) {
         boolean won = true;
         for (int i = 0; i < 4; i++) {
             Card foundation = state.getFoundations().get(i);
@@ -189,7 +214,6 @@ public class CardCalculator {
                 won = false;
             }
         }
-        state.setWon(won);
         return won;
     }
 
@@ -228,44 +252,23 @@ public class CardCalculator {
             }
         }
 
-        // Check the foundations
-        for (int i = 0; i < 4; i++) {
-            if (foundations.get(i) == null) {
-                if (topCards.getFoundations()[i] != null) {
-                    throw new Exception("checkState: State's foundation " + i + " was null, " +
-                            "but corresponding card from image was NOT null.");
-                }
-            } else if (topCards.getFoundations()[i] == null) {
-                throw new Exception("checkState: Image foundations " + i + " was null, " +
-                        "corresponding card in state was NOT null.");
-            } else {
-                if (!(topCards.getFoundations()[i].toString().equals(foundations.get(i).toString()))) {
-                    throw new Exception("checkState: The foundation card " + i + " doesn't match." +
-                            "\n\tState: " + foundations.get(i).toString() +
-                            "\n\tImage: " + topCards.getFoundations()[i].toString());
-                }
-            }
-        }
-
         // Check the piles
         for (int i = 0; i < 7; i++) {
             if (piles.get(i) == null) {
                 if (topCards.getPiles()[i] != null) {
-                    throw new Exception("checkState: State's pile " + i + " was null, " +
+                    throw new Exception("checkState: State's pile " + (i + 1) + " was null, " +
                             "but corresponding card from image was NOT null.");
                 }
             } else if (topCards.getPiles()[i] == null) {
-                throw new Exception("checkState: Image pile " + i + " was null, " +
+                throw new Exception("checkState: Image pile " + (i + 1) + " was null, " +
                         "corresponding card in state was NOT null.");
             } else {
-                if (!(topCards.getPiles()[i].toString().equals(piles.get(i).toString()))) {
-                    throw new Exception("checkState: The pile card " + i + " doesn't match." +
-                            "\n\tState: " + piles.get(i).toString() +
-                            "\n\tImage: " + topCards.getPiles()[i].toString());
-                }
+                String pileCard = topCards.getPiles()[i].toString().replace("[", "").replace("]", "");
+                throw new Exception("checkState: The pile card " + (i + 1) + " doesn't match." +
+                        "\n\tState: " + piles.get(i).toString() +
+                        "\n\tImage: " + topCards.getPiles()[i].toString());
             }
         }
-
         return state;
     }
 }

@@ -1,11 +1,14 @@
 package dataObjects;
 
+import dataObjects.GlobalEnums.GameProgress;
 import org.jetbrains.annotations.NotNull;
-import stateBuilding.StatePrinterUtility;
+import utilities.StatePrinterUtility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static dataObjects.GlobalEnums.GameProgress.PLAYING;
 
 /**
  * @author Andreas, Erlend
@@ -22,15 +25,14 @@ import java.util.List;
  */
 
 public class SolitaireState {
-    public final String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
+    public String time = new Timestamp(System.currentTimeMillis()).toString();// Timestamp ID for test and log
 
     private int stock = 52; // Cards to draw, face not visible
     private List<Card> drawnCards = new ArrayList<>(); // Drawn card, must keep track of these
     private List<Card> foundations = new ArrayList<>(); // Four piles, goal, only top card visible
     private List<List<Card>> piles = new ArrayList<>(); // The seven rows
     private List<Move> suggestedMoves = new ArrayList<>(); // Moves to do based on this state
-    private Move performedMove; // The move perfomed right before this state.
-    private boolean won = false;
+    private GameProgress gameProgress = PLAYING;
     private int stockTurned = 0; // How many times is the stock pile turned?
 
     public SolitaireState() {
@@ -111,28 +113,24 @@ public class SolitaireState {
         this.suggestedMoves = suggestedMoves;
     }
 
-    public Move getPerformedMove() {
-        return performedMove;
-    }
-
-    public void setPerformedMove(Move performedMove) {
-        this.performedMove = performedMove;
-    }
-
-    public boolean isWon() {
-        return won;
-    }
-
-    public void setWon(boolean won) {
-        this.won = won;
-    }
-
     public int getStockTurned() {
         return stockTurned;
     }
 
     public void setStockTurned(int stockTurned) {
         this.stockTurned = stockTurned;
+    }
+
+    public GameProgress getGameProgress() {
+        return gameProgress;
+    }
+
+    public void setGameProgress(GameProgress gameProgress) {
+        this.gameProgress = gameProgress;
+    }
+
+    public void createTimeStamp() {
+        time = new Timestamp(System.currentTimeMillis()).toString();
     }
 }
 
